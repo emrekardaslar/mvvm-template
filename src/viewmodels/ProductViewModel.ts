@@ -26,15 +26,11 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
   }
 
   private onFilterChanged = (payload: { filter: string }) => {
-    console.log("Filter changed");
-
     this.currentFilter = payload.filter;
     this.fetchProducts();
   };
 
   private onLanguageChanged = (payload: { lang: "en" | "tr" | "ar" }) => {
-    console.log("language changed");
-
     this.currentLang = payload.lang;
     this.fetchProducts();
     // When language changes, we might need to refetch products with the current filter
