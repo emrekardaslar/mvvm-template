@@ -14,11 +14,7 @@ const CounterViewSwitcher: React.FC<CounterViewProps> = ({ initialData }) => {
   const languageData = useViewModel(languageViewModel);
   const View = viewMap("CounterView", languageData.currentLanguage);
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <View initialData={initialData} />
-    </Suspense>
-  );
+  return <View initialData={initialData} />;
 };
 
 export default CounterViewSwitcher;
