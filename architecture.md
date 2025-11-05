@@ -11,84 +11,90 @@ This document outlines the proposed architecture for our project, integrating th
 
 ## Architectural Components
 
-### 1. Model
+### 1. Services
+
+*   **Purpose:** To provide shared functionality and data access across the application, decoupled from any specific ViewModel or View.
+*   **`api.ts`:** Simulates a remote API for fetching application data (e.g., products, filters). In a real application, this would handle actual HTTP requests.
+*   **`eventBus.ts`:** A simple global event bus that allows disconnected components and ViewModels to communicate with each other (e.g., notifying the `ProductViewModel` that a filter has changed).
+
+### 2. Model
 
 *   **Purpose:** Represents the application's data and business logic. It is entirely UI-independent.
 *   **Responsibilities:**
-    *   Fetching data from APIs, databases, or other external sources.
+    *   Fetching data from APIs (via the API service), databases, or other external sources.
     *   Data validation and manipulation.
     *   Encapsulating business rules.
 *   **Implementation:**
     *   Plain TypeScript/JavaScript classes or objects.
     *   Examples: `UserModel`, `ProductModel`, `OrderModel`.
 
-### 2. View
+### 3. View
 
 *   **Purpose:** The user interface layer, responsible for rendering what the user sees and capturing user input.
 *   **Responsibilities:**
     *   Displaying data provided by the ViewModel.
-    *   Dispatching events to the ViewModel in response to user interactions (clicks, input changes, etc.).
+    *   Dispatching events to its own ViewModel in response to user interactions.
     *   Should be as "dumb" as possible, containing minimal to no business logic.
 *   **Implementation:**
     *   React Components.
-    *   These components will receive an instance of their ViewModel as a prop and use its `dispatch` method to send events.
+    *   Receives `initialData` as a prop and instantiates its own ViewModel on the client-side.
 
-### 3. ViewModel
+### 4. ViewModel
 
 *   **Purpose:** Acts as an intermediary between the Model and the View. It transforms Model data into a format suitable for the View and handles View-specific logic and state.
 *   **Responsibilities:**
-    *   Exposing data from the Model to the View in an easily consumable format.
-    *   Holding the View's state.
-    *   Listening for events dispatched by the View and executing corresponding logic (e.g., updating the Model or its own state).
-    *   Providing methods for data binding.
+    *   Exposing data to the View in an easily consumable format.
+    *   Holding the View's state (`data`).
+    *   Listening for events from its View (via `runAttachedFunction`) and from other ViewModels (via the `eventBus`).
 *   **Implementation:**
-    *   TypeScript/JavaScript classes, often inheriting from a `BaseViewModel`.
-    *   Each significant View or section of a View will typically have its own ViewModel.
-    *   Examples: `UserProfileViewModel`, `ProductListViewModel`, `LoginFormViewModel`.
+    *   TypeScript/JavaScript classes, inheriting from `BaseViewModel`.
+    *   Examples: `CounterViewModel`, `ProductViewModel`, `FilterViewModel`.
 
-### 3.1. BaseViewModel
+### 4.1. BaseViewModel
 
-*   **Purpose:** Provides common functionality, state management, and an event dispatching/handling mechanism for all other ViewModels, promoting code reuse and consistency.
+*   **Purpose:** Provides common functionality, state management, and an event mechanism for all other ViewModels.
 *   **Responsibilities:**
-    *   Managing the ViewModel's state and notifying listeners (Views) of changes.
-    *   Providing lifecycle methods (`onMount`, `onUnmount`) for setup and cleanup.
-    *   Offering `dispatch` and `on` methods for event-based communication.
-    *   Handling common loading and error states (can be added later).
+    *   Managing the ViewModel's `data` and notifying listeners of changes.
+    *   Providing lifecycle methods (`onMount`, `onUnmount`).
+    *   Offering `runAttachedFunction` (for View-to-ViewModel events) and `registerEvent` methods.
 *   **Implementation:**
-    *   A generic TypeScript class (`BaseViewModel<TState>`) located in `src/viewmodels/BaseViewModel.ts`.
-    *   Utilizes a `Set` of listeners to notify subscribed React components of state changes.
-    *   Uses a `Map` to manage event handlers, allowing ViewModels to subscribe to events.
+    *   A generic TypeScript class (`BaseViewModel<TData>`) located in `src/viewmodels/BaseViewModel.ts`.
 
-### 3.2. `useViewModel` Hook
+### 4.2. `useViewModel` Hook
 
 *   **Purpose:** A custom React hook to seamlessly integrate ViewModels with React functional components.
 *   **Responsibilities:**
-    *   Subscribing the React component to the ViewModel's state changes.
-    *   Triggering component re-renders when the ViewModel's state updates.
+    *   Subscribing the React component to the ViewModel's data changes.
+    *   Triggering component re-renders when the ViewModel's data updates.
     *   Calling the ViewModel's `onMount` and `onUnmount` lifecycle methods.
 *   **Implementation:**
     *   A React hook (`useViewModel`) located in `src/hooks/useViewModel.ts`.
-    *   Uses `useState` and `useEffect` to manage the component's subscription to the ViewModel.
 
-### Example: CounterView and CounterViewModel
+### 5. Server-Side Rendering (SSR) with Astro
 
-To illustrate the MVVM pattern with event-based communication, we've created a simple counter example:
-
-*   **`CounterViewModel` (`src/viewmodels/CounterViewModel.ts`):** Extends `BaseViewModel`. It registers handlers for `increment` and `decrement` events, which then modify its `count` state.
-*   **`CounterView` (`src/views/CounterView.tsx`):** A React functional component that receives an instance of `CounterViewModel` as a prop. It uses the `useViewModel` hook to subscribe to the ViewModel's state and renders the current count. User interactions (button clicks) dispatch `increment` or `decrement` events to the ViewModel using `viewModel.dispatch()`.
-
-### 4. Server-Side Rendering (SSR) with Astro
-
-*   **Purpose:** To generate the initial HTML content of the page on the server before sending it to the client. This enhances perceived performance, improves SEO, and provides a better user experience.
+*   **Purpose:** To generate the initial HTML content of the page on the server before sending it to the client.
 *   **Responsibilities:**
-    *   Orchestrating the initial data fetching.
-    *   Instantiating the necessary ViewModels on the server.
-    *   Passing the ViewModel's initial state to the React View components.
-    *   Rendering the React components to HTML.
+    *   Orchestrating initial data fetching (e.g., for the initial product list).
+    *   Passing the ViewModel's `initialData` to the React components.
 *   **Implementation:**
-    *   Astro pages (`.astro` files) will serve as the entry points.
-    *   Astro's integration with React allows us to render React components on the server.
-    *   The initial state can be serialized and passed to the client-side React application for "hydration," allowing React to take over interactivity seamlessly.
+    *   Astro pages (`.astro` files) serve as the entry points.
+
+## Examples
+
+### Counter Example
+
+A simple example to demonstrate the basic MVVM flow.
+
+*   **`CounterViewModel`:** Registers handlers for `increment` and `decrement` events.
+*   **`CounterView`:** Dispatches `increment` or `decrement` events to the ViewModel using `viewModel.runAttachedFunction()`.
+
+### Product/Filter Example
+
+A more advanced example demonstrating client-side data fetching and inter-ViewModel communication.
+
+*   **`FilterViewModel`:** If its initial data is empty, it fetches the available filters from the `api.ts` service in its `onMount` method. When a filter is selected, it updates its own state and dispatches a `filterChanged` event on the global `eventBus`.
+*   **`ProductViewModel`:** Subscribes to the `filterChanged` event on the `eventBus`. When the event is received, it fetches a new list of products from the `api.ts` service.
+*   **`index.astro`:** Renders the initial product list on the server. The filters are fetched on the client, demonstrating a hybrid SSR approach.
 
 ## Data Flow Overview
 
