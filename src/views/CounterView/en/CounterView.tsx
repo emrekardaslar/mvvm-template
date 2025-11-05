@@ -1,24 +1,26 @@
-import React, { useState } from "react";
-import { useViewModel } from "../../../hooks/useViewModel";
-import { CounterViewModel } from "../../../viewmodels/CounterViewModel";
+import React from 'react';
+import { useViewModel } from '../../../hooks/useViewModel';
+import { CounterViewModel } from '../../../viewmodels/CounterViewModel';
 
 interface CounterViewProps {
-  initialData: ReturnType<CounterViewModel["getData"]>;
+    viewModel: CounterViewModel;
 }
 
-const CounterView: React.FC<CounterViewProps> = ({ initialData }) => {
-  const [viewModel] = useState(() => new CounterViewModel(initialData));
-  const data = useViewModel(viewModel);
+const CounterView: React.FC<CounterViewProps> = ({ viewModel }) => {
+    const data = useViewModel(viewModel);
 
-  return data.isLoading ? (
-    <p>Loading...</p>
-  ) : (
-    <div>
+    if (data.isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    return (
+        <div>
             <h1>{data.title}: {data.count}</h1>
             <button onClick={() => viewModel.runAttachedFunction('increment')}>{data.increment}</button>
             <button onClick={() => viewModel.runAttachedFunction('decrement')}>{data.decrement}</button>
-    </div>
-  );
+        </div>
+    );
 };
+
 
 export default CounterView;
