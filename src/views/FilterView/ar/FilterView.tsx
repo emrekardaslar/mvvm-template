@@ -9,7 +9,6 @@ interface FilterViewProps {
 const FilterView: React.FC<FilterViewProps> = ({ initialData }) => {
   const [viewModel] = useState(() => new FilterViewModel(initialData));
   const data = useViewModel(viewModel);
-  console.log(data);
 
   const onFilterClick = (filter: string) => {
     viewModel.runAttachedFunction("selectFilter", { filter });
