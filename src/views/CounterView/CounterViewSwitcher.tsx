@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { viewMap } from "../../services/viewMap";
-import { LanguageViewModel } from "../../viewmodels/LanguageViewModel";
 import { CounterViewModel } from "../../viewmodels/CounterViewModel";
-import { useViewModel } from "../../hooks/useViewModel";
+import eventBus from "../../services/eventBus";
 
 interface CounterViewProps {
   initialData: {
@@ -11,10 +10,22 @@ interface CounterViewProps {
 }
 
 const CounterViewSwitcher: React.FC<CounterViewProps> = ({ initialData }) => {
-  const [languageViewModel] = useState(() => new LanguageViewModel());
+  const [currentLanguage, setCurrentLanguage] = useState<"en" | "tr" | "ar">(
+    "en"
+  );
   const [viewModel] = useState(() => new CounterViewModel(initialData));
-  const languageData = useViewModel(languageViewModel);
-  const View = viewMap("CounterView", languageData.currentLanguage);
+
+  useEffect(() => {
+    const handleLanguageChange = (payload: { lang: "en" | "tr" | "ar" }) => {
+      setCurrentLanguage(payload.lang);
+    };
+    eventBus.on("languageChanged", handleLanguageChange);
+    return () => {
+      eventBus.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
+
+  const View = viewMap("CounterView", currentLanguage);
 
   return <View viewModel={viewModel} />;
 };
