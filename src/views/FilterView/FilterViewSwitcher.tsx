@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import eventBus from "../../services/eventBus";
+import React, { useState, Suspense } from "react";
 import { viewMap } from "../../services/viewMap";
+import { LanguageViewModel } from "../../viewmodels/LanguageViewModel";
+import { useViewModel } from "../../hooks/useViewModel";
 
 interface FilterViewProps {
   initialData: {
@@ -10,17 +11,9 @@ interface FilterViewProps {
 }
 
 const FilterViewSwitcher: React.FC<FilterViewProps> = ({ initialData }) => {
-  const [currentLang, setCurrentLang] = useState<"en" | "tr" | "ar">("en");
-  const View = viewMap("FilterView", currentLang);
-
-  useEffect(() => {
-    const handleLanguageChange = (payload: { lang: "en" | "tr" | "ar" }) => {
-      setCurrentLang(payload.lang);
-    };
-
-    eventBus.on("languageChanged", handleLanguageChange);
-    return () => eventBus.off("languageChanged", handleLanguageChange);
-  }, []);
+  const [languageViewModel] = useState(() => new LanguageViewModel());
+  const languageData = useViewModel(languageViewModel);
+  const View = viewMap("FilterView", languageData.currentLanguage);
 
   return <View initialData={initialData} />;
 };
