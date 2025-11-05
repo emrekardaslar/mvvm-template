@@ -3,7 +3,7 @@ import CounterView from '../views/CounterView';
 import { CounterViewModel } from '../viewmodels/CounterViewModel';
 
 const serverViewModel = new CounterViewModel();
-const initialState = serverViewModel.getState();
+const initialData = serverViewModel.getData();
 ---
 
 <html lang="en">
@@ -16,6 +16,6 @@ const initialState = serverViewModel.getState();
 	</head>
 	<body>
 		<h1>Astro</h1>
-		<CounterView client:load initialState={initialState} />
+		<CounterView client:load initialData={initialData} />
 	</body>
 </html>

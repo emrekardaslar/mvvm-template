@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { BaseViewModel } from '../viewmodels/BaseViewModel';
 
-export function useViewModel<TState>(viewModel: BaseViewModel<TState>) {
-    const [state, setState] = useState(viewModel.getState());
+export function useViewModel<TData>(viewModel: BaseViewModel<TData>) {
+    const [data, setData] = useState(viewModel.getData());
 
     useEffect(() => {
         const unsubscribe = viewModel.subscribe(() => {
-            setState(viewModel.getState());
+            setData(viewModel.getData());
         });
 
         viewModel.onMount();
@@ -17,5 +17,5 @@ export function useViewModel<TState>(viewModel: BaseViewModel<TState>) {
         };
     }, [viewModel]);
 
-    return state;
+    return data;
 }

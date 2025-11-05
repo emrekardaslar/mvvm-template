@@ -1,33 +1,32 @@
-export class BaseViewModel<TState> {
-  protected state: TState;
+export class BaseViewModel<TData> {
+  protected data: TData;
   private listeners: Set<() => void> = new Set();
-  private eventHandlers: Map<string, ((payload?: any) => void)[]> = new Map();
+  private eventListener: Map<string, ((payload?: any) => void)[]> = new Map();
 
   /**
    * Creates an instance of BaseViewModel.
-   * @param initialState The initial state for the ViewModel.
+   * @param initialData The initial data for the ViewModel.
    */
-  constructor(initialState: TState) {
-    this.state = initialState;
+  constructor(initialData: TData) {
+    this.data = initialData;
   }
 
   /**
-   * Gets the current state of the ViewModel.
-   * @returns The current state.
+   * Gets the current data of the ViewModel.
+   * @returns The current data.
    */
-  public getState(): TState {
-    return this.state;
+  public getData(): TData {
+    return this.data;
   }
 
   /**
-   * Updates the state of the ViewModel and notifies all subscribed listeners.
-   * @param newState A partial object containing the new state properties to merge.
+   * Updates the data of the ViewModel and notifies all subscribed listeners.
+   * @param newData A partial object containing the new data properties to merge.
    */
-  protected setState(newState: Partial<TState>) {
-    this.state = { ...this.state, ...newState };
+  protected setData(newData: Partial<TData>) {
+    this.data = { ...this.data, ...newData };
     this.notifyListeners();
   }
-
   /**
    * Subscribes a listener function to state changes.
    * @param listener The function to call when the state changes.
@@ -49,13 +48,12 @@ export class BaseViewModel<TState> {
   }
 
   /**
-   * Dispatches an event with an optional payload.
-   * Handlers registered for this eventName will be executed.
-   * @param eventName The name of the event to dispatch.
-   * @param payload Optional data to pass to the event handlers.
+   * Executes all attached functions (event handlers) for a given event name.
+   * @param eventName The name of the event to run attached functions for.
+   * @param payload Optional data to pass to the attached functions.
    */
-  protected dispatch(eventName: string, payload?: any) {
-    const handlers = this.eventHandlers.get(eventName);
+  protected runAttachedFunction(eventName: string, payload?: any) {
+    const handlers = this.eventListener.get(eventName);
     if (handlers) {
       handlers.forEach((handler) => handler(payload));
     }
@@ -67,10 +65,10 @@ export class BaseViewModel<TState> {
    * @param handler The function to execute when the event is dispatched.
    */
   protected registerEvent(eventName: string, handler: (payload?: any) => void) {
-    if (!this.eventHandlers.has(eventName)) {
-      this.eventHandlers.set(eventName, []);
+    if (!this.eventListener.has(eventName)) {
+      this.eventListener.set(eventName, []);
     }
-    this.eventHandlers.get(eventName)?.push(handler);
+    this.eventListener.get(eventName)?.push(handler);
   }
   /**
    * Lifecycle method called when the associated View component mounts.

@@ -3,18 +3,18 @@ import { useViewModel } from '../hooks/useViewModel';
 import { CounterViewModel } from '../viewmodels/CounterViewModel';
 
 interface CounterViewProps {
-    initialState: ReturnType<CounterViewModel['getState']>;
+    initialData: ReturnType<CounterViewModel['getData']>;
 }
 
-const CounterView: React.FC<CounterViewProps> = ({ initialState }) => {
-    const [viewModel] = useState(() => new CounterViewModel(initialState));
-    const state = useViewModel(viewModel);
+const CounterView: React.FC<CounterViewProps> = ({ initialData }) => {
+    const [viewModel] = useState(() => new CounterViewModel(initialData));
+    const data = useViewModel(viewModel);
 
     return (
         <div>
-            <h1>Counter: {state.count}</h1>
-            <button onClick={() => viewModel.dispatch('increment')}>Increment</button>
-            <button onClick={() => viewModel.dispatch('decrement')}>Decrement</button>
+            <h1>Counter: {data.count}</h1>
+            <button onClick={() => viewModel.runAttachedFunction('increment')}>Increment</button>
+            <button onClick={() => viewModel.runAttachedFunction('decrement')}>Decrement</button>
         </div>
     );
 };
