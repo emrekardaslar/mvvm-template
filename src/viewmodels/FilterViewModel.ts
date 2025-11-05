@@ -15,11 +15,12 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
         this.registerEvent('selectFilter', this.selectFilter);
     }
 
-    public override onMount() {
+    public override async onMount() {
         eventBus.on('languageChanged', this.onLanguageChanged);
         // Fetch initial filters if they weren't provided via SSR
         if (this.data.filters.length === 0) {
-            this.fetchFilters(this.currentLang);
+            const filters = await api.fetchFilters(this.currentLang);
+            this.setData({ filters, selectedFilter: filters[0] });
         }
     }
 
@@ -27,17 +28,13 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
         eventBus.off('languageChanged', this.onLanguageChanged);
     }
 
-    private onLanguageChanged = (payload: { lang: 'en' | 'tr' | 'ar' }) => {
+    private onLanguageChanged = async (payload: { lang: 'en' | 'tr' | 'ar' }) => {
         this.currentLang = payload.lang;
-        this.fetchFilters(payload.lang);
-    };
-
-    private async fetchFilters(lang: 'en' | 'tr' | 'ar') {
-        const filters = await api.fetchFilters(lang);
+        const filters = await api.fetchFilters(payload.lang);
         this.setData({ filters, selectedFilter: filters[0] });
-        // Also notify the product list to update with the new default filter
+        // Now that the language has changed, dispatch an event with the new default filter
         eventBus.dispatch('filterChanged', { filter: filters[0] });
-    }
+    };
 
     private selectFilter = (payload: { filter: string }) => {
         this.setData({ selectedFilter: payload.filter });
