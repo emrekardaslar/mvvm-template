@@ -1,9 +1,24 @@
 ---
 import CounterView from '../views/CounterView';
 import { CounterViewModel } from '../viewmodels/CounterViewModel';
+import ProductView from '../views/ProductView';
+import { ProductViewModel } from '../viewmodels/ProductViewModel';
+import FilterView from '../views/FilterView';
+import { FilterViewModel } from '../viewmodels/FilterViewModel';
+import api from '../services/api';
 
-const serverViewModel = new CounterViewModel();
-const initialData = serverViewModel.getData();
+// Counter
+const counterViewModel = new CounterViewModel();
+const counterInitialData = counterViewModel.getData();
+
+// Products (SSR)
+const initialProducts = await api.fetchProducts('All');
+const productViewModel = new ProductViewModel({ products: initialProducts, isLoading: false });
+const productInitialData = productViewModel.getData();
+
+// Filters (No SSR data, will be fetched on client)
+const filterViewModel = new FilterViewModel();
+const filterInitialData = filterViewModel.getData();
 ---
 
 <html lang="en">
@@ -16,6 +31,12 @@ const initialData = serverViewModel.getData();
 	</head>
 	<body>
 		<h1>Astro</h1>
-		<CounterView client:load initialData={initialData} />
+		<hr />
+		<h2>Counter Example</h2>
+		<CounterView client:load initialData={counterInitialData} />
+		<hr />
+		<h2>Product List Example</h2>
+		<FilterView client:load initialData={filterInitialData} />
+		<ProductView client:load initialData={productInitialData} />
 	</body>
 </html>
