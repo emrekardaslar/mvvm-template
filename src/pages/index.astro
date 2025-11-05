@@ -1,13 +1,13 @@
 ---
-import CounterView from '../views/CounterView';
-import { CounterViewModel } from '../viewmodels/CounterViewModel';
-import ProductView from '../views/ProductView';
-import { ProductViewModel } from '../viewmodels/ProductViewModel';
-import FilterView from '../views/FilterView';
-import { FilterViewModel } from '../viewmodels/FilterViewModel';
-import LanguageView from '../views/LanguageView';
-import { LanguageViewModel } from '../viewmodels/LanguageViewModel';
-import api from '../services/api';
+import { CounterViewModel } from "../viewmodels/CounterViewModel";
+import { ProductViewModel } from "../viewmodels/ProductViewModel";
+import { FilterViewModel } from "../viewmodels/FilterViewModel";
+import LanguageView from "../views/LanguageView";
+import { LanguageViewModel } from "../viewmodels/LanguageViewModel";
+import api from "../services/api";
+import CounterViewSwitcher from "../views/CounterView/CounterViewSwitcher";
+import ProductViewSwitcher from "../views/ProductView/ProductViewSwitcher";
+import FilterViewSwitcher from "../views/FilterView/FilterViewSwitcher";
 
 // Counter
 const counterViewModel = new CounterViewModel();
@@ -19,8 +19,11 @@ const languageInitialData = languageViewModel.getData();
 const defaultLang = languageInitialData.currentLanguage;
 
 // Products (SSR)
-const initialProducts = await api.fetchProducts(defaultLang, 'All');
-const productViewModel = new ProductViewModel({ products: initialProducts, isLoading: false });
+const initialProducts = await api.fetchProducts(defaultLang, "All");
+const productViewModel = new ProductViewModel({
+  products: initialProducts,
+  isLoading: false,
+});
 const productInitialData = productViewModel.getData();
 
 // Filters (No SSR data, will be fetched on client)
@@ -29,24 +32,24 @@ const filterInitialData = filterViewModel.getData();
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-		<hr />
-		<h2>Language Selector</h2>
-		<LanguageView client:load initialData={languageInitialData} />
-		<hr />
-		<h2>Counter Example</h2>
-		<CounterView client:load initialData={counterInitialData} />
-		<hr />
-		<h2>Product List Example</h2>
-		<FilterView client:load initialData={filterInitialData} />
-		<ProductView client:load initialData={productInitialData} />
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    <h1>Astro</h1>
+    <hr />
+    <h2>Language Selector</h2>
+    <LanguageView client:load initialData={languageInitialData} />
+    <hr />
+    <h2>Counter Example</h2>
+    <CounterViewSwitcher client:load initialData={counterInitialData} />
+    <hr />
+    <h2>Product List Example</h2>
+    <FilterViewSwitcher client:load initialData={filterInitialData} />
+    <ProductViewSwitcher client:load initialData={productInitialData} />
+  </body>
 </html>
