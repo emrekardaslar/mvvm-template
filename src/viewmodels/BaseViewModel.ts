@@ -66,13 +66,12 @@ export class BaseViewModel<TState> {
    * @param eventName The name of the event to listen for.
    * @param handler The function to execute when the event is dispatched.
    */
-  protected on(eventName: string, handler: (payload?: any) => void) {
+  protected registerEvent(eventName: string, handler: (payload?: any) => void) {
     if (!this.eventHandlers.has(eventName)) {
       this.eventHandlers.set(eventName, []);
     }
     this.eventHandlers.get(eventName)?.push(handler);
   }
-
   /**
    * Lifecycle method called when the associated View component mounts.
    * To be overridden by subclasses for initialization logic.

@@ -7,8 +7,8 @@ interface CounterState {
 export class CounterViewModel extends BaseViewModel<CounterState> {
     constructor(initialState?: CounterState) {
         super(initialState || { count: 0 });
-        this.on('increment', this.handleIncrement);
-        this.on('decrement', this.handleDecrement);
+        this.registerEvent('increment', this.handleIncrement);
+        this.registerEvent('decrement', this.handleDecrement);
     }
 
     private handleIncrement = () => {
