@@ -1,14 +1,14 @@
 import React from "react";
-import type { LanguageViewProps } from "../../../model/language";
+import type { LanguageSelectorViewProps } from '../../../../model/language';
 
-const LanguageView: React.FC<LanguageViewProps> = ({ data, viewModel }) => {
+const LanguageSelectorView: React.FC<LanguageSelectorViewProps> = ({ data, viewModel }) => {
   const onLanguageClick = (lang: "en" | "tr" | "ar") => {
     viewModel.runAttachedFunction("changeLanguage", { lang });
   };
 
   return (
     <div>
-      <h3>Language</h3>
+      <h3>Dil</h3>
       {data.availableLanguages.map((lang) => (
         <button
           key={lang}
@@ -24,4 +24,4 @@ const LanguageView: React.FC<LanguageViewProps> = ({ data, viewModel }) => {
   );
 };
 
-export default LanguageView;
+export default LanguageSelectorView;

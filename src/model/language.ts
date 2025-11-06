@@ -1,6 +1,6 @@
 import type { LanguageViewModel, LanguageData } from "../viewmodels/LanguageViewModel";
 
-export interface LanguageViewProps {
+export interface LanguageSelectorViewProps {
   data: LanguageData;
   viewModel: LanguageViewModel;
 }
