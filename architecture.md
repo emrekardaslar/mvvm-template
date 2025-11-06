@@ -62,13 +62,27 @@ This document outlines the proposed architecture for our project, integrating th
 
 ### 4.2. `useViewModel` Hook
 
-*   **Purpose:** A custom React hook to seamlessly integrate ViewModels with React functional components.
+*   **Purpose:** A custom React hook to seamlessly integrate ViewModels with React functional components, handling client-side instantiation.
 *   **Responsibilities:**
-    *   Subscribing the React component to the ViewModel's data changes.
+    *   Accepts a ViewModel *class* and `initialData`.
+    *   Instantiates the ViewModel internally using the provided `initialData`.
+    *   Subscribes the React component to the ViewModel's data changes.
     *   Triggering component re-renders when the ViewModel's data updates.
     *   Calling the ViewModel's `onMount` and `onUnmount` lifecycle methods.
 *   **Implementation:**
     *   A React hook (`useViewModel`) located in `src/hooks/useViewModel.ts`.
+
+### 4.3. `LangViewSwitcher` Component
+
+*   **Purpose:** A generic React component to handle dynamic, language-dependent view switching.
+*   **Responsibilities:**
+    *   Accepts a ViewModel *class*, `initialData`, and a `viewName`.
+    *   Instantiates the ViewModel on the client-side using `initialData`.
+    *   Listens for `languageChanged` events from the `eventBus`.
+    *   Uses `viewMap` to dynamically load the correct view component based on the current language.
+    *   Renders the selected view component, passing the ViewModel instance as a prop.
+*   **Implementation:**
+    *   A generic React component (`LangViewSwitcher`) located in `src/components/LangViewSwitcher.tsx`.
 
 ### 5. Server-Side Rendering (SSR) with Astro
 
