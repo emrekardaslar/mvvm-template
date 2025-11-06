@@ -38,7 +38,7 @@ describe('CounterViewModel', () => {
   });
 
   it('should not update language if it is the same', () => {
-    const spySetData = vi.spyOn(viewModel, 'setData');
+    const spySetData = vi.spyOn(viewModel, 'getData');
     eventBus.dispatch('languageChanged', { lang: 'en' });
     vi.runAllTimers();
     expect(spySetData).not.toHaveBeenCalledWith(expect.objectContaining({ isLoading: true }));
