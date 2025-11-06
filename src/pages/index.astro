@@ -2,12 +2,12 @@
 import { CounterViewModel } from "../viewmodels/CounterViewModel";
 import { ProductViewModel } from "../viewmodels/ProductViewModel";
 import { FilterViewModel } from "../viewmodels/FilterViewModel";
-import LanguageView from "../views/LanguageView";
-import { LanguageViewModel } from "../viewmodels/LanguageViewModel";
+import LanguageViewSwitcher from "../views/LanguageView/LanguageViewSwitcher";
 import api from "../services/api";
 import CounterViewSwitcher from "../views/CounterView/CounterViewSwitcher";
 import ProductViewSwitcher from "../views/ProductView/ProductViewSwitcher";
 import FilterViewSwitcher from "../views/FilterView/FilterViewSwitcher";
+import { LanguageViewModel } from "../viewmodels/LanguageViewModel";
 
 // Counter
 const counterViewModel = new CounterViewModel();
@@ -42,7 +42,7 @@ const filterInitialData = filterViewModel.getData();
   <body>
     <h1>MVVM</h1>
     <hr />
-    <LanguageView client:load initialData={languageInitialData} />
+    <LanguageViewSwitcher client:load />
     <hr />
     <CounterViewSwitcher client:load initialData={counterInitialData} />
     <hr />
