@@ -3,11 +3,10 @@ import { useViewModel } from '../../../hooks/useViewModel';
 import { ProductViewModel } from '../../../viewmodels/ProductViewModel';
 
 interface ProductViewProps {
-    initialData: ReturnType<ProductViewModel['getData']>;
+    viewModel: ProductViewModel;
 }
 
-const ProductView: React.FC<ProductViewProps> = ({ initialData }) => {
-    const [viewModel] = useState(() => new ProductViewModel(initialData));
+const ProductView: React.FC<ProductViewProps> = ({ viewModel }) => {
     const data = useViewModel(viewModel);
 
     return (
