@@ -1,7 +1,10 @@
 import React from "react";
-import type { LanguageSelectorViewProps } from '../../../../model/language';
+import type { LanguageSelectorViewProps } from "../../../model/language";
 
-const LanguageSelectorView: React.FC<LanguageSelectorViewProps> = ({ data, viewModel }) => {
+const LanguageSelectorView: React.FC<LanguageSelectorViewProps> = ({
+  data,
+  viewModel,
+}) => {
   const onLanguageClick = (lang: "en" | "tr" | "ar") => {
     viewModel.runAttachedFunction("changeLanguage", { lang });
   };
