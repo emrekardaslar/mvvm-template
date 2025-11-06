@@ -4,15 +4,15 @@ import eventBus from "../services/eventBus";
 interface CounterData {
   count: number;
   isLoading: boolean;
+  currentLang?: "en" | "tr" | "ar";
 }
 
 export class CounterViewModel extends BaseViewModel<CounterData> {
-  public currentLang: "en" | "tr" | "ar" = "en";
-
   constructor(initialData?: Partial<CounterData>) {
     super({
       count: initialData?.count || 0,
       isLoading: false,
+      currentLang: initialData?.currentLang || "en",
     });
     this.registerEvent("increment", this.handleIncrement);
     this.registerEvent("decrement", this.handleDecrement);
@@ -27,11 +27,11 @@ export class CounterViewModel extends BaseViewModel<CounterData> {
   }
 
   private onLanguageChanged = (payload: { lang: "en" | "tr" | "ar" }) => {
-    this.currentLang = payload.lang;
     this.setData({ isLoading: true });
     setTimeout(() => {
       this.setData({
         isLoading: false,
+        currentLang: payload.lang,
       });
     }, 500);
   };

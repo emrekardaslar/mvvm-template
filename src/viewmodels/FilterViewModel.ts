@@ -5,13 +5,16 @@ import eventBus from "../services/eventBus";
 interface FilterData {
   filters: string[];
   selectedFilter: string | null;
+  currentLang: "en" | "tr" | "ar";
 }
 
 export class FilterViewModel extends BaseViewModel<FilterData> {
-  public currentLang: "en" | "tr" | "ar" = "en";
-
-  constructor(initialData?: FilterData) {
-    super(initialData || { filters: [], selectedFilter: "All" });
+  constructor(initialData?: Partial<FilterData>) {
+    super({
+      filters: initialData?.filters || [],
+      selectedFilter: initialData?.selectedFilter || "All",
+      currentLang: initialData?.currentLang || "en",
+    });
     this.registerEvent("selectFilter", this.selectFilter);
   }
 
@@ -19,7 +22,7 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
     eventBus.on("languageChanged", this.onLanguageChanged);
     // Fetch initial filters if they weren't provided via SSR
     if (this.data.filters.length === 0) {
-      const filters = await api.fetchFilters(this.currentLang);
+      const filters = await api.fetchFilters(this.data.currentLang);
       this.setData({ filters, selectedFilter: filters[0] });
     }
   }
@@ -31,7 +34,11 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
   private onLanguageChanged = async (payload: { lang: "en" | "tr" | "ar" }) => {
     this.currentLang = payload.lang;
     const filters = await api.fetchFilters(payload.lang);
-    this.setData({ filters, selectedFilter: filters[0] });
+    this.setData({
+      filters,
+      selectedFilter: filters[0],
+      currentLang: payload.lang,
+    });
     // Now that the language has changed, dispatch an event with the new default filter
     eventBus.dispatch("filterChanged", { filter: filters[0] });
   };

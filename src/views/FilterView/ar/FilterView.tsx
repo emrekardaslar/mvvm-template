@@ -1,14 +1,7 @@
-import React, { useState } from "react";
-import { useViewModel } from "../../../hooks/useViewModel";
-import { FilterViewModel } from "../../../viewmodels/FilterViewModel";
+import React from "react";
+import type { FilterViewProps } from "../../../model/filter";
 
-interface FilterViewProps {
-  viewModel: FilterViewModel;
-}
-
-const FilterView: React.FC<FilterViewProps> = ({ viewModel }) => {
-  const data = useViewModel(viewModel);
-
+const FilterView: React.FC<FilterViewProps> = ({ data, viewModel }) => {
   const onFilterClick = (filter: string) => {
     viewModel.runAttachedFunction("selectFilter", { filter });
   };

@@ -1,34 +1,27 @@
-import React, { useState } from "react";
-import { useViewModel } from "../../../hooks/useViewModel";
-import { FilterViewModel } from "../../../viewmodels/FilterViewModel";
+import React from "react";
+import type { FilterViewProps } from "../../../model/filter";
 
-interface FilterViewProps {
-    viewModel: FilterViewModel;
-}
+const FilterView: React.FC<FilterViewProps> = ({ data, viewModel }) => {
+  const onFilterClick = (filter: string) => {
+    viewModel.runAttachedFunction("selectFilter", { filter });
+  };
 
-const FilterView: React.FC<FilterViewProps> = ({ viewModel }) => {
-    const data = useViewModel(viewModel);
-
-    const onFilterClick = (filter: string) => {
-        viewModel.runAttachedFunction("selectFilter", { filter });
-    };
-
-    return (
-        <div>
-            <h3>Filtreler</h3>
-            {data?.filters?.map((filter) => (
-                <button
-                    key={filter}
-                    onClick={() => onFilterClick(filter)}
-                    style={{
-                        fontWeight: data.selectedFilter === filter ? "bold" : "normal",
-                    }}
-                >
-                    {filter}
-                </button>
-            ))}
-        </div>
-    );
+  return (
+    <div>
+      <h3>Filtreler</h3>
+      {data?.filters?.map((filter) => (
+        <button
+          key={filter}
+          onClick={() => onFilterClick(filter)}
+          style={{
+            fontWeight: data.selectedFilter === filter ? "bold" : "normal",
+          }}
+        >
+          {filter}
+        </button>
+      ))}
+    </div>
+  );
 };
 
 export default FilterView;

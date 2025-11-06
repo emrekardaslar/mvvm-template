@@ -2,13 +2,15 @@ import React from "react";
 import LangViewSwitcher from "../../components/LangViewSwitcher";
 import { CounterViewModel } from "../../viewmodels/CounterViewModel";
 
-interface CounterViewProps {
+interface CounterViewSwitcherProps {
   initialData: {
     count: number;
   };
 }
 
-const CounterViewSwitcher: React.FC<CounterViewProps> = ({ initialData }) => {
+const CounterViewSwitcher: React.FC<CounterViewSwitcherProps> = ({
+  initialData,
+}) => {
   return (
     <LangViewSwitcher
       ViewModelClass={CounterViewModel}

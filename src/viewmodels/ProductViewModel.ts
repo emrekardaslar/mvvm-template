@@ -5,14 +5,18 @@ import eventBus from "../services/eventBus";
 interface ProductData {
   products: Product[];
   isLoading: boolean;
+  currentLang: "en" | "tr" | "ar";
 }
 
 export class ProductViewModel extends BaseViewModel<ProductData> {
-  private currentLang: "en" | "tr" | "ar" = "en";
   private currentFilter: string | null = "All";
 
-  constructor(initialData?: ProductData) {
-    super(initialData || { products: [], isLoading: false });
+  constructor(initialData?: Partial<ProductData>) {
+    super({
+      products: initialData?.products || [],
+      isLoading: initialData?.isLoading || false,
+      currentLang: initialData?.currentLang || "en",
+    });
   }
 
   public override onMount() {
@@ -31,7 +35,7 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
   };
 
   private onLanguageChanged = (payload: { lang: "en" | "tr" | "ar" }) => {
-    this.currentLang = payload.lang;
+    this.setData({ currentLang: payload.lang });
     this.fetchProducts();
     // When language changes, we might need to refetch products with the current filter
     // The filter component will also refetch and send a new 'filterChanged' event,
@@ -41,7 +45,7 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
   private async fetchProducts() {
     this.setData({ isLoading: true });
     const products = await api.fetchProducts(
-      this.currentLang,
+      this.data.currentLang,
       this.currentFilter
     );
     this.setData({ products, isLoading: false });

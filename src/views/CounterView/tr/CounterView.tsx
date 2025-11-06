@@ -1,14 +1,7 @@
 import React from "react";
-import { useViewModel } from "../../../hooks/useViewModel";
-import { CounterViewModel } from "../../../viewmodels/CounterViewModel";
+import type { CounterViewProps } from "../../../model/counter";
 
-interface CounterViewProps {
-  viewModel: CounterViewModel;
-}
-
-const CounterView: React.FC<CounterViewProps> = ({ viewModel }) => {
-  const data = useViewModel(viewModel);
-
+const CounterView: React.FC<CounterViewProps> = ({ data, viewModel }) => {
   if (data.isLoading) {
     return <div>Yükleniyor...</div>;
   }
