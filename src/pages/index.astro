@@ -40,15 +40,12 @@ const filterInitialData = filterViewModel.getData();
     <title>Astro</title>
   </head>
   <body>
-    <h1>Astro</h1>
+    <h1>MVVM</h1>
     <hr />
-    <h2>Language Selector</h2>
     <LanguageView client:load initialData={languageInitialData} />
     <hr />
-    <h2>Counter Example</h2>
     <CounterViewSwitcher client:load initialData={counterInitialData} />
     <hr />
-    <h2>Product List Example</h2>
     <FilterViewSwitcher client:load initialData={filterInitialData} />
     <ProductViewSwitcher client:load initialData={productInitialData} />
   </body>

@@ -13,10 +13,10 @@ const LanguageView: React.FC<LanguageViewProps> = ({ initialData }) => {
     const onLanguageClick = (lang: 'en' | 'tr' | 'ar') => {
         viewModel.runAttachedFunction('changeLanguage', { lang });
     };
-
+    
     return (
         <div>
-            <h3>Language</h3>
+            <LangTitle lang={data.currentLanguage}/>
             {data.availableLanguages.map(lang => (
                 <button
                     key={lang}
@@ -29,5 +29,25 @@ const LanguageView: React.FC<LanguageViewProps> = ({ initialData }) => {
         </div>
     );
 };
+
+const LangTitle = ({lang}: any) => {
+    let title: string;
+
+    switch (lang) {
+        case "en":
+            title = "Language";
+            break;
+        case "tr":
+            title = "Dil"; // Turkish for "Language"
+            break;
+        case "ar":
+            title = "لغة"; // Arabic for "Language"
+            break;
+        default:
+            title = "Language"; // Fallback
+    }
+
+    return <h3>{title}</h3>;
+}
 
 export default LanguageView;
