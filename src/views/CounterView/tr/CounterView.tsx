@@ -15,9 +15,13 @@ const CounterView: React.FC<CounterViewProps> = ({ viewModel }) => {
 
   return (
     <div>
-      <h1>{data.title}: {data.count}</h1>
-      <button onClick={() => viewModel.runAttachedFunction('increment')}>{data.increment}</button>
-      <button onClick={() => viewModel.runAttachedFunction('decrement')}>{data.decrement}</button>
+      <h1>Sayaç: {data.count}</h1>
+      <button onClick={() => viewModel.runAttachedFunction("increment")}>
+        Artır
+      </button>
+      <button onClick={() => viewModel.runAttachedFunction("decrement")}>
+        Azalt
+      </button>
     </div>
   );
 };

@@ -15,14 +15,12 @@ const CounterView: React.FC<CounterViewProps> = ({ viewModel }) => {
 
   return (
     <div>
-      <h1>
-        {data.title}: {data.count}
-      </h1>
+      <h1>Counter: {data.count}</h1>
       <button onClick={() => viewModel.runAttachedFunction("increment")}>
-        {data.increment}
+        Increment
       </button>
       <button onClick={() => viewModel.runAttachedFunction("decrement")}>
-        {data.decrement}
+        Decrement
       </button>
     </div>
   );
