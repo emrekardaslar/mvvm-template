@@ -3,11 +3,10 @@ import { useViewModel } from "../../../hooks/useViewModel";
 import { FilterViewModel } from "../../../viewmodels/FilterViewModel";
 
 interface FilterViewProps {
-  initialData: ReturnType<FilterViewModel["getData"]>;
+  viewModel: FilterViewModel;
 }
 
-const FilterView: React.FC<FilterViewProps> = ({ initialData }) => {
-  const [viewModel] = useState(() => new FilterViewModel(initialData));
+const FilterView: React.FC<FilterViewProps> = ({ viewModel }) => {
   const data = useViewModel(viewModel);
 
   const onFilterClick = (filter: string) => {
@@ -17,7 +16,7 @@ const FilterView: React.FC<FilterViewProps> = ({ initialData }) => {
   return (
     <div>
       <h3>المرشحات</h3>
-      {data.filters.map((filter) => (
+      {data?.filters?.map((filter) => (
         <button
           key={filter}
           onClick={() => onFilterClick(filter)}

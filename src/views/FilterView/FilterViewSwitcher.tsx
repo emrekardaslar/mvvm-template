@@ -1,7 +1,7 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import { viewMap } from "../../services/viewMap";
-import { LanguageViewModel } from "../../viewmodels/LanguageViewModel";
-import { useViewModel } from "../../hooks/useViewModel";
+import eventBus from "../../services/eventBus";
+import { FilterViewModel } from "../../viewmodels/FilterViewModel";
 
 interface FilterViewProps {
   initialData: {
@@ -10,12 +10,25 @@ interface FilterViewProps {
   };
 }
 
-const FilterViewSwitcher: React.FC<FilterViewProps> = ({ initialData }) => {
-  const [languageViewModel] = useState(() => new LanguageViewModel());
-  const languageData = useViewModel(languageViewModel);
-  const View = viewMap("FilterView", languageData.currentLanguage);
+const FilterViewSwitcher: React.FC<FilterViewProps> = ({ initialData }) => {  
+  const [currentLanguage, setCurrentLanguage] = useState<"en" | "tr" | "ar">(
+    "en"
+  );
+  const [viewModel] = useState(() => new FilterViewModel(initialData));
 
-  return <View initialData={initialData} />;
+  useEffect(() => {
+    const handleLanguageChange = (payload: { lang: "en" | "tr" | "ar" }) => {
+      setCurrentLanguage(payload.lang);
+    };
+    eventBus.on("languageChanged", handleLanguageChange);
+    return () => {
+      eventBus.off("languageChanged", handleLanguageChange);
+    };
+  }, []);
+
+  const View = viewMap("FilterView", currentLanguage);
+
+  return <View viewModel={viewModel} />;
 };
 
 export default FilterViewSwitcher;
