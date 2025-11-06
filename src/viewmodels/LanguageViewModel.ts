@@ -1,7 +1,7 @@
 import { BaseViewModel } from './BaseViewModel';
 import eventBus from '../services/eventBus';
 
-interface LanguageData {
+export interface LanguageData {
     availableLanguages: string[];
     currentLanguage: 'en' | 'tr' | 'ar';
 }

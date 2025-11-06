@@ -1,12 +1,7 @@
 import { BaseViewModel } from "./BaseViewModel";
-import api, { type Product } from "../services/api";
+import api from "../services/api";
 import eventBus from "../services/eventBus";
-
-interface ProductData {
-  products: Product[];
-  isLoading: boolean;
-  currentLang: "en" | "tr" | "ar";
-}
+import type { ProductData } from "../model/product";
 
 export class ProductViewModel extends BaseViewModel<ProductData> {
   private currentFilter: string | null = "All";

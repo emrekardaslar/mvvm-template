@@ -1,12 +1,7 @@
 import { BaseViewModel } from "./BaseViewModel";
 import api from "../services/api";
 import eventBus from "../services/eventBus";
-
-interface FilterData {
-  filters: string[];
-  selectedFilter: string | null;
-  currentLang: "en" | "tr" | "ar";
-}
+import type { FilterData } from "../model/filter";
 
 export class FilterViewModel extends BaseViewModel<FilterData> {
   constructor(initialData?: Partial<FilterData>) {
@@ -32,7 +27,6 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
   }
 
   private onLanguageChanged = async (payload: { lang: "en" | "tr" | "ar" }) => {
-    this.currentLang = payload.lang;
     const filters = await api.fetchFilters(payload.lang);
     this.setData({
       filters,

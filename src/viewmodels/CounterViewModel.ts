@@ -1,11 +1,6 @@
 import { BaseViewModel } from "./BaseViewModel";
 import eventBus from "../services/eventBus";
-
-interface CounterData {
-  count: number;
-  isLoading: boolean;
-  currentLang?: "en" | "tr" | "ar";
-}
+import type { CounterData } from "../model/counter";
 
 export class CounterViewModel extends BaseViewModel<CounterData> {
   constructor(initialData?: Partial<CounterData>) {
