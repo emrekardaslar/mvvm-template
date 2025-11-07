@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useViewModel } from '../../hooks/useViewModel';
 import { PagerViewModel } from '../../viewmodels/PagerViewModel';
 import type { PagerViewProps } from '../../models/pager';
+import "./Pager.css";
 
 const Pager: React.FC<PagerViewProps> = ({
     initialData
@@ -11,19 +12,21 @@ const Pager: React.FC<PagerViewProps> = ({
     const { page, totalPages } = useViewModel(viewModel);
     
     return (
-        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        <div className="pager-container">
             <button
+                className="pager-button"
                 onClick={() => viewModel.runAttachedFunction("changePage", {page: page-1}) }
                 disabled={page === 1}
             >
                 ◀
             </button>
 
-            <span>
+            <span className="pager-info">
                 {page} / {totalPages}
             </span>
 
             <button
+                className="pager-button"
                 onClick={() => viewModel.runAttachedFunction("changePage", { page: page + 1 })}
                 disabled={page === totalPages}
             >
