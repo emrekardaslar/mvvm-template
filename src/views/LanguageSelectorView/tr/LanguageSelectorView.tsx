@@ -1,5 +1,6 @@
 import React from "react";
 import type { LanguageSelectorViewProps } from "../../../models/language";
+import "../LanguageSelector.css";
 
 const LanguageSelectorView: React.FC<LanguageSelectorViewProps> = ({
   data,
@@ -10,19 +11,18 @@ const LanguageSelectorView: React.FC<LanguageSelectorViewProps> = ({
   };
 
   return (
-    <div>
+    <div className="language-selector-container">
       <h3>Dil</h3>
-      {data.availableLanguages.map((lang) => (
-        <button
-          key={lang}
-          onClick={() => onLanguageClick(lang as "en" | "tr" | "ar")}
-          style={{
-            fontWeight: data.currentLanguage === lang ? "bold" : "normal",
-          }}
-        >
-          {lang.toUpperCase()}
-        </button>
-      ))}
+      <div className="language-selector-buttons">
+        {data.availableLanguages.map((lang) => (
+          <button
+            key={lang}
+            onClick={() => onLanguageClick(lang as "en" | "tr" | "ar")}
+            className={`language-selector-button ${data.currentLanguage === lang ? "selected" : ""}`}>
+            {lang.toUpperCase()}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
