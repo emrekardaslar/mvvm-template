@@ -12,7 +12,6 @@ import Pager from "../views/PagerView/Pager";
 import { PagerViewModel } from "../viewmodels/PagerViewModel";
 import { Banner } from "../components/Banner";
 
-
 // Counter
 const counterViewModel = new CounterViewModel();
 const counterInitialData = counterViewModel.getData();
@@ -29,6 +28,10 @@ const productViewModel = new ProductViewModel({
   isLoading: false,
 });
 const productInitialData = productViewModel.getData();
+
+//Filters (SSR)
+//const ssrFilters = await api.fetchFilters();
+//const filterViewModel = new FilterViewModel({ filters: ssrFilters });
 
 // Filters (No SSR data, will be fetched on client)
 const filterViewModel = new FilterViewModel();
@@ -57,6 +60,6 @@ const pagerInitialData = pagerViewModel.getData();
     <FilterViewSwitcher client:load initialData={filterInitialData} />
     <ProductViewSwitcher client:load initialData={productInitialData} />
     <Banner />
-    <Pager client:load initialData={pagerInitialData}/>
+    <Pager client:load initialData={pagerInitialData} />
   </body>
 </html>
