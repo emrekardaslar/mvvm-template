@@ -1,6 +1,7 @@
 import type { Product } from "../models/product";
+import type { SSRResponse } from "../models/ssr";
 
-const mockData = {
+const mockData: SSRResponse = {
   en: {
     products: [
       { id: 1, name: "Laptop", category: "Electronics" },
@@ -34,6 +35,12 @@ const mockData = {
     ],
     filters: ["الكل", "إلكترونيات", "ملابس", "مطبخ"],
   },
+  banner: {
+    title: "Static Banner",
+    subtitle: "Static component that wont rerender",
+    backgroundColor: "#0078D4",
+    textColor: "#FFFFFF",
+  }
 };
 
 const api = {
@@ -64,6 +71,14 @@ const api = {
       }, 300); // Simulate network delay
     });
   },
+
+  fetchSSRData: (): Promise<SSRResponse> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(mockData);
+      }, 300); // Simulate network delay
+    })
+  }
 };
 
 export default api;

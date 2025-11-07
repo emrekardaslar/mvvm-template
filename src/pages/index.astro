@@ -21,8 +21,13 @@ const languageViewModel = new LanguageViewModel();
 const languageInitialData = languageViewModel.getData();
 const defaultLang = languageInitialData.currentLanguage;
 
+// SSR Response
+const ssrData = await api.fetchSSRData();
 // Products (SSR)
-const initialProducts = await api.fetchProducts(defaultLang, "All");
+// const initialProducts = await api.fetchProducts(defaultLang, "All");
+
+//Get initialProducts from SSR response
+const initialProducts = ssrData[defaultLang].products;
 const productViewModel = new ProductViewModel({
   products: initialProducts,
   isLoading: false,
@@ -30,8 +35,8 @@ const productViewModel = new ProductViewModel({
 const productInitialData = productViewModel.getData();
 
 //Filters (SSR)
-//const ssrFilters = await api.fetchFilters();
-//const filterViewModel = new FilterViewModel({ filters: ssrFilters });
+/* const ssrFilters = ssrData[defaultLang].filters;
+const filterViewModel = new FilterViewModel({ filters: ssrFilters }); */
 
 // Filters (No SSR data, will be fetched on client)
 const filterViewModel = new FilterViewModel();
@@ -40,6 +45,9 @@ const filterInitialData = filterViewModel.getData();
 //Pager
 const pagerViewModel = new PagerViewModel();
 const pagerInitialData = pagerViewModel.getData();
+
+//Banner
+const bannerData = ssrData.banner;
 ---
 
 <html lang="en">
@@ -59,7 +67,7 @@ const pagerInitialData = pagerViewModel.getData();
     <hr />
     <FilterViewSwitcher client:load initialData={filterInitialData} />
     <ProductViewSwitcher client:load initialData={productInitialData} />
-    <Banner />
+    <Banner {...bannerData} />
     <Pager client:load initialData={pagerInitialData} />
   </body>
 </html>
