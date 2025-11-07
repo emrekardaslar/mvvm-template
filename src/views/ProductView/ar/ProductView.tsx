@@ -9,7 +9,7 @@ const ProductView: React.FC<ProductViewProps> = ({ data, viewModel }) => {
       <ul className="product-list">
         {data.products.map((product) => (
           <li key={product.id} className="product-item">
-            {product.name} ({product.category})
+            {product.name} <span dir="rlt">({product.category})</span>
           </li>
         ))}
       </ul>
