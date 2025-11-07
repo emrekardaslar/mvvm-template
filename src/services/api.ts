@@ -39,7 +39,8 @@ const mockData = {
 const api = {
   fetchProducts: (
     lang: "en" | "tr" | "ar" = "en",
-    filter: string | null = "All"
+    filter: string | null = "All",
+    pager: number = 1
   ): Promise<Product[]> => {
     console.log(`Fetching products with lang: ${lang} and filter: ${filter}`);
     return new Promise((resolve) => {

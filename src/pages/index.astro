@@ -8,6 +8,8 @@ import CounterViewSwitcher from "../views/CounterView/CounterViewSwitcher";
 import ProductViewSwitcher from "../views/ProductView/ProductViewSwitcher";
 import FilterViewSwitcher from "../views/FilterView/FilterViewSwitcher";
 import { LanguageViewModel } from "../viewmodels/LanguageViewModel";
+import Pager from "../views/PagerView/Pager";
+import { PagerViewModel } from "../viewmodels/PagerViewModel";
 
 // Counter
 const counterViewModel = new CounterViewModel();
@@ -29,6 +31,10 @@ const productInitialData = productViewModel.getData();
 // Filters (No SSR data, will be fetched on client)
 const filterViewModel = new FilterViewModel();
 const filterInitialData = filterViewModel.getData();
+
+//Pager
+const pagerViewModel = new PagerViewModel();
+const pagerInitialData = pagerViewModel.getData();
 ---
 
 <html lang="en">
@@ -48,5 +54,6 @@ const filterInitialData = filterViewModel.getData();
     <hr />
     <FilterViewSwitcher client:load initialData={filterInitialData} />
     <ProductViewSwitcher client:load initialData={productInitialData} />
+    <Pager client:load initialData={pagerInitialData}/>
   </body>
 </html>

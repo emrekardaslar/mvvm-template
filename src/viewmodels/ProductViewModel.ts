@@ -5,6 +5,7 @@ import type { ProductData } from "../model/product";
 
 export class ProductViewModel extends BaseViewModel<ProductData> {
   private currentFilter: string | null = "All";
+  private currentPage: number = 1;
 
   constructor(initialData?: Partial<ProductData>) {
     super({
@@ -17,6 +18,7 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
   public override onMount() {
     eventBus.on("filterChanged", this.onFilterChanged);
     eventBus.on("languageChanged", this.onLanguageChanged);
+    eventBus.on("pageChanged", this.onPageChanged);
   }
 
   public override onUnmount() {
@@ -37,11 +39,16 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
     // so we can just rely on that to trigger the product fetch.
   };
 
+  private onPageChanged = (payload: { page: number }) => {    
+    this.fetchProducts()
+  }
+
   private async fetchProducts() {
     this.setData({ isLoading: true });
     const products = await api.fetchProducts(
       this.data.currentLang,
-      this.currentFilter
+      this.currentFilter,
+      this.currentPage
     );
     this.setData({ products, isLoading: false });
   }
