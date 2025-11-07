@@ -32,7 +32,7 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
 
   private onLanguageChanged = (payload: { lang: "en" | "tr" | "ar" }) => {
     this.setData({ currentLang: payload.lang });
-    this.setData({currentPage: 1});
+    this.setData({ currentPage: 1 });
   };
 
   private onPageChanged = (payload: { page: number }) => {
