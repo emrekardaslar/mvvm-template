@@ -19,6 +19,7 @@ export class PagerViewModel extends BaseViewModel<PagerData> {
 
     public override onUnmount() {
         eventBus.off("filterChanged", this.onFilterChanged);
+        eventBus.off("languageChanged", this.onLanguageChanged);
     }
 
     private onFilterChanged = (payload: { filter: string }) => {        
