@@ -31,10 +31,11 @@ describe('ProductViewModel', () => {
   });
 
   it('should initialize with empty products, isLoading false, currentFilter "All", and currentPage 1', () => {
-    expect(viewModel.getData().products).toEqual([]);
-    expect(viewModel.getData().isLoading).toBe(false);
-    expect(viewModel.getData().currentFilter).toBe("All");
-    expect(viewModel.getData().currentPage).toBe(1);
+    const data = viewModel.getData();
+    expect(data.products).toEqual([]);
+    expect(data.isLoading).toBe(false);
+    expect(data.currentFilter).toBe("All");
+    expect(data.currentPage).toBe(1);
   });
 
   it('should fetch products when filter changes', async () => {
@@ -42,8 +43,10 @@ describe('ProductViewModel', () => {
     await vi.runAllTimersAsync();
 
     expect(api.fetchProducts).toHaveBeenCalledWith('en', 'Category A', 1);
-    expect(viewModel.getData().products).toEqual([{ id: 1, name: 'Product 1', category: 'Category A' }]);
-    expect(viewModel.getData().currentFilter).toBe('Category A');
+    const data = viewModel.getData();
+    expect(data.products).toEqual([{ id: 1, name: 'Product 1', category: 'Category A' }]);
+    expect(data.currentFilter).toBe('Category A');
+    expect(data.currentLang).toBe('en');
   });
 
   it('should set isLoading to true while fetching products', async () => {
