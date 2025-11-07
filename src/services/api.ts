@@ -55,7 +55,7 @@ const api = {
     filter: string | null = "All",
     pager: number = 1
   ): Promise<Product[]> => {
-    console.log(`Fetching products with lang: ${lang} and filter: ${filter}`);
+    console.log(`Fetching products with lang: ${lang} and filter: ${filter}, page: ${pager}`);
     return new Promise((resolve) => {
       setTimeout(() => {
         const data = mockData[lang];
