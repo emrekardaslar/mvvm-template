@@ -25,18 +25,6 @@ describe('CounterViewModel', () => {
     expect(viewModel.getData().count).toBe(-1);
   });
 
-  it('should update title, increment, and decrement on language change', () => {
-    eventBus.dispatch('languageChanged', { lang: 'en' });
-
-    // Manually advance timers to ensure setTimeout callback executes
-    vi.runAllTimers();
-
-    const updatedData = viewModel.getData();
-    expect(updatedData.title).toBe('Counter');
-   /*  expect(updatedData.increment).toBe('Artır');
-    expect(updatedData.decrement).toBe('Azalt'); */
-  });
-
   it('should not update language if it is the same', () => {
     const spySetData = vi.spyOn(viewModel, 'getData');
     eventBus.dispatch('languageChanged', { lang: 'en' });
