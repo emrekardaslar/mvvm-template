@@ -38,6 +38,7 @@ This document outlines the proposed architecture for our project, integrating th
 *   **Implementation:**
     *   React Components.
     *   Receives `initialData` as a prop and instantiates its own ViewModel on the client-side.
+    *   Utilizes dedicated external CSS files for styling, imported directly into the component.
 
 ### 4. ViewModel
 
@@ -84,6 +85,14 @@ This document outlines the proposed architecture for our project, integrating th
 *   **Implementation:**
     *   A generic React component (`LangViewSwitcher`) located in `src/components/LangViewSwitcher.tsx`.
 
+### 4.4. Styling
+
+*   **Purpose:** To provide a consistent and maintainable approach to styling React components.
+*   **Implementation:**
+    *   Each view and component has its own dedicated CSS file (e.g., `ProductList.css`, `Filter.css`, `Counter.css`, `LanguageSelector.css`, `Banner.css`).
+    *   These CSS files are imported directly into their respective React components.
+    *   Class names are used to apply styles, avoiding inline styles where possible, except for dynamic overrides (e.g., `Banner` component).
+
 ### 5. Server-Side Rendering (SSR) with Astro
 
 *   **Purpose:** To generate the initial HTML content of the page on the server before sending it to the client.
@@ -107,7 +116,7 @@ A simple example to demonstrate the basic MVVM flow.
 A more advanced example demonstrating client-side data fetching and inter-ViewModel communication.
 
 *   **`FilterViewModel`:** If its initial data is empty, it fetches the available filters from the `api.ts` service in its `onMount` method. When a filter is selected, it updates its own state and dispatches a `filterChanged` event on the global `eventBus`.
-*   **`ProductViewModel`:** Subscribes to the `filterChanged` event on the `eventBus`. When the event is received, it fetches a new list of products from the `api.ts` service.
+*   **`ProductViewModel`:** Subscribes to the `filterChanged` event on the `eventBus`. When the event is received, it fetches a new list of products from the `api.ts` service. During loading, the product list is visually grayed out instead of displaying a "Loading..." message. Product categories are rendered with explicit left-to-right direction to prevent display issues in right-to-left language contexts.
 *   **`index.astro`:** Renders the initial product list on the server. The filters are fetched on the client, demonstrating a hybrid SSR approach.
 
 ## Data Flow Overview
