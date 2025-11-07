@@ -1,7 +1,7 @@
 import React from "react";
 import { ProductViewModel } from "../../viewmodels/ProductViewModel";
 import LangViewSwitcher from "../../components/LangViewSwitcher";
-import type { Product } from "../../model/product";
+import type { Product } from "../../models/product";
 
 interface ProductViewSwitcherProps {
   initialData: {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useViewModel } from '../../hooks/useViewModel';
 import { PagerViewModel } from '../../viewmodels/PagerViewModel';
-import type { PagerViewProps } from '../../model/pager';
+import type { PagerViewProps } from '../../models/pager';
 
 const Pager: React.FC<PagerViewProps> = ({
     initialData

@@ -1,7 +1,7 @@
 import { BaseViewModel } from "./BaseViewModel";
 import api from "../services/api";
 import eventBus from "../services/eventBus";
-import type { FilterData } from "../model/filter";
+import type { FilterData } from "../models/filter";
 
 export class FilterViewModel extends BaseViewModel<FilterData> {
   constructor(initialData?: Partial<FilterData>) {

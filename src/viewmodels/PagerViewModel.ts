@@ -1,4 +1,4 @@
-import type { PagerData } from "../model/pager";
+import type { PagerData } from "../models/pager";
 import eventBus from "../services/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 

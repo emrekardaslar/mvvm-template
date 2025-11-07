@@ -1,4 +1,4 @@
-import type { Product } from "../model/product";
+import type { Product } from "../models/product";
 
 const mockData = {
   en: {

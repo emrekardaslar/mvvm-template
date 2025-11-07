@@ -1,5 +1,5 @@
 import React from "react";
-import type { ProductViewProps } from "../../../model/product";
+import type { ProductViewProps } from "../../../models/product";
 
 const ProductView: React.FC<ProductViewProps> = ({ data, viewModel }) => {
   return (

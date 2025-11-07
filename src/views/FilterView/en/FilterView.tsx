@@ -1,5 +1,5 @@
 import React from "react";
-import type { FilterViewProps } from "../../../model/filter";
+import type { FilterViewProps } from "../../../models/filter";
 
 const FilterView: React.FC<FilterViewProps> = ({ data, viewModel }) => {
   const onFilterClick = (filter: string) => {

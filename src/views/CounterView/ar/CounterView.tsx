@@ -1,5 +1,5 @@
 import React from "react";
-import type { CounterViewProps } from "../../../model/counter";
+import type { CounterViewProps } from "../../../models/counter";
 
 const CounterView: React.FC<CounterViewProps> = ({ data, viewModel }) => {
   if (data.isLoading) {

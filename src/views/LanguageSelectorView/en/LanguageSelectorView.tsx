@@ -1,5 +1,5 @@
 import React from "react";
-import type { LanguageSelectorViewProps } from "../../../model/language";
+import type { LanguageSelectorViewProps } from "../../../models/language";
 
 const LanguageSelectorView: React.FC<LanguageSelectorViewProps> = ({
   data,

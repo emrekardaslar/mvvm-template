@@ -1,6 +1,6 @@
 import { BaseViewModel } from "./BaseViewModel";
 import eventBus from "../services/eventBus";
-import type { CounterData } from "../model/counter";
+import type { CounterData } from "../models/counter";
 
 export class CounterViewModel extends BaseViewModel<CounterData> {
   constructor(initialData?: Partial<CounterData>) {
