@@ -1,21 +1,18 @@
 import React from "react";
 import type { ProductViewProps } from "../../../models/product";
+import "../ProductList.css";
 
 const ProductView: React.FC<ProductViewProps> = ({ data, viewModel }) => {
   return (
-    <div>
+    <div className={`product-list-container ${data.isLoading ? 'loading' : ''}`}>
       <h3>Ürünler</h3>
-      {data.isLoading ? (
-        <p>Yükleniyor...</p>
-      ) : (
-        <ul>
-          {data.products.map((product) => (
-            <li key={product.id}>
-              {product.name} ({product.category})
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul className="product-list">
+        {data.products.map((product) => (
+          <li key={product.id} className="product-item">
+            {product.name} ({product.category})
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
