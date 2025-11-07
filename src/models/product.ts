@@ -9,6 +9,8 @@ export interface ProductData {
   products: Product[];
   isLoading: boolean;
   currentLang: "en" | "tr" | "ar";
+  currentFilter: string | null;
+  currentPage: number;
 }
 
 export interface Product {

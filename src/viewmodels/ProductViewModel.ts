@@ -4,14 +4,13 @@ import eventBus from "../services/eventBus";
 import type { ProductData } from "../models/product";
 
 export class ProductViewModel extends BaseViewModel<ProductData> {
-  private currentFilter: string | null = "All";
-  private currentPage: number = 1;
-
   constructor(initialData?: Partial<ProductData>) {
     super({
       products: initialData?.products || [],
       isLoading: initialData?.isLoading || false,
       currentLang: initialData?.currentLang || "en",
+      currentFilter: initialData?.currentFilter || "All",
+      currentPage: initialData?.currentPage || 1,
     });
   }
 
@@ -27,7 +26,7 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
   }
 
   private onFilterChanged = (payload: { filter: string }) => {
-    this.currentFilter = payload.filter;
+    this.setData({ currentFilter: payload.filter });
     this.fetchProducts();
   };
 
@@ -39,16 +38,17 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
     // so we can just rely on that to trigger the product fetch.
   };
 
-  private onPageChanged = (payload: { page: number }) => {    
-    this.fetchProducts()
-  }
+  private onPageChanged = (payload: { page: number }) => {
+    this.setData({ currentPage: payload.page });
+    this.fetchProducts();
+  };
 
   private async fetchProducts() {
     this.setData({ isLoading: true });
     const products = await api.fetchProducts(
       this.data.currentLang,
-      this.currentFilter,
-      this.currentPage
+      this.data.currentFilter,
+      this.data.currentPage
     );
     this.setData({ products, isLoading: false });
   }
