@@ -32,10 +32,6 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
 
   private onLanguageChanged = (payload: { lang: "en" | "tr" | "ar" }) => {
     this.setData({ currentLang: payload.lang });
-    this.fetchProducts();
-    // When language changes, we might need to refetch products with the current filter
-    // The filter component will also refetch and send a new 'filterChanged' event,
-    // so we can just rely on that to trigger the product fetch.
   };
 
   private onPageChanged = (payload: { page: number }) => {
