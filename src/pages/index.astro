@@ -10,6 +10,8 @@ import FilterViewSwitcher from "../views/FilterView/FilterViewSwitcher";
 import { LanguageViewModel } from "../viewmodels/LanguageViewModel";
 import Pager from "../views/PagerView/Pager";
 import { PagerViewModel } from "../viewmodels/PagerViewModel";
+import { Banner } from "../components/Banner";
+
 
 // Counter
 const counterViewModel = new CounterViewModel();
@@ -54,6 +56,7 @@ const pagerInitialData = pagerViewModel.getData();
     <hr />
     <FilterViewSwitcher client:load initialData={filterInitialData} />
     <ProductViewSwitcher client:load initialData={productInitialData} />
+    <Banner />
     <Pager client:load initialData={pagerInitialData}/>
   </body>
 </html>
