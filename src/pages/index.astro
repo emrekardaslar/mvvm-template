@@ -48,6 +48,7 @@ const pagerInitialData = pagerViewModel.getData();
 
 //Banner
 const bannerData = ssrData.banner;
+const banner2Data = ssrData.banner2;
 ---
 
 <html lang="en">
@@ -68,6 +69,9 @@ const bannerData = ssrData.banner;
     <FilterViewSwitcher client:load initialData={filterInitialData} />
     <ProductViewSwitcher client:load initialData={productInitialData} />
     <Banner {...bannerData} />
+    <br />
+    <Banner {...banner2Data} />
+    <br />
     <Pager client:load initialData={pagerInitialData} />
   </body>
 </html>

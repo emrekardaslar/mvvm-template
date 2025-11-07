@@ -29,4 +29,5 @@ export interface SSRResponse {
     tr: LocalizedData;
     ar: LocalizedData;
     banner: BannerConfig;
+    banner2: BannerConfig;
 }

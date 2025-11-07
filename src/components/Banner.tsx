@@ -1,4 +1,5 @@
 import React from "react";
+import "./Banner.css";
 
 interface BannerProps {
     title?: string;
@@ -10,21 +11,18 @@ interface BannerProps {
 export const Banner: React.FC<BannerProps> = ({
     title = "Static Banner",
     subtitle = "Static component that wont rerender",
-    backgroundColor = "#0078D4",
-    textColor = "#FFFFFF",
+    backgroundColor,
+    textColor,
 }) => {
+    const bannerStyle = {
+        backgroundColor: backgroundColor || undefined,
+        color: textColor || undefined,
+    };
+
     return (
-        <div
-            style={{
-                backgroundColor,
-                color: textColor,
-                padding: "2rem",
-                textAlign: "center",
-                borderRadius: "8px",
-            }}
-        >
-            <h1 style={{ margin: 0 }}>{title}</h1>
-            {subtitle && <p style={{ marginTop: "0.5rem" }}>{subtitle}</p>}
+        <div className="banner" style={bannerStyle}>
+            <h1>{title}</h1>
+            {subtitle && <p>{subtitle}</p>}
         </div>
     );
 };
