@@ -37,8 +37,10 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
     eventBus.dispatch("filterChanged", { filter: filters[0] });
   };
 
-  private selectFilter = (payload: { filter: string }) => {
-    this.setData({ selectedFilter: payload.filter });
+  private selectFilter = async (payload: { filter: string }) => {
+    const filters = await api.fetchFilters(this.data.currentLang); //TODO: burası böyle mi olmalı emin değilim.
+    console.log(`selected ${payload.filter} filter, fetched filters`, filters);
+    this.setData({ selectedFilter: payload.filter, filters: filters });
     eventBus.dispatch("filterChanged", { filter: payload.filter });
   };
 }

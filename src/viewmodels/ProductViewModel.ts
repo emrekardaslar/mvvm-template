@@ -45,7 +45,7 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
     const products = await api.fetchProducts(
       this.data.currentLang,
       this.data.currentFilter,
-      this.data.currentPage
+      this.data.currentPage //TODO
     );
     this.setData({ products, isLoading: false });
   }

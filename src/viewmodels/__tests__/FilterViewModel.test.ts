@@ -31,14 +31,16 @@ describe('FilterViewModel', () => {
     expect(viewModel.getData().selectedFilter).toBe('All');
   });
 
-  it('should select a filter', () => {
+  it('should select a filter', async () => {
     viewModel.runAttachedFunction('selectFilter', { filter: 'Category A' });
+    await vi.runAllTimersAsync();
     expect(viewModel.getData().selectedFilter).toBe('Category A');
   });
 
-  it('should dispatch filterChanged event when a filter is selected', () => {
+  it('should dispatch filterChanged event when a filter is selected', async () => {
     const spy = vi.spyOn(eventBus, 'dispatch');
     viewModel.runAttachedFunction('selectFilter', { filter: 'Category B' });
+    await vi.runAllTimersAsync();
     expect(spy).toHaveBeenCalledWith('filterChanged', { filter: 'Category B' });
   });
 
