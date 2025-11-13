@@ -1,5 +1,5 @@
 import React from "react";
-import LangViewSwitcher from "../../components/LangViewSwitcher";
+import LangViewSwitcher from "../../services/LangViewSwitcher";
 import { FilterViewModel } from "../../viewmodels/FilterViewModel";
 
 interface FilterViewSwitcherProps {

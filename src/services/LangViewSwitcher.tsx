@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { viewMap } from "../services/viewMap";
+import { viewMap } from "./viewMap";
 import { BaseViewModel } from "../viewmodels/BaseViewModel";
 import { useViewModel } from "../hooks/useViewModel";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { ProductViewModel } from "../../viewmodels/ProductViewModel";
-import LangViewSwitcher from "../../components/LangViewSwitcher";
+import LangViewSwitcher from "../../services/LangViewSwitcher";
 import type { Product } from "../../models/product";
 
 interface ProductViewSwitcherProps {
