@@ -18,7 +18,7 @@ const LanguageSelectorView: React.FC<LanguageSelectorViewProps> = ({
           <button
             key={lang}
             onClick={() => onLanguageClick(lang as "en" | "tr" | "ar")}
-            className={`language-selector-button ${data.currentLanguage === lang ? "selected" : ""}`}>
+            className={`language-selector-button ${data.currentLang === lang ? "selected" : ""}`}>
             {lang.toUpperCase()}
           </button>
         ))}

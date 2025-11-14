@@ -1,17 +1,29 @@
-import React, { useState } from "react";
-import { useViewModel } from "../../hooks/useViewModel";
-import { viewMap } from "../../services/viewMap";
+import React from "react";
 import { LanguageViewModel } from "../../viewmodels/LanguageViewModel";
+import LangViewSwitcher from "../../services/LangViewSwitcher";
+import type { LanguageData } from "../../models/language";
 
-const LanguageSelectorViewSwitcher: React.FC = () => {
+interface LanguageSelectorViewSwitcherProps {
+  initialData?: LanguageData;
+}
 
-  const [viewModel] = useState(() => new LanguageViewModel());
+const LanguageSelectorViewSwitcher: React.FC<LanguageSelectorViewSwitcherProps> = ({
+  initialData,
+}) => {
+  // Ensure initialData is always a LanguageData object, even if not provided by props.
+  // This satisfies LangViewSwitcher's requirement for a non-optional initialData prop.
+  const resolvedInitialData: LanguageData = initialData || {
+    availableLanguages: ['en', 'tr', 'ar'], // Default values matching LanguageViewModel's constructor
+    currentLang: 'en',
+  };
 
-  const data = useViewModel(viewModel);
-
-  const View = viewMap("LanguageSelectorView", data.currentLanguage);
-
-  return <View data={data} viewModel={viewModel} />;
+  return (
+    <LangViewSwitcher
+      viewName="LanguageSelectorView"
+      ViewModelClass={LanguageViewModel}
+      initialData={resolvedInitialData}
+    />
+  );
 };
 
 export default LanguageSelectorViewSwitcher;

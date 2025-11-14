@@ -1,23 +1,19 @@
 import { BaseViewModel } from './BaseViewModel';
 import eventBus from '../services/eventBus';
-
-export interface LanguageData {
-    availableLanguages: string[];
-    currentLanguage: 'en' | 'tr' | 'ar';
-}
+import type { LanguageData } from '../models/language';
 
 export class LanguageViewModel extends BaseViewModel<LanguageData> {
-    constructor() {
-        super({ 
-            availableLanguages: ['en', 'tr', 'ar'],
-            currentLanguage: 'en',
+    constructor(initialData?: Partial<LanguageData>) {
+        super({
+            availableLanguages: initialData?.availableLanguages || ['en', 'tr', 'ar'],
+            currentLang: initialData?.currentLang || 'en',
         });
         this.registerEvent('changeLanguage', this.changeLanguage);
     }
 
     private changeLanguage = (payload: { lang: 'en' | 'tr' | 'ar' }) => {
-        if (this.data.currentLanguage !== payload.lang) {
-            this.setData({ currentLanguage: payload.lang });
+        if (this.data.currentLang !== payload.lang) {
+            this.setData({ currentLang: payload.lang });
             eventBus.dispatch('languageChanged', { lang: payload.lang });
         }
     };

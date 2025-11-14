@@ -12,6 +12,10 @@ import { Banner } from "../views/BannerView/Banner";
 const ssrData = await api.fetchSSRData();
 // Language
 const defaultLang = "en";
+const initialLangData = {
+  availableLanguages: ["en", "tr", "ar"],
+  currentLang: "en",
+};
 // Counter
 const counterInitialData = {
   count: 0,
@@ -51,7 +55,7 @@ const banner2Data = ssrData.banner2;
   <body>
     <h1>MVVM</h1>
     <hr />
-    <LanguageSelectorViewSwitcher client:load />
+    <LanguageSelectorViewSwitcher client:load initialData={initialLangData} />
     <hr />
     <CounterViewSwitcher client:load initialData={counterInitialData} />
     <hr />
