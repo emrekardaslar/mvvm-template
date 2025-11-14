@@ -1,50 +1,39 @@
 ---
-import { CounterViewModel } from "../viewmodels/CounterViewModel";
-import { ProductViewModel } from "../viewmodels/ProductViewModel";
-import { FilterViewModel } from "../viewmodels/FilterViewModel";
 import LanguageSelectorViewSwitcher from "../views/LanguageSelectorView/LanguageSelectorViewSwitcher";
 import api from "../services/api";
 import CounterViewSwitcher from "../views/CounterView/CounterViewSwitcher";
 import ProductViewSwitcher from "../views/ProductView/ProductViewSwitcher";
 import FilterViewSwitcher from "../views/FilterView/FilterViewSwitcher";
-import { LanguageViewModel } from "../viewmodels/LanguageViewModel";
 import Pager from "../views/PagerView/Pager";
-import { PagerViewModel } from "../viewmodels/PagerViewModel";
 import { Banner } from "../views/BannerView/Banner";
-
-// Counter
-const counterViewModel = new CounterViewModel();
-const counterInitialData = counterViewModel.getData();
-
-// Language
-const languageViewModel = new LanguageViewModel();
-const languageInitialData = languageViewModel.getData();
-const defaultLang = languageInitialData.currentLanguage;
-
+/* import Hpl from "/Users/emrekardaslar/Desktop/Workspace/Self/component-library/dist/esm/components/Hpl/Hpl.js";
+ */
 // SSR Response
 const ssrData = await api.fetchSSRData();
-// Products (SSR)
-// const initialProducts = await api.fetchProducts(defaultLang, "All");
-
-//Get initialProducts from SSR response
-const initialProducts = ssrData[defaultLang].products;
-const productViewModel = new ProductViewModel({
-  products: initialProducts,
+// Language
+const defaultLang = "en";
+// Counter
+const counterInitialData = {
+  count: 0,
   isLoading: false,
-});
-const productInitialData = productViewModel.getData();
+  currentLang: defaultLang,
+};
+
+// Products (SSR)
+const productInitialData = {
+  products: ssrData[defaultLang].products,
+  isLoading: false,
+};
 
 //Filters (SSR)
-/* const ssrFilters = ssrData[defaultLang].filters;
-const filterViewModel = new FilterViewModel({ filters: ssrFilters }); */
-
-// Filters (No SSR data, will be fetched on client)
-const filterViewModel = new FilterViewModel();
-const filterInitialData = filterViewModel.getData();
+const initialFilters = {
+  filters: ssrData[defaultLang].filters,
+  selectedFilter: null,
+  currentLang: defaultLang,
+};
 
 //Pager
-const pagerViewModel = new PagerViewModel();
-const pagerInitialData = pagerViewModel.getData();
+const pagerInitialData = { page: 1, totalPages: 32 };
 
 //Banner
 const bannerData = ssrData.banner;
@@ -66,13 +55,18 @@ const banner2Data = ssrData.banner2;
     <hr />
     <CounterViewSwitcher client:load initialData={counterInitialData} />
     <hr />
-    <FilterViewSwitcher client:load initialData={filterInitialData} />
+    <FilterViewSwitcher client:load initialData={initialFilters} />
     <ProductViewSwitcher client:load initialData={productInitialData} />
     <Banner {...bannerData} />
     <br />
     <Banner {...banner2Data} />
     <br />
+
     <Pager client:load initialData={pagerInitialData} />
-    <br /> <br/>
+    <!-- <Hpl client:load />
+    <Hpl client:load />
+    <Hpl client:load /> -->
+    <br />
+    <br />
   </body>
 </html>
