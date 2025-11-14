@@ -8,7 +8,7 @@ const Pager: React.FC<PagerViewProps> = ({
     initialData
 }) =>
      {
-    const [viewModel] = useState(() => new PagerViewModel());
+    const [viewModel] = useState(() => new PagerViewModel(initialData));
     const { page, totalPages } = useViewModel(viewModel);
     
     return (
