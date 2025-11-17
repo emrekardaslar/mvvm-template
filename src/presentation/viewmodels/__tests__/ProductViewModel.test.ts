@@ -5,7 +5,7 @@ import eventBus from '../../../services/eventBus';
 
 
 // Mock the api service
-vi.mock('../../services/api', () => ({
+vi.mock('../../../services/api', () => ({
   default: {
     fetchProducts: vi.fn((lang, filter, page) => {
       if (lang === 'en') {

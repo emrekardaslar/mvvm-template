@@ -3,7 +3,7 @@ import { FilterViewModel } from '../FilterViewModel';
 import eventBus from '../../../services/eventBus';
 
 // Mock the api service
-vi.mock('../../services/api', () => ({
+vi.mock('../../../services/api', () => ({
   default: {
     fetchFilters: vi.fn((lang) => {
       if (lang === 'en') return ['All', 'Category A', 'Category B'];
