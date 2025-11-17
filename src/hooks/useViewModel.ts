@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { BaseViewModel } from '../viewmodels/BaseViewModel';
+import type { BaseViewModel } from '../presentation/viewmodels/BaseViewModel';
+
 
 export function useViewModel<TData>(viewModel: BaseViewModel<TData>) {
     const [data, setData] = useState(viewModel.getData());

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { viewMap } from "./viewMap";
-import { BaseViewModel } from "../viewmodels/BaseViewModel";
+
 import { useViewModel } from "../hooks/useViewModel";
+import type { BaseViewModel } from "../presentation/viewmodels/BaseViewModel";
 
 interface LangViewSwitcherProps<
   TData extends { currentLang?: "en" | "tr" | "ar" },

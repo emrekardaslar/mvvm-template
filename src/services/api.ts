@@ -1,5 +1,5 @@
-import type { Product } from "../models/product";
-import type { SSRResponse } from "../models/ssr";
+import type { Product } from "../domain/models/product";
+import type { SSRResponse } from "../domain/models/ssr";
 
 const mockData: SSRResponse = {
   en: {
