@@ -25,6 +25,6 @@ export const prTexts = {
         en: "Description",
         ar: "لج",
         tr: "Ürün açıklaması"
-    }
+    },
 
 }
