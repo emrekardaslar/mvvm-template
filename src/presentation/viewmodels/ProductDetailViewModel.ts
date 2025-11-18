@@ -11,21 +11,19 @@ export interface ProductDetailData {
 }
 
 export class ProductDetailViewModel extends BaseViewModel<ProductDetailData> {
-  private productId: number;
-
-  constructor(initialData?: Partial<ProductDetailData>, productId?: number) {
+  constructor(initialData?: Partial<ProductDetailData>) {
     super({
-      product: undefined,
-      isLoading: true,
+      product: initialData?.product || undefined,
+      isLoading: initialData?.isLoading || false,
       currentLang: initialData?.currentLang || "en",
     });
-    this.productId = productId || 0; // Default or provided product ID
   }
 
   public override async onMount() {
     eventBus.on("languageChanged", this.onLanguageChanged);
-    if (this.productId) {
-      await this.fetchProduct(this.productId, this.data.currentLang);
+    const productId = this?.data?.product?.id;
+    if (productId) {
+      await this.fetchProduct(productId, this.data.currentLang);
     } else {
       this.setData({ isLoading: false });
     }
@@ -37,8 +35,9 @@ export class ProductDetailViewModel extends BaseViewModel<ProductDetailData> {
 
   private onLanguageChanged = async (payload: { lang: "en" | "tr" | "ar" }) => {
     this.setData({ currentLang: payload.lang });
-    if (this.productId) {
-      await this.fetchProduct(this.productId, payload.lang);
+    const productId = this.data.product?.id;
+    if (productId) {
+      await this.fetchProduct(productId, payload.lang);
     }
   };
 

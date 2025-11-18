@@ -1,5 +1,7 @@
 ---
+import type { LanguageData } from "../../domain/models/language";
 import { ProductDetailViewModel } from "../../presentation/viewmodels/ProductDetailViewModel";
+import LanguageSelectorViewSwitcher from "../../presentation/views/LanguageSelectorView/LanguageSelectorViewSwitcher";
 import ProductDetailView from "../../presentation/views/ProductDetailView/ProductDetailView";
 import { prTexts } from "../../presentation/views/ProductDetailView/productTexts";
 
@@ -9,9 +11,13 @@ const urlParams = Astro.url.searchParams;
 const currentLang: any = urlParams.get("lang") || "en";
 const productId = Number(id);
 const productDetailViewModel = new ProductDetailViewModel(
-  { currentLang },
-  productId,
+  { currentLang }
 );
+
+const initialLangData: LanguageData = {
+  availableLanguages: ["en", "tr", "ar"],
+  currentLang: currentLang,
+};
 
 // Fetch initial data for SSR
 await productDetailViewModel.fetchProduct(productId, currentLang); // Assuming 'en' for SSR initial fetch
@@ -31,10 +37,10 @@ const h1Title = prTexts.title[currentLang];
   <body>
     <h1>{h1Title}</h1>
     <hr />
+    <LanguageSelectorViewSwitcher client:load initialData={initialLangData} />
     <ProductDetailView
       client:load
-      data={initialData}
-      viewModel={productDetailViewModel}
+      initialData={initialData}
     />
   </body>
 </html>

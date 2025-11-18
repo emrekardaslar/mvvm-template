@@ -1,13 +1,16 @@
-import React from "react";
-import type { ProductDetailData, ProductDetailViewModel } from "../../viewmodels/ProductDetailViewModel";
+import React, { useState } from "react";
+import { ProductDetailViewModel, type ProductDetailData } from "../../viewmodels/ProductDetailViewModel";
 import { prTexts } from "./productTexts";
+import { useViewModel } from "../../../hooks/useViewModel";
 
 interface ProductDetailViewProps {
-  data: ProductDetailData;
-  viewModel: ProductDetailViewModel;
+  initialData: ProductDetailData;
 }
 
-const ProductDetailView: React.FC<ProductDetailViewProps> = ({ data, viewModel }) => {    
+const ProductDetailView: React.FC<ProductDetailViewProps> = ({ initialData }) => { 
+  const [viewModel] = useState(() => new ProductDetailViewModel(initialData));
+  const data = useViewModel(viewModel);   
+
   if (!data.product) {
     return <div>{prTexts.notFound[data.currentLang]}</div>;
   }
