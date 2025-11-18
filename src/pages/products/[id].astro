@@ -1,0 +1,36 @@
+---
+import { ProductDetailViewModel } from "../../presentation/viewmodels/ProductDetailViewModel";
+import ProductDetailView from "../../presentation/views/ProductDetailView/ProductDetailView";
+
+// Extract the product ID from the URL
+const { id } = Astro.params;
+const urlParams = Astro.url.searchParams;
+const currentLang: any = urlParams.get("lang") || "en";
+const productId = Number(id);
+const productDetailViewModel = new ProductDetailViewModel({currentLang}, productId);
+
+// Fetch initial data for SSR
+await productDetailViewModel.fetchProduct(productId, currentLang); // Assuming 'en' for SSR initial fetch
+const initialData = productDetailViewModel.getData();
+
+const h1Title = "Product Detail Page";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Product Detail - {initialData.product?.name || "Loading..."}</title>
+  </head>
+  <body>
+    <h1>{h1Title}</h1>
+    <hr />
+    <ProductDetailView
+      client:load
+      data={initialData}
+      viewModel={productDetailViewModel}
+    />
+  </body>
+</html>

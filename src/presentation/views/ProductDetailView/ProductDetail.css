@@ -1,0 +1,26 @@
+.product-detail-container {
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-detail-container h1 {
+  font-size: 2.5em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.product-detail-container p {
+  font-size: 1.1em;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.product-detail-container p strong {
+  color: #333;
+}
