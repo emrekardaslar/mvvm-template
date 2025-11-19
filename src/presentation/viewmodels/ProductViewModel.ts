@@ -1,5 +1,5 @@
 import type { ProductData } from "../../domain/models/product";
-import api from "../../services/api";
+import productListRepository from "../../data/repositories/productListRepository";
 import eventBus from "../../services/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 
@@ -43,7 +43,7 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
 
   private async fetchProducts() {
     this.setData({ isLoading: true });
-    const products = await api.fetchProducts(
+    const products = await productListRepository.getProducts(
       this.data.currentLang,
       this.data.currentFilter,
       this.data.currentPage //TODO

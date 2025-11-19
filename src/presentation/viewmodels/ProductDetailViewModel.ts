@@ -1,6 +1,6 @@
 
 import type { Product } from "../../domain/models/product";
-import api from "../../services/api";
+import productDetailRepository from "../../data/repositories/productDetailRepository";
 import eventBus from "../../services/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 
@@ -43,7 +43,7 @@ export class ProductDetailViewModel extends BaseViewModel<ProductDetailData> {
 
   public async fetchProduct(id: number, lang: "en" | "tr" | "ar") {
     this.setData({ isLoading: true });
-    const product = await api.fetchProductDetail(id, lang);
+    const product = await productDetailRepository.getProductDetail(id, lang);
     this.setData({ product, isLoading: false });
   }
 }

@@ -1,5 +1,5 @@
 import type { FilterData } from "../../domain/models/filter";
-import api from "../../services/api";
+import filterRepository from "../../data/repositories/filterRepository";
 import eventBus from "../../services/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 
@@ -18,7 +18,7 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
     eventBus.on("languageChanged", this.onLanguageChanged);
     // Fetch initial filters if they weren't provided via SSR
     if (this.data.filters.length === 0) {
-      const filters = await api.fetchFilters(this.data.currentLang);
+      const filters = await filterRepository.getFilters(this.data.currentLang);
       this.setData({ filters, selectedFilter: filters[0] });
     }
   }
@@ -28,7 +28,7 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
   }
 
   private onLanguageChanged = async (payload: { lang: "en" | "tr" | "ar" }) => {
-    const filters = await api.fetchFilters(payload.lang);
+    const filters = await filterRepository.getFilters(payload.lang);
     this.setData({
       filters,
       selectedFilter: filters[0],
@@ -39,7 +39,7 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
   };
 
   private selectFilter = async (payload: { filter: string }) => {
-    const filters = await api.fetchFilters(this.data.currentLang); //TODO: burası böyle mi olmalı emin değilim.
+    const filters = await filterRepository.getFilters(this.data.currentLang); //TODO: burası böyle mi olmalı emin değilim.
     console.log(`selected ${payload.filter} filter, fetched filters`, filters);
     this.setData({ selectedFilter: payload.filter, filters: filters });
     eventBus.dispatch("filterChanged", { filter: payload.filter });
