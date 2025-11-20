@@ -1,12 +1,12 @@
 ---
-import LanguageSelectorViewSwitcher from "../views/LanguageSelectorView/LanguageSelectorViewSwitcher";
+import LanguageSelectorViewSwitcher from "../presentation/views/LanguageSelectorView/LanguageSelectorViewSwitcher";
 import api from "../services/api";
-import CounterViewSwitcher from "../views/CounterView/CounterViewSwitcher";
-import ProductViewSwitcher from "../views/ProductView/ProductViewSwitcher";
-import FilterViewSwitcher from "../views/FilterView/FilterViewSwitcher";
-import Pager from "../views/PagerView/Pager";
-import { Banner } from "../views/BannerView/Banner";
-import type {LanguageData} from "../models/language";
+import CounterViewSwitcher from "../presentation/views/CounterView/CounterViewSwitcher";
+import ProductViewSwitcher from "../presentation/views/ProductView/ProductViewSwitcher";
+import FilterViewSwitcher from "../presentation/views/FilterView/FilterViewSwitcher";
+import Pager from "../presentation/views/PagerView/Pager";
+import { Banner } from "../presentation/views/BannerView/Banner";
+import type {LanguageData} from "../domain/models/language";
 
 /* import Hpl from "/Users/emrekardaslar/Desktop/Workspace/Self/component-library/dist/esm/components/Hpl/Hpl.js";
  */
@@ -59,16 +59,16 @@ const banner2Data = ssrData.banner2;
     <hr />
     <LanguageSelectorViewSwitcher client:load initialData={initialLangData} />
     <hr />
-    <CounterViewSwitcher client:load initialData={counterInitialData} />
+    <!-- <CounterViewSwitcher client:load initialData={counterInitialData} /> -->
     <hr />
     <FilterViewSwitcher client:load initialData={initialFilters} />
     <ProductViewSwitcher client:load initialData={productInitialData} />
-    <Banner {...bannerData} />
+    <!-- <Banner {...bannerData} />
     <br />
     <Banner {...banner2Data} />
-    <br />
+    <br /> -->
 
-    <Pager client:load initialData={pagerInitialData} />
+    <!-- <Pager client:load initialData={pagerInitialData} /> -->
     <!-- <Hpl client:load />
     <Hpl client:load />
     <Hpl client:load /> -->
