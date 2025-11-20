@@ -1,5 +1,5 @@
 import React from "react";
-import { LanguageViewModel } from "../../viewmodels/LanguageViewModel";
+import { LanguageViewModel } from "../../../application/viewmodels/LanguageViewModel";
 import type { LanguageData } from "../../../domain/models/language";
 import LangViewSwitcher from "../../../services/LangViewSwitcher";
 

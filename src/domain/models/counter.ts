@@ -1,4 +1,4 @@
-import type { CounterViewModel } from "../../presentation/viewmodels/CounterViewModel";
+import type { CounterViewModel } from "../../application/viewmodels/CounterViewModel";
 
 
 export interface CounterViewProps {

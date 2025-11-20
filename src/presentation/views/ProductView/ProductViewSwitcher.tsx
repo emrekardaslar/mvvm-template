@@ -1,5 +1,5 @@
 import React from "react";
-import { ProductViewModel } from "../../viewmodels/ProductViewModel";
+import { ProductViewModel } from "../../../application/viewmodels/ProductViewModel";
 import type { Product } from "../../../domain/models/product";
 import LangViewSwitcher from "../../../services/LangViewSwitcher";
 

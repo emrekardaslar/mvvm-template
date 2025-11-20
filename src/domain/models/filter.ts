@@ -1,4 +1,4 @@
-import type { FilterViewModel } from "../../presentation/viewmodels/FilterViewModel";
+import type { FilterViewModel } from "../../application/viewmodels/FilterViewModel";
 
 
 export interface FilterViewProps {

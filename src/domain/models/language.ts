@@ -1,4 +1,4 @@
-import type { LanguageViewModel } from "../../presentation/viewmodels/LanguageViewModel";
+import type { LanguageViewModel } from "../../application/viewmodels/LanguageViewModel";
 
 export interface LanguageSelectorViewProps {
   data: LanguageData;

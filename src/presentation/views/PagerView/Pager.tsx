@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { PagerViewModel } from '../../viewmodels/PagerViewModel';
+import { PagerViewModel } from '../../../application/viewmodels/PagerViewModel';
 
 import "./Pager.css";
 import type { PagerViewProps } from '../../../domain/models/pager';

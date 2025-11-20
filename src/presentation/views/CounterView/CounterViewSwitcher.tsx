@@ -1,6 +1,6 @@
 import React from "react";
 
-import { CounterViewModel } from "../../viewmodels/CounterViewModel";
+import { CounterViewModel } from "../../../application/viewmodels/CounterViewModel";
 import LangViewSwitcher from "../../../services/LangViewSwitcher";
 
 interface CounterViewSwitcherProps {

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FilterViewModel } from "../../viewmodels/FilterViewModel";
+import { FilterViewModel } from "../../../application/viewmodels/FilterViewModel";
 import LangViewSwitcher from "../../../services/LangViewSwitcher";
 
 interface FilterViewSwitcherProps {
