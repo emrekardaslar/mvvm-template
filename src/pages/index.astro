@@ -6,7 +6,19 @@ import ProductViewSwitcher from "../presentation/views/ProductView/ProductViewSw
 import FilterViewSwitcher from "../presentation/views/FilterView/FilterViewSwitcher";
 import Pager from "../presentation/views/PagerView/Pager";
 import { Banner } from "../presentation/views/BannerView/Banner";
-import type {LanguageData} from "../domain/models/language";
+import type { LanguageData } from "../domain/models/language";
+import UserCard from "../components/UserCard";
+
+const mockUserData = {
+  title: "Admin Control Panel",
+  username: "AstroDev2025",
+  status: "online",
+  user: {
+    name: "Leanne Graham",
+    email: "sincere@april.biz",
+    company: { name: "Astro Builder Group" },
+  },
+};
 
 /* import Hpl from "/Users/emrekardaslar/Desktop/Workspace/Self/component-library/dist/esm/components/Hpl/Hpl.js";
  */
@@ -72,6 +84,8 @@ const banner2Data = ssrData.banner2;
     <!-- <Hpl client:load />
     <Hpl client:load />
     <Hpl client:load /> -->
+    <h2>Inheritance Example</h2>
+    <UserCard {...mockUserData} client:load />
     <br />
     <br />
   </body>
