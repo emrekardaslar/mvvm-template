@@ -8,7 +8,7 @@ import { prTexts } from "../../presentation/views/ProductDetailView/productTexts
 // Extract the product ID from the URL
 const { id } = Astro.params;
 const urlParams = Astro.url.searchParams;
-const currentLang: any = urlParams.get("lang") || "en";
+const currentLang = (urlParams.get("lang") || "en") as "en" | "tr" | "ar";
 const productId = Number(id);
 const productDetailViewModel = new ProductDetailViewModel(
   { currentLang }
