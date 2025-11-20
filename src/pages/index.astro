@@ -85,7 +85,7 @@ const banner2Data = ssrData.banner2;
     <Hpl client:load />
     <Hpl client:load /> -->
     <h2>Inheritance Example</h2>
-    <UserCard {...mockUserData} client:load />
+    <UserCard title={mockUserData.title} initialData={mockUserData} client:load />
     <br />
     <br />
   </body>

@@ -1,9 +1,11 @@
 import React, { type ReactNode } from 'react';
 import BaseCard, { type BaseState, type BaseCardProps } from './BaseCard';
+import { UserCardViewModel } from '../presentation/viewmodels/UserCardViewModel';
 
-// 1. Child State must extend BaseState
+ // 1. Child State must extend BaseState
 interface UserCardState extends BaseState {
     isHighlighted: boolean;
+    viewModel: UserCardViewModel;
 }
 
 export interface User {
@@ -22,11 +24,15 @@ class UserCard extends BaseCard<UserCardProps, UserCardState> {
 
     constructor(props: UserCardProps) {
         super(props);
+        const viewModel = new UserCardViewModel(props.initialData);
+
         // Initialize State with inherited (isOpen) and specific (isHighlighted)
         this.state = {
+            ...viewModel.getData(),
             isOpen: true,
-            isHighlighted: false
-        };
+            isHighlighted: false,
+            viewModel
+        };        
     }
 
     // Specific Functional Logic (Child's own method)
@@ -65,8 +71,8 @@ class UserCard extends BaseCard<UserCardProps, UserCardState> {
     renderBody(): ReactNode {
         return (
             <div>
-                <p>Email: {this.props.user.email}</p>
-                <p>Company: {this.props.user.company.name}</p>
+                <p>Email: {this.state.user.email}</p>
+                <p>Company: {this.state.user.company.name}</p>
             </div>
         );
     }
