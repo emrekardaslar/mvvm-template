@@ -1,5 +1,5 @@
 import type { ProductData } from "../../domain/models/product";
-import productListRepository from "../../data/repositories/productListRepository";
+import productListRepository from "../../infrastructure/repositories/productListRepository";
 import eventBus from "../../services/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 

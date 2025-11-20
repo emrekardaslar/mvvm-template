@@ -1,5 +1,5 @@
 import type { FilterData } from "../../domain/models/filter";
-import filterRepository from "../../data/repositories/filterRepository";
+import filterRepository from "../../infrastructure/repositories/filterRepository";
 import eventBus from "../../services/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 

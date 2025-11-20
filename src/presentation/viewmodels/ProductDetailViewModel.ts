@@ -1,6 +1,6 @@
 
 import type { Product } from "../../domain/models/product";
-import productDetailRepository from "../../data/repositories/productDetailRepository";
+import productDetailRepository from "../../infrastructure/repositories/productDetailRepository";
 import eventBus from "../../services/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 
