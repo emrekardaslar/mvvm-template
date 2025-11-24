@@ -7,6 +7,7 @@ import FilterViewSwitcher from "../presentation/views/FilterView/FilterViewSwitc
 import Pager from "../presentation/views/PagerView/Pager";
 import { Banner } from "../presentation/views/BannerView/Banner";
 import type {LanguageData} from "../domain/models/language";
+import { CoordinatorInit } from "../services/CoordinatorInit";
 
 /* import Hpl from "/Users/emrekardaslar/Desktop/Workspace/Self/component-library/dist/esm/components/Hpl/Hpl.js";
  */
@@ -55,6 +56,7 @@ const banner2Data = ssrData.banner2;
     <title>Astro</title>
   </head>
   <body>
+    <CoordinatorInit client:load />
     <h1>MVVM</h1>
     <hr />
     <LanguageSelectorViewSwitcher client:load initialData={initialLangData} />

@@ -4,6 +4,7 @@ import { ProductDetailViewModel } from "../../application/viewmodels/ProductDeta
 import LanguageSelectorViewSwitcher from "../../presentation/views/LanguageSelectorView/LanguageSelectorViewSwitcher";
 import ProductDetailView from "../../presentation/views/ProductDetailView/ProductDetailView";
 import { prTexts } from "../../presentation/views/ProductDetailView/productTexts";
+import { CoordinatorInit } from "../../services/CoordinatorInit";
 
 // Extract the product ID from the URL
 const { id } = Astro.params;
@@ -35,6 +36,7 @@ const h1Title = prTexts.title[currentLang];
     <title>{initialData.product?.name || "Loading..."}</title>
   </head>
   <body>
+    <CoordinatorInit client:load />
     <h1>{h1Title}</h1>
     <hr />
     <LanguageSelectorViewSwitcher client:load initialData={initialLangData} />
