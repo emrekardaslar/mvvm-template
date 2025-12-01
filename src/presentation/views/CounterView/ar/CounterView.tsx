@@ -5,11 +5,11 @@ import type { CounterViewProps } from "../../../../domain/models/counter";
 
 const CounterView: React.FC<CounterViewProps> = ({ data, viewModel }) => {
   if (data.isLoading) {
-    return <div>جار التحميل...</div>;
+    return <div dir="rtl">جار التحميل...</div>;
   }
 
   return (
-    <div className="counter-container">
+    <div className="counter-container" dir="rtl">
       <h1>عداد: {data.count}</h1>
       <div className="counter-buttons">
         <button

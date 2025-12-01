@@ -12,11 +12,11 @@ const ProductDetailView: React.FC<ProductDetailViewProps> = ({ initialData }) =>
   const data = useViewModel(viewModel);   
 
   if (!data.product) {
-    return <div>{prTexts.notFound[data.currentLang]}</div>;
+    return <div dir={data.currentLang === 'ar' ? 'rtl' : 'ltr'}>{prTexts.notFound[data.currentLang]}</div>;
   }
 
   return (
-    <div className="product-detail-container">
+    <div className="product-detail-container" dir={data.currentLang === 'ar' ? 'rtl' : 'ltr'}>
       <h1>{data.product.name}</h1>
       <p><strong>{prTexts.category[data.currentLang]}</strong> {data.product.category}</p>
       <p><strong>{prTexts.price[data.currentLang]}</strong> {data.product.price.toFixed(2)}</p>

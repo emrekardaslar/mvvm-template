@@ -6,7 +6,7 @@ import type { FilterViewProps } from "../../../../domain/models/filter";
 const FilterView: React.FC<FilterViewProps> = ({ data, viewModel }) => {
 
   return (
-    <div className="filter-container">
+    <div className="filter-container" dir="rtl">
       <h3>المرشحات</h3>
       <div className="filter-buttons">
         {data?.filters?.map((filter) => (

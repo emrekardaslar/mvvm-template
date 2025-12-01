@@ -12,7 +12,7 @@ const LanguageSelectorView: React.FC<LanguageSelectorViewProps> = ({
   };
 
   return (
-    <div className="language-selector-container">
+    <div className="language-selector-container" dir="rtl">
       <h3>لغة</h3>
       <div className="language-selector-buttons">
         {data.availableLanguages.map((lang) => (

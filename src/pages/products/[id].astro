@@ -3,7 +3,6 @@ import type { LanguageData } from "../../domain/models/language";
 import { ProductDetailViewModel } from "../../application/viewmodels/ProductDetailViewModel";
 import LanguageSelectorViewSwitcher from "../../presentation/views/LanguageSelectorView/LanguageSelectorViewSwitcher";
 import ProductDetailView from "../../presentation/views/ProductDetailView/ProductDetailView";
-import { prTexts } from "../../presentation/views/ProductDetailView/productTexts";
 import { CoordinatorInit } from "../../services/CoordinatorInit";
 
 // Extract the product ID from the URL
@@ -24,7 +23,6 @@ const initialLangData: LanguageData = {
 await productDetailViewModel.fetchProduct(productId, currentLang); // Assuming 'en' for SSR initial fetch
 const initialData = productDetailViewModel.getData();
 
-const h1Title = prTexts.title[currentLang];
 ---
 
 <html lang="en">
@@ -37,9 +35,8 @@ const h1Title = prTexts.title[currentLang];
   </head>
   <body>
     <CoordinatorInit client:load />
-    <h1>{h1Title}</h1>
-    <hr />
     <LanguageSelectorViewSwitcher client:load initialData={initialLangData} />
+    <hr />
     <ProductDetailView
       client:load
       initialData={initialData}
