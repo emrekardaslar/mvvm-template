@@ -1,0 +1,36 @@
+.counter-container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.counter-container h1 {
+  margin-top: 0;
+  font-size: 2rem;
+}
+
+.counter-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.counter-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.counter-button.increment {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.counter-button.decrement {
+  background-color: #f44336;
+  color: white;
+}

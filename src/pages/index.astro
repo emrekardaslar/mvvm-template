@@ -1,52 +1,80 @@
 ---
-import CounterView from '../views/CounterView';
-import { CounterViewModel } from '../viewmodels/CounterViewModel';
-import ProductView from '../views/ProductView';
-import { ProductViewModel } from '../viewmodels/ProductViewModel';
-import FilterView from '../views/FilterView';
-import { FilterViewModel } from '../viewmodels/FilterViewModel';
-import LanguageView from '../views/LanguageView';
-import { LanguageViewModel } from '../viewmodels/LanguageViewModel';
-import api from '../services/api';
+import LanguageSelectorViewSwitcher from "../presentation/views/LanguageSelectorView/LanguageSelectorViewSwitcher";
+import api from "../services/api";
+import CounterViewSwitcher from "../presentation/views/CounterView/CounterViewSwitcher";
+import ProductViewSwitcher from "../presentation/views/ProductView/ProductViewSwitcher";
+import FilterViewSwitcher from "../presentation/views/FilterView/FilterViewSwitcher";
+import Pager from "../presentation/views/PagerView/Pager";
+import { Banner } from "../presentation/views/BannerView/Banner";
+import type {LanguageData} from "../domain/models/language";
+import { CoordinatorInit } from "../services/CoordinatorInit";
 
-// Counter
-const counterViewModel = new CounterViewModel();
-const counterInitialData = counterViewModel.getData();
-
+/* import Hpl from "/Users/emrekardaslar/Desktop/Workspace/Self/component-library/dist/esm/components/Hpl/Hpl.js";
+ */
+// SSR Response
+const ssrData = await api.fetchSSRData();
 // Language
-const languageViewModel = new LanguageViewModel();
-const languageInitialData = languageViewModel.getData();
-const defaultLang = languageInitialData.currentLanguage;
+const defaultLang = "en";
+const initialLangData: LanguageData = {
+  availableLanguages: ["en", "tr", "ar"],
+  currentLang: "en",
+};
+// Counter
+const counterInitialData = {
+  count: 0,
+  isLoading: false,
+  currentLang: defaultLang,
+};
 
 // Products (SSR)
-const initialProducts = await api.fetchProducts(defaultLang, 'All');
-const productViewModel = new ProductViewModel({ products: initialProducts, isLoading: false });
-const productInitialData = productViewModel.getData();
+const productInitialData = {
+  products: ssrData[defaultLang].products,
+  isLoading: false,
+};
 
-// Filters (No SSR data, will be fetched on client)
-const filterViewModel = new FilterViewModel();
-const filterInitialData = filterViewModel.getData();
+//Filters (SSR)
+const initialFilters = {
+  filters: ssrData[defaultLang].filters,
+  selectedFilter: null,
+  currentLang: defaultLang,
+};
+
+//Pager
+const pagerInitialData = { page: 1, totalPages: 32 };
+
+//Banner
+const bannerData = ssrData.banner;
+const banner2Data = ssrData.banner2;
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-		<hr />
-		<h2>Language Selector</h2>
-		<LanguageView client:load initialData={languageInitialData} />
-		<hr />
-		<h2>Counter Example</h2>
-		<CounterView client:load initialData={counterInitialData} />
-		<hr />
-		<h2>Product List Example</h2>
-		<FilterView client:load initialData={filterInitialData} />
-		<ProductView client:load initialData={productInitialData} />
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    <CoordinatorInit client:load />
+    <h1>MVVM</h1>
+    <hr />
+    <LanguageSelectorViewSwitcher client:load initialData={initialLangData} />
+    <hr />
+    <!-- <CounterViewSwitcher client:load initialData={counterInitialData} /> -->
+    <hr />
+    <FilterViewSwitcher client:load initialData={initialFilters} />
+    <ProductViewSwitcher client:load initialData={productInitialData} />
+    <!-- <Banner {...bannerData} />
+    <br />
+    <Banner {...banner2Data} />
+    <br /> -->
+
+    <!-- <Pager client:load initialData={pagerInitialData} /> -->
+    <!-- <Hpl client:load />
+    <Hpl client:load />
+    <Hpl client:load /> -->
+    <br />
+    <br />
+  </body>
 </html>

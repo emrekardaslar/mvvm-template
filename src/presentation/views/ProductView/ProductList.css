@@ -1,0 +1,28 @@
+.product-list-container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.product-list-container.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.product-list-container h3 {
+  margin-top: 0;
+}
+
+.product-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.product-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}

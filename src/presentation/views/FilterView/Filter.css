@@ -1,0 +1,31 @@
+.filter-container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.filter-container h3 {
+  margin-top: 0;
+}
+
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-button {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.filter-button.selected {
+  font-weight: bold;
+  background-color: #0078D4;
+  color: #fff;
+  border-color: #0078D4;
+}

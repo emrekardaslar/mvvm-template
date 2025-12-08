@@ -1,0 +1,26 @@
+import { describe, it, expect, vi } from 'vitest';
+import filterRepository from '../filterRepository';
+import type { Mock } from 'vitest'; 
+import api from '../../../services/api';
+
+vi.mock('../../../services/api', () => ({
+  default: {
+    fetchFilters: vi.fn(),
+  },
+}));
+
+describe('filterRepository', () => {
+  it('should call api.fetchFilters with the correct language', async () => {
+    const lang = 'en';
+    await filterRepository.getFilters(lang);
+    expect(api.fetchFilters).toHaveBeenCalledWith(lang);
+  });
+
+  it('should return the filters from the api', async () => {
+    const filters = ['All', 'Electronics', 'Apparel'];
+    (api.fetchFilters as Mock).mockResolvedValue(filters);
+
+    const result = await filterRepository.getFilters('en');
+    expect(result).toEqual(filters);
+  });
+});
