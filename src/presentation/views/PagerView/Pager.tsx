@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 
-import { PagerViewModel } from '../../../application/viewmodels/PagerViewModel';
+import { PagerViewModel } from '@application/viewmodels/PagerViewModel';
 
 import "./Pager.css";
-import type { PagerViewProps } from '../../../domain/models/pager';
-import { useViewModel } from '../../../hooks/useViewModel';
+import type { PagerViewProps } from '@domain/models/pager';
+import { PagerEvents } from '@domain/events/pager';
+import { useViewModel } from '@presentation/hooks/useViewModel';
 
 const Pager: React.FC<PagerViewProps> = ({
     initialData
@@ -17,7 +18,7 @@ const Pager: React.FC<PagerViewProps> = ({
         <div className="pager-container">
             <button
                 className="pager-button"
-                onClick={() => viewModel.runAttachedFunction("changePage", {page: page-1}) }
+                onClick={() => viewModel.runAttachedFunction(PagerEvents.Change, {page: page-1}) }
                 disabled={page === 1}
             >
                 ◀
@@ -29,7 +30,7 @@ const Pager: React.FC<PagerViewProps> = ({
 
             <button
                 className="pager-button"
-                onClick={() => viewModel.runAttachedFunction("changePage", { page: page + 1 })}
+                onClick={() => viewModel.runAttachedFunction(PagerEvents.Change, { page: page + 1 })}
                 disabled={page === totalPages}
             >
                 ▶

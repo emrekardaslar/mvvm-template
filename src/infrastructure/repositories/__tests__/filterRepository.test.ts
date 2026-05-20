@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import filterRepository from '../filterRepository';
 import type { Mock } from 'vitest'; 
-import api from '../../../services/api';
+import api from '../../api/api';
 
-vi.mock('../../../services/api', () => ({
+vi.mock('../../api/api', () => ({
   default: {
     fetchFilters: vi.fn(),
   },

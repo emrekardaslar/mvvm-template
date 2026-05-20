@@ -1,4 +1,7 @@
-import eventBus from './eventBus';
+import { FilterEvents } from '@domain/events/filter';
+import { LanguageEvents } from '@domain/events/language';
+import { PagerEvents } from '@domain/events/pager';
+import eventBus from '../events/eventBus';
 
 interface NavigateOptions {
   replace?: boolean;      // Use replaceState instead of pushState
@@ -78,12 +81,12 @@ class Coordinator {
    */
   private setupEventListeners(): void {
     // Language change - clear page when language changes
-    eventBus.on('languageChanged', (payload: { lang: string }) => {
+    eventBus.on(LanguageEvents.Changed, (payload: { lang: string }) => {
       this.navigate({ lang: payload.lang }, { clearParams: ['page'] });
     });
 
     // Filter change - reset to page 1 and update category
-    eventBus.on('filterChanged', (payload: { filter: string }) => {
+    eventBus.on(FilterEvents.Changed, (payload: { filter: string }) => {
       this.navigate({
         category: payload.filter,
         page: 1
@@ -91,7 +94,7 @@ class Coordinator {
     });
 
     // Page change - just update page number
-    eventBus.on('pageChanged', (payload: { page: number }) => {
+    eventBus.on(PagerEvents.Changed, (payload: { page: number }) => {
       this.navigate({ page: payload.page });
     });
   }
@@ -110,15 +113,15 @@ class Coordinator {
       const page = params.get('page');
 
       if (lang) {
-        eventBus.dispatch('languageChanged', { lang });
+        eventBus.dispatch(LanguageEvents.Changed, { lang });
       }
 
       if (category) {
-        eventBus.dispatch('filterChanged', { filter: category });
+        eventBus.dispatch(FilterEvents.Changed, { filter: category });
       }
 
       if (page) {
-        eventBus.dispatch('pageChanged', { page: parseInt(page, 10) });
+        eventBus.dispatch(PagerEvents.Changed, { page: parseInt(page, 10) });
       }
     });
   }

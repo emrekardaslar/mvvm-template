@@ -1,7 +1,8 @@
 import React from "react";
 
 import "../Filter.css";
-import type { FilterViewProps } from "../../../../domain/models/filter";
+import type { FilterViewProps } from "@domain/models/filter";
+import { FilterEvents } from "@domain/events/filter";
 
 const FilterView: React.FC<FilterViewProps> = ({ data, viewModel }) => {
 
@@ -12,7 +13,7 @@ const FilterView: React.FC<FilterViewProps> = ({ data, viewModel }) => {
         {data?.filters?.map((filter) => (
           <button
             key={filter}
-            onClick={() => viewModel.runAttachedFunction("selectFilter", { filter })}
+            onClick={() => viewModel.runAttachedFunction(FilterEvents.Select, { filter })}
             className={`filter-button ${data.selectedFilter === filter ? "selected" : ""}`}>
             {filter}
           </button>

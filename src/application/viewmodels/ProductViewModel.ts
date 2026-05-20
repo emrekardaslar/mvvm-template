@@ -1,6 +1,9 @@
-import type { ProductData } from "../../domain/models/product";
-import productListRepository from "../../infrastructure/repositories/productListRepository";
-import eventBus from "../../services/eventBus";
+import type { ProductData } from "@domain/models/product";
+import { FilterEvents } from "@domain/events/filter";
+import { LanguageEvents } from "@domain/events/language";
+import { PagerEvents } from "@domain/events/pager";
+import productListRepository from "@infrastructure/repositories/productListRepository";
+import eventBus from "../events/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 
 
@@ -16,14 +19,15 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
   }
 
   public override onMount() {
-    eventBus.on("filterChanged", this.onFilterChanged);
-    eventBus.on("languageChanged", this.onLanguageChanged);
-    eventBus.on("pageChanged", this.onPageChanged);
+    eventBus.on(FilterEvents.Changed, this.onFilterChanged);
+    eventBus.on(LanguageEvents.Changed, this.onLanguageChanged);
+    eventBus.on(PagerEvents.Changed, this.onPageChanged);
   }
 
   public override onUnmount() {
-    eventBus.off("filterChanged", this.onFilterChanged);
-    eventBus.off("languageChanged", this.onLanguageChanged);
+    eventBus.off(FilterEvents.Changed, this.onFilterChanged);
+    eventBus.off(LanguageEvents.Changed, this.onLanguageChanged);
+    eventBus.off(PagerEvents.Changed, this.onPageChanged);
   }
 
   private onFilterChanged = (payload: { filter: string }) => {

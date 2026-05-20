@@ -1,5 +1,5 @@
-import api from '../../services/api';
-import type { Product } from '../../domain/models/product';
+import api from '../api/api';
+import type { Product } from '@domain/models/product';
 
 const productListRepository = {
   getProducts: (

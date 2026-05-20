@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { ProductDetailViewModel, type ProductDetailData } from "../../../application/viewmodels/ProductDetailViewModel";
+import { ProductDetailViewModel, type ProductDetailData } from "@application/viewmodels/ProductDetailViewModel";
 import { prTexts } from "./productTexts";
-import { useViewModel } from "../../../hooks/useViewModel";
+import { useViewModel } from "@presentation/hooks/useViewModel";
 
 interface ProductDetailViewProps {
   initialData: ProductDetailData;

@@ -1,7 +1,8 @@
 
-import type { Product } from "../../domain/models/product";
-import productDetailRepository from "../../infrastructure/repositories/productDetailRepository";
-import eventBus from "../../services/eventBus";
+import type { Product } from "@domain/models/product";
+import { LanguageEvents } from "@domain/events/language";
+import productDetailRepository from "@infrastructure/repositories/productDetailRepository";
+import eventBus from "../events/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 
 export interface ProductDetailData {
@@ -20,7 +21,7 @@ export class ProductDetailViewModel extends BaseViewModel<ProductDetailData> {
   }
 
   public override async onMount() {
-    eventBus.on("languageChanged", this.onLanguageChanged);
+    eventBus.on(LanguageEvents.Changed, this.onLanguageChanged);
     const productId = this?.data?.product?.id;
     if (productId) {
       await this.fetchProduct(productId, this.data.currentLang);
@@ -30,7 +31,7 @@ export class ProductDetailViewModel extends BaseViewModel<ProductDetailData> {
   }
 
   public override onUnmount() {
-    eventBus.off("languageChanged", this.onLanguageChanged);
+    eventBus.off(LanguageEvents.Changed, this.onLanguageChanged);
   }
 
   private onLanguageChanged = async (payload: { lang: "en" | "tr" | "ar" }) => {

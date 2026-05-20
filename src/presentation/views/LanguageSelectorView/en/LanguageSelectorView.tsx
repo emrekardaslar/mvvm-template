@@ -1,14 +1,15 @@
 import React from "react";
 
 import "../LanguageSelector.css";
-import type { LanguageSelectorViewProps } from "../../../../domain/models/language";
+import type { LanguageSelectorViewProps } from "@domain/models/language";
+import { LanguageEvents } from "@domain/events/language";
 
 const LanguageSelectorView: React.FC<LanguageSelectorViewProps> = ({
   data,
   viewModel,
 }) => {
   const onLanguageClick = (lang: "en" | "tr" | "ar") => {
-    viewModel.runAttachedFunction("changeLanguage", { lang });
+    viewModel.runAttachedFunction(LanguageEvents.Change, { lang });
   };
 
   return (

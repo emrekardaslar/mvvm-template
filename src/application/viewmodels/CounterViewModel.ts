@@ -1,5 +1,7 @@
-import type { CounterData } from "../../domain/models/counter";
-import eventBus from "../../services/eventBus";
+import type { CounterData } from "@domain/models/counter";
+import { CounterEvents } from "@domain/events/counter";
+import { LanguageEvents } from "@domain/events/language";
+import eventBus from "../events/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 
 
@@ -10,16 +12,16 @@ export class CounterViewModel extends BaseViewModel<CounterData> {
       isLoading: false,
       currentLang: initialData?.currentLang || "en",
     });
-    this.registerEvent("increment", this.handleIncrement);
-    this.registerEvent("decrement", this.handleDecrement);
+    this.registerEvent(CounterEvents.Increment, this.handleIncrement);
+    this.registerEvent(CounterEvents.Decrement, this.handleDecrement);
   }
 
   public override onMount() {
-    eventBus.on("languageChanged", this.onLanguageChanged);
+    eventBus.on(LanguageEvents.Changed, this.onLanguageChanged);
   }
 
   public override onUnmount() {
-    eventBus.off("languageChanged", this.onLanguageChanged);
+    eventBus.off(LanguageEvents.Changed, this.onLanguageChanged);
   }
 
   private onLanguageChanged = (payload: { lang: "en" | "tr" | "ar" }) => {

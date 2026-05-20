@@ -1,4 +1,4 @@
-import api from '../../services/api';
+import api from '../api/api';
 
 const filterRepository = {
   getFilters: (lang: "en" | "tr" | "ar" = "en") => {

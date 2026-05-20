@@ -10,9 +10,9 @@ type Key = `${string}|${string}`;
 const cache = new Map<Key, LazyExoticComponent<ComponentType<any>>>();
 
 // For client-side lazy loading
-const lazyModules = import.meta.glob("../presentation/views/**/**/**/*.{tsx,jsx,ts,js}");
+const lazyModules = import.meta.glob("../views/**/**/**/*.{tsx,jsx,ts,js}");
 // For server-side eager loading
-const eagerModules = import.meta.glob("../presentation/views/**/**/**/*.{tsx,jsx,ts,js}", { eager: true });
+const eagerModules = import.meta.glob("../views/**/**/**/*.{tsx,jsx,ts,js}", { eager: true });
 
 const isSSR = import.meta.env.SSR;
 
@@ -27,32 +27,32 @@ function resolvePath(
 
   if (lang) {
     for (const ext of exts) {
-      candidates.push(`../presentation/views/${viewFolder}/${lang}/${viewFolder}${ext}`);
+      candidates.push(`../views/${viewFolder}/${lang}/${viewFolder}${ext}`);
     }
     for (const ext of exts) {
-      candidates.push(`../presentation/views/${viewFolder}/${lang}/index${ext}`);
+      candidates.push(`../views/${viewFolder}/${lang}/index${ext}`);
     }
   }
 
   for (const ext of exts) {
-    candidates.push(`../presentation/views/${viewFolder}/generic/${viewFolder}${ext}`);
+    candidates.push(`../views/${viewFolder}/generic/${viewFolder}${ext}`);
   }
   for (const ext of exts) {
-    candidates.push(`../presentation/views/${viewFolder}/generic/index${ext}`);
+    candidates.push(`../views/${viewFolder}/generic/index${ext}`);
   }
 
   if (lang) {
     const suffix = lang.charAt(0).toUpperCase() + lang.slice(1);
     for (const ext of exts) {
-      candidates.push(`../presentation/views/${viewFolder}/${viewFolder}${suffix}${ext}`);
+      candidates.push(`../views/${viewFolder}/${viewFolder}${suffix}${ext}`);
     }
   }
 
   for (const ext of exts) {
-    candidates.push(`../presentation/views/${viewFolder}/${viewFolder}${ext}`);
+    candidates.push(`../views/${viewFolder}/${viewFolder}${ext}`);
   }
   for (const ext of exts) {
-    candidates.push(`../presentation/views/${viewFolder}/index${ext}`);
+    candidates.push(`../views/${viewFolder}/index${ext}`);
   }
 
   for (const c of candidates) {

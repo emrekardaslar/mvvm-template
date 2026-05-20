@@ -1,7 +1,7 @@
 import React from "react";
-import { LanguageViewModel } from "../../../application/viewmodels/LanguageViewModel";
-import type { LanguageData } from "../../../domain/models/language";
-import LangViewSwitcher from "../../../services/LangViewSwitcher";
+import { LanguageViewModel } from "@application/viewmodels/LanguageViewModel";
+import type { LanguageData } from "@domain/models/language";
+import LangViewSwitcher from "@presentation/components/LangViewSwitcher";
 
 
 interface LanguageSelectorViewSwitcherProps {

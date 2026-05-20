@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import productListRepository from '../productListRepository';
-import api from '../../../services/api';
-import type { Product } from '../../../domain/models/product';
+import api from '../../api/api';
+import type { Product } from '@domain/models/product';
 import type { Mock } from 'vitest';
 
-vi.mock('../../../services/api', () => ({
+vi.mock('../../api/api', () => ({
   default: {
     fetchProducts: vi.fn(),
   },

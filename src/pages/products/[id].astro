@@ -1,9 +1,9 @@
 ---
-import type { LanguageData } from "../../domain/models/language";
-import { ProductDetailViewModel } from "../../application/viewmodels/ProductDetailViewModel";
-import LanguageSelectorViewSwitcher from "../../presentation/views/LanguageSelectorView/LanguageSelectorViewSwitcher";
-import ProductDetailView from "../../presentation/views/ProductDetailView/ProductDetailView";
-import { CoordinatorInit } from "../../services/CoordinatorInit";
+import type { LanguageData } from "@domain/models/language";
+import { ProductDetailViewModel } from "@application/viewmodels/ProductDetailViewModel";
+import LanguageSelectorViewSwitcher from "@presentation/views/LanguageSelectorView/LanguageSelectorViewSwitcher";
+import ProductDetailView from "@presentation/views/ProductDetailView/ProductDetailView";
+import { CoordinatorInit } from "@presentation/components/CoordinatorInit";
 
 // Extract the product ID from the URL
 const { id } = Astro.params;

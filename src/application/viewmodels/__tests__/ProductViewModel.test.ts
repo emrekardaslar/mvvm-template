@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ProductViewModel } from '../ProductViewModel';
-import api from '../../../services/api';
-import eventBus from '../../../services/eventBus';
+import api from '@infrastructure/api/api';
+import eventBus from '../../events/eventBus';
+import { FilterEvents } from '@domain/events/filter';
+import { PagerEvents } from '@domain/events/pager';
 
 
 // Mock the api service
-vi.mock('../../../services/api', () => ({
+vi.mock('@infrastructure/api/api', () => ({
   default: {
     fetchProducts: vi.fn((lang, filter, page) => {
       if (lang === 'en') {
@@ -40,7 +42,7 @@ describe('ProductViewModel', () => {
   });
 
   it('should fetch products when filter changes', async () => {
-    eventBus.dispatch('filterChanged', { filter: 'Category A' });
+    eventBus.dispatch(FilterEvents.Changed, { filter: 'Category A' });
     await vi.runAllTimersAsync();
 
     expect(api.fetchProducts).toHaveBeenCalledWith('en', 'Category A', 1);
@@ -55,7 +57,7 @@ describe('ProductViewModel', () => {
       return new Promise(resolve => setTimeout(() => resolve([]), 100));
     });
 
-    eventBus.dispatch('filterChanged', { filter: 'Category A' });
+    eventBus.dispatch(FilterEvents.Changed, { filter: 'Category A' });
 
     expect(viewModel.getData().isLoading).toBe(true);
 
@@ -64,7 +66,7 @@ describe('ProductViewModel', () => {
   });
 
   it('should fetch products when page changes', async () => {
-    eventBus.dispatch('pageChanged', { page: 2 });
+    eventBus.dispatch(PagerEvents.Changed, { page: 2 });
     await vi.runAllTimersAsync();
 
     expect(api.fetchProducts).toHaveBeenCalledWith('en', 'All', 2);

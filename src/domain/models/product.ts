@@ -1,4 +1,4 @@
-import type { ProductViewModel } from "../../application/viewmodels/ProductViewModel";
+import type { ProductViewModel } from "@application/viewmodels/ProductViewModel";
 
 
 export interface ProductViewProps {
