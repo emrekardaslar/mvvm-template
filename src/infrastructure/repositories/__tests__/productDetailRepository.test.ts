@@ -1,8 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import productDetailRepository from '../productDetailRepository';
 import api from '../../api/api';
+import { QueryKeys } from '@domain/queries/keys';
 import type { Product } from '@domain/models/product';
-import type { Mock } from 'vitest'; 
+import type { Mock } from 'vitest';
 
 vi.mock('../../api/api', () => ({
   default: {
@@ -15,7 +16,7 @@ describe('productDetailRepository', () => {
     const id = 1;
     const lang = 'en';
 
-    await productDetailRepository.getProductDetail(id, lang);
+    await productDetailRepository.run(QueryKeys.GetProductDetail,{ id, lang });
     expect(api.fetchProductDetail).toHaveBeenCalledWith(id, lang);
   });
 
@@ -23,7 +24,7 @@ describe('productDetailRepository', () => {
     const product: Product = { id: 1, name: 'Laptop', category: 'Electronics', description: 'A laptop', price: 1200 };
     (api.fetchProductDetail as Mock).mockResolvedValue(product);
 
-    const result = await productDetailRepository.getProductDetail(1, 'en');
+    const result = await productDetailRepository.run(QueryKeys.GetProductDetail,{ id: 1, lang: 'en' });
     expect(result).toEqual(product);
   });
 });

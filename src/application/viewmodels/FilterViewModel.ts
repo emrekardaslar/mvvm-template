@@ -1,7 +1,8 @@
 import type { FilterData } from "@domain/models/filter";
 import { FilterEvents } from "@domain/events/filter";
 import { LanguageEvents } from "@domain/events/language";
-import filterRepository from "@infrastructure/repositories/filterRepository";
+import { GetFiltersQuery, type GetFiltersParams } from "@application/queries/GetFiltersQuery";
+import { runQuery } from "@infrastructure/runQuery";
 import eventBus from "../events/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 
@@ -18,10 +19,9 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
 
   public override async onMount() {
     eventBus.on(LanguageEvents.Changed, this.onLanguageChanged);
-    // Fetch initial filters if they weren't provided via SSR
     if (this.data.filters.length === 0) {
-      const filters = await filterRepository.getFilters(this.data.currentLang);
-      this.setData({ filters, selectedFilter: filters[0] });
+      const filters = await this.fetchFilters();
+      this.setData({ selectedFilter: filters[0] });
     }
   }
 
@@ -30,20 +30,25 @@ export class FilterViewModel extends BaseViewModel<FilterData> {
   }
 
   private onLanguageChanged = async (payload: { lang: "en" | "tr" | "ar" }) => {
-    const filters = await filterRepository.getFilters(payload.lang);
-    this.setData({
-      filters,
-      selectedFilter: filters[0],
-      currentLang: payload.lang,
-    });
-    // Now that the language has changed, dispatch an event with the new default filter
+    const filters = await this.fetchFilters({ lang: payload.lang });
+    this.setData({ selectedFilter: filters[0] });
     eventBus.dispatch(FilterEvents.Changed, { filter: filters[0] });
   };
 
   private selectFilter = async (payload: { filter: string }) => {
-    const filters = await filterRepository.getFilters(this.data.currentLang); //TODO: burası böyle mi olmalı emin değilim.
+    const filters = await this.fetchFilters();
     console.log(`selected ${payload.filter} filter, fetched filters`, filters);
-    this.setData({ selectedFilter: payload.filter, filters: filters });
+    this.setData({ selectedFilter: payload.filter });
     eventBus.dispatch(FilterEvents.Changed, { filter: payload.filter });
   };
+
+  private async fetchFilters(override: Partial<GetFiltersParams> = {}): Promise<string[]> {
+    const params: GetFiltersParams = {
+      lang: this.data.currentLang,
+      ...override,
+    };
+    const filters = await runQuery(new GetFiltersQuery(params));
+    this.setData({ filters, currentLang: params.lang });
+    return filters;
+  }
 }

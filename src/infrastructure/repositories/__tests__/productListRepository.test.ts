@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import productListRepository from '../productListRepository';
 import api from '../../api/api';
+import { QueryKeys } from '@domain/queries/keys';
 import type { Product } from '@domain/models/product';
 import type { Mock } from 'vitest';
 
@@ -14,10 +15,10 @@ describe('productListRepository', () => {
   it('should call api.fetchProducts with the correct parameters', async () => {
     const lang = 'en';
     const filter = 'Electronics';
-    const pager = 1;
+    const page = 1;
 
-    await productListRepository.getProducts(lang, filter, pager);
-    expect(api.fetchProducts).toHaveBeenCalledWith(lang, filter, pager);
+    await productListRepository.run(QueryKeys.GetProducts,{ lang, filter, page });
+    expect(api.fetchProducts).toHaveBeenCalledWith(lang, filter, page);
   });
 
   it('should return the products from the api', async () => {
@@ -27,7 +28,7 @@ describe('productListRepository', () => {
     ];
     (api.fetchProducts as Mock).mockResolvedValue(products);
 
-    const result = await productListRepository.getProducts('en', 'Electronics', 1);
+    const result = await productListRepository.run(QueryKeys.GetProducts,{ lang: 'en', filter: 'Electronics', page: 1 });
     expect(result).toEqual(products);
   });
 });

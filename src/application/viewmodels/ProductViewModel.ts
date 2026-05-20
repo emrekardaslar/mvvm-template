@@ -2,7 +2,8 @@ import type { ProductData } from "@domain/models/product";
 import { FilterEvents } from "@domain/events/filter";
 import { LanguageEvents } from "@domain/events/language";
 import { PagerEvents } from "@domain/events/pager";
-import productListRepository from "@infrastructure/repositories/productListRepository";
+import { GetProductsQuery, type GetProductsParams } from "@application/queries/GetProductsQuery";
+import { runQuery } from "@infrastructure/runQuery";
 import eventBus from "../events/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 
@@ -31,27 +32,31 @@ export class ProductViewModel extends BaseViewModel<ProductData> {
   }
 
   private onFilterChanged = (payload: { filter: string }) => {
-    this.setData({ currentFilter: payload.filter });
-    this.fetchProducts();
+    this.fetchProducts({ filter: payload.filter });
   };
 
   private onLanguageChanged = (payload: { lang: "en" | "tr" | "ar" }) => {
-    this.setData({ currentLang: payload.lang });
-    this.setData({ currentPage: 1 });
+    this.setData({ currentLang: payload.lang, currentPage: 1 });
   };
 
   private onPageChanged = (payload: { page: number }) => {
-    this.setData({ currentPage: payload.page });
-    this.fetchProducts();
+    this.fetchProducts({ page: payload.page });
   };
 
-  private async fetchProducts() {
-    this.setData({ isLoading: true });
-    const products = await productListRepository.getProducts(
-      this.data.currentLang,
-      this.data.currentFilter,
-      this.data.currentPage //TODO
-    );
+  private async fetchProducts(override: Partial<GetProductsParams> = {}) {
+    const params: GetProductsParams = {
+      lang: this.data.currentLang,
+      filter: this.data.currentFilter,
+      page: this.data.currentPage,
+      ...override,
+    };
+    this.setData({
+      isLoading: true,
+      currentFilter: params.filter ?? this.data.currentFilter,
+      currentPage: params.page,
+      currentLang: params.lang,
+    });
+    const products = await runQuery(new GetProductsQuery(params));
     this.setData({ products, isLoading: false });
   }
 }
