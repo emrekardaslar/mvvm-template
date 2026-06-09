@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import coordinator from '@application/routing/coordinator';
+import '@application/routing/coordinator';
 
 /**
  * Client-side component to initialize the Coordinator

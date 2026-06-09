@@ -11,6 +11,10 @@ const ProductDetailView: React.FC<ProductDetailViewProps> = ({ initialData }) =>
   const [viewModel] = useState(() => new ProductDetailViewModel(initialData));
   const data = useViewModel(viewModel);   
 
+  if (data.error) {
+    return <div dir={data.currentLang === 'ar' ? 'rtl' : 'ltr'}>{prTexts.loadError[data.currentLang]}: {data.error}</div>;
+  }
+
   if (!data.product) {
     return <div dir={data.currentLang === 'ar' ? 'rtl' : 'ltr'}>{prTexts.notFound[data.currentLang]}</div>;
   }

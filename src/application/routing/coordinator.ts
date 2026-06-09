@@ -1,5 +1,4 @@
 import { FilterEvents } from '@domain/events/filter';
-import { LanguageEvents } from '@domain/events/language';
 import { PagerEvents } from '@domain/events/pager';
 import eventBus from '../events/eventBus';
 
@@ -80,11 +79,6 @@ class Coordinator {
    * Set up event listeners to synchronize EventBus events with URL
    */
   private setupEventListeners(): void {
-    // Language change - clear page when language changes
-    eventBus.on(LanguageEvents.Changed, (payload: { lang: string }) => {
-      this.navigate({ lang: payload.lang }, { clearParams: ['page'] });
-    });
-
     // Filter change - reset to page 1 and update category
     eventBus.on(FilterEvents.Changed, (payload: { filter: string }) => {
       this.navigate({
@@ -108,13 +102,8 @@ class Coordinator {
 
       // Emit events so ViewModels can react to URL changes
       // This handles browser back/forward button
-      const lang = params.get('lang');
       const category = params.get('category');
       const page = params.get('page');
-
-      if (lang) {
-        eventBus.dispatch(LanguageEvents.Changed, { lang });
-      }
 
       if (category) {
         eventBus.dispatch(FilterEvents.Changed, { filter: category });

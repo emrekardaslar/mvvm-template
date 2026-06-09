@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, URL } from "node:url";
 
 // https://astro.build/config
 import node from "@astrojs/node";

@@ -1,31 +1,26 @@
 ---
-import type { LanguageData } from "@domain/models/language";
+import type { Lang } from "@domain/models/language";
 import { ProductDetailViewModel } from "@application/viewmodels/ProductDetailViewModel";
-import LanguageSelectorViewSwitcher from "@presentation/views/LanguageSelectorView/LanguageSelectorViewSwitcher";
+import LanguageSelector from "@presentation/components/LanguageSelector.astro";
 import ProductDetailView from "@presentation/views/ProductDetailView/ProductDetailView";
 import { CoordinatorInit } from "@presentation/components/CoordinatorInit";
 
 // Extract the product ID from the URL
 const { id } = Astro.params;
 const urlParams = Astro.url.searchParams;
-const currentLang = (urlParams.get("lang") || "en") as "en" | "tr" | "ar";
+const currentLang = (urlParams.get("lang") || "en") as Lang;
 const productId = Number(id);
 const productDetailViewModel = new ProductDetailViewModel(
   { currentLang }
 );
 
-const initialLangData: LanguageData = {
-  availableLanguages: ["en", "tr", "ar"],
-  currentLang: currentLang,
-};
-
 // Fetch initial data for SSR
-await productDetailViewModel.fetchProduct(productId, currentLang); // Assuming 'en' for SSR initial fetch
+await productDetailViewModel.fetchProduct({ id: productId, lang: currentLang });
 const initialData = productDetailViewModel.getData();
 
 ---
 
-<html lang="en">
+<html lang={currentLang}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -35,7 +30,7 @@ const initialData = productDetailViewModel.getData();
   </head>
   <body>
     <CoordinatorInit client:load />
-    <LanguageSelectorViewSwitcher client:load initialData={initialLangData} />
+    <LanguageSelector currentLang={currentLang} />
     <hr />
     <ProductDetailView
       client:load

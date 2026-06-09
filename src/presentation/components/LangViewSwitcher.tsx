@@ -3,9 +3,10 @@ import { viewMap } from "./viewMap";
 
 import { useViewModel } from "../hooks/useViewModel";
 import type { BaseViewModel } from "@application/viewmodels/BaseViewModel";
+import type { Lang } from "@domain/models/language";
 
 interface LangViewSwitcherProps<
-  TData extends { currentLang?: "en" | "tr" | "ar" },
+  TData extends { currentLang?: Lang },
   TViewModel extends BaseViewModel<TData>
 > {
   ViewModelClass: new (initialData?: TData) => TViewModel;
@@ -14,7 +15,7 @@ interface LangViewSwitcherProps<
 }
 
 function LangViewSwitcher<
-  TData extends { currentLang?: "en" | "tr" | "ar" },
+  TData extends { currentLang?: Lang },
   TViewModel extends BaseViewModel<TData>
 >({
   ViewModelClass,

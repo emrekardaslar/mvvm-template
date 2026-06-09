@@ -24,7 +24,7 @@ src/
 │
 ├── presentation/                    # React views & hooks. No business logic.
 │   ├── views/<Feature>/{en,tr,ar}/  # Per-language view variants
-│   ├── components/                  # Switchers, CoordinatorInit
+│   ├── components/                  # Switchers, LanguageSelector.astro, CoordinatorInit
 │   └── hooks/useViewModel.ts
 │
 └── pages/                           # Astro routes (SSR entry points)
@@ -34,6 +34,8 @@ Path aliases (`tsconfig.json` + `astro.config.mjs` + `vitest.config.ts`):
 `@domain/*`, `@application/*`, `@infrastructure/*`, `@presentation/*`.
 
 ## Query Pattern
+
+Shared primitives live in domain: `LANGS` and the `Lang` type (`src/domain/models/language.ts`) are the single source of truth for supported languages — never write the union inline.
 
 ViewModels don't touch repositories directly. They describe what they need with a query and `await runQuery(...)`:
 
@@ -57,6 +59,23 @@ private onFilterChanged = (payload: { filter: string }) => {
 };
 ```
 
+### Error handling & races
+
+Every `fetchX` wraps `runQuery` in `try/catch`: failures land in an `error: string | null` field on the VM data (rendered by the views), and `isLoading` is always cleared. `BaseViewModel` provides `beginFetch()` / `isCurrentFetch(id)` so responses that arrive after a newer fetch started are dropped (latest wins):
+
+```ts
+const fetchId = this.beginFetch();
+this.setData({ isLoading: true, error: null });
+try {
+  const products = await runQuery(new GetProductsQuery(params));
+  if (!this.isCurrentFetch(fetchId)) return;   // stale response — drop
+  this.setData({ products, isLoading: false });
+} catch (e) {
+  if (!this.isCurrentFetch(fetchId)) return;
+  this.setData({ error: e instanceof Error ? e.message : String(e), isLoading: false });
+}
+```
+
 ### Adding a new query
 
 1. **Add the key** in `src/domain/queries/keys.ts`:
@@ -69,10 +88,11 @@ private onFilterChanged = (payload: { filter: string }) => {
 
 2. **Define the query class** in `src/application/queries/GetCategoriesQuery.ts`:
    ```ts
+   import type { Lang } from "@domain/models/language";
    import { QueryKeys } from "@domain/queries/keys";
    import { BaseQuery } from "./BaseQuery";
 
-   export interface GetCategoriesParams { lang: "en" | "tr" | "ar"; }
+   export interface GetCategoriesParams { lang: Lang; }
 
    export class GetCategoriesQuery extends BaseQuery<GetCategoriesParams, string[]> {
      readonly key = QueryKeys.GetCategories;
@@ -98,15 +118,21 @@ Cross-VM messaging goes through `application/events/eventBus.ts`. Event names ar
 
 ## i18n Views
 
-Views live under `presentation/views/<Feature>/{en,tr,ar}/`. The matching `<Feature>ViewSwitcher` selects the variant via `import.meta.glob` based on the current language from `LanguageData`.
+The language is part of the URL (`?lang=en|tr|ar`) and only changes with a full page load: `LanguageSelector.astro` renders plain links, and each Astro page reads `Astro.url.searchParams` to SSR in the requested language. There is no client-side language switching — no language events, no language ViewModel.
+
+Views live under `presentation/views/<Feature>/{en,tr,ar}/`. The matching `<Feature>ViewSwitcher` selects the variant via `import.meta.glob` based on the `currentLang` passed in from SSR.
 
 ## Commands
 
-| Command            | Action                                       |
-| :----------------- | :------------------------------------------- |
-| `npm install`      | Install dependencies                         |
-| `npm run dev`      | Start local dev server at `localhost:4321`   |
-| `npm run build`    | Build for production into `./dist/`          |
-| `npm run preview`  | Preview the production build locally         |
-| `npx tsc --noEmit` | Type-check the project                       |
-| `npx vitest run`   | Run unit tests (Vitest + jsdom)              |
+| Command              | Action                                       |
+| :------------------- | :------------------------------------------- |
+| `npm install`        | Install dependencies                         |
+| `npm run dev`        | Start local dev server at `localhost:4321`   |
+| `npm run build`      | Build for production into `./dist/`          |
+| `npm run preview`    | Preview the production build locally         |
+| `npm run typecheck`  | Type-check the project (`tsc --noEmit`)      |
+| `npm run lint`       | Lint with ESLint                             |
+| `npm test`           | Run unit tests (Vitest + jsdom)              |
+| `npm run test:watch` | Run unit tests in watch mode                 |
+
+CI (`.github/workflows/ci.yml`) runs typecheck, lint, tests, and build on every push/PR to `main`.

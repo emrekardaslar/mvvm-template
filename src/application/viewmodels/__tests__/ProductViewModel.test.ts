@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ProductViewModel } from '../ProductViewModel';
 import api from '@infrastructure/api/api';
 import eventBus from '../../events/eventBus';
@@ -9,7 +9,7 @@ import { PagerEvents } from '@domain/events/pager';
 // Mock the api service
 vi.mock('@infrastructure/api/api', () => ({
   default: {
-    fetchProducts: vi.fn((lang, filter, page) => {
+    fetchProducts: vi.fn((lang, filter) => {
       if (lang === 'en') {
         if (filter === 'All') return [{ id: 1, name: 'Product 1', category: 'Category A' }];
         if (filter === 'Category A') return [{ id: 1, name: 'Product 1', category: 'Category A' }];
@@ -31,6 +31,10 @@ describe('ProductViewModel', () => {
     viewModel = new ProductViewModel();
     viewModel.onMount(); // Mount the view model to register event listeners
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    viewModel.onUnmount(); // Unsubscribe so previous VMs don't react to later dispatches
   });
 
   it('should initialize with empty products, isLoading false, currentFilter "All", and currentPage 1', () => {
@@ -71,5 +75,47 @@ describe('ProductViewModel', () => {
 
     expect(api.fetchProducts).toHaveBeenCalledWith('en', 'All', 2);
     expect(viewModel.getData().currentPage).toBe(2);
+  });
+
+  it('should set error and stop loading when the fetch fails', async () => {
+    vi.mocked(api.fetchProducts).mockRejectedValueOnce(new Error('network down'));
+
+    eventBus.dispatch(FilterEvents.Changed, { filter: 'Category A' });
+    await vi.runAllTimersAsync();
+
+    const data = viewModel.getData();
+    expect(data.error).toBe('network down');
+    expect(data.isLoading).toBe(false);
+  });
+
+  it('should clear the error when a new fetch starts', async () => {
+    vi.mocked(api.fetchProducts).mockRejectedValueOnce(new Error('network down'));
+    eventBus.dispatch(FilterEvents.Changed, { filter: 'Category A' });
+    await vi.runAllTimersAsync();
+    expect(viewModel.getData().error).toBe('network down');
+
+    eventBus.dispatch(FilterEvents.Changed, { filter: 'All' });
+    await vi.runAllTimersAsync();
+    expect(viewModel.getData().error).toBe(null);
+  });
+
+  it('should ignore a stale response when a newer fetch has started', async () => {
+    const stale = [{ id: 1, name: 'Stale', category: 'A' }];
+    const fresh = [{ id: 2, name: 'Fresh', category: 'B' }];
+    let resolveFirst!: (products: typeof stale) => void;
+    vi.mocked(api.fetchProducts)
+      .mockImplementationOnce(() => new Promise((resolve) => { resolveFirst = resolve; }) as any)
+      .mockImplementationOnce(() => Promise.resolve(fresh) as any);
+
+    eventBus.dispatch(FilterEvents.Changed, { filter: 'Category A' }); // slow request
+    eventBus.dispatch(FilterEvents.Changed, { filter: 'Category B' }); // fast request
+    await vi.runAllTimersAsync();
+    expect(viewModel.getData().products).toEqual(fresh);
+
+    resolveFirst(stale); // slow request finishes last
+    await vi.runAllTimersAsync();
+
+    expect(viewModel.getData().products).toEqual(fresh);
+    expect(viewModel.getData().isLoading).toBe(false);
   });
 });

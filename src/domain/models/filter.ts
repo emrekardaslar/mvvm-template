@@ -1,4 +1,5 @@
 import type { FilterViewModel } from "@application/viewmodels/FilterViewModel";
+import type { Lang } from "./language";
 
 
 export interface FilterViewProps {
@@ -9,5 +10,6 @@ export interface FilterViewProps {
 export interface FilterData {
   filters: string[];
   selectedFilter: string | null;
-  currentLang: "en" | "tr" | "ar";
+  currentLang: Lang;
+  error: string | null;
 }

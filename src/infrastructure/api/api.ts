@@ -1,4 +1,5 @@
 import type { Product } from "@domain/models/product";
+import type { Lang } from "@domain/models/language";
 import type { SSRResponse } from "@domain/models/ssr";
 
 const mockData: SSRResponse = {
@@ -51,7 +52,7 @@ const mockData: SSRResponse = {
 
 const api = {
   fetchProducts: (
-    lang: "en" | "tr" | "ar" = "en",
+    lang: Lang = "en",
     filter: string | null = "All",
     pager: number = 1
   ): Promise<Product[]> => {
@@ -69,7 +70,7 @@ const api = {
     });
   },
 
-  fetchFilters: (lang: "en" | "tr" | "ar" = "en"): Promise<string[]> => {
+  fetchFilters: (lang: Lang = "en"): Promise<string[]> => {
     console.log(`Fetching filters with lang: ${lang}`);
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -78,7 +79,7 @@ const api = {
     });
   },
 
-  fetchProductDetail: (id: number, lang: "en" | "tr" | "ar" = "en"): Promise<Product | undefined> => {
+  fetchProductDetail: (id: number, lang: Lang = "en"): Promise<Product | undefined> => {
     console.log(`Fetching product detail for id: ${id} with lang: ${lang}`);
     return new Promise((resolve) => {
       setTimeout(() => {

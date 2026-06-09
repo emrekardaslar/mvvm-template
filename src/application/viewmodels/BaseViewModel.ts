@@ -2,6 +2,7 @@ export class BaseViewModel<TData> {
   protected data: TData;
   private listeners: Set<() => void> = new Set();
   private eventListener: Map<string, ((payload?: any) => void)[]> = new Map();
+  private fetchSeq = 0;
 
   /**
    * Creates an instance of BaseViewModel.
@@ -27,6 +28,22 @@ export class BaseViewModel<TData> {
     this.data = { ...this.data, ...newData };
     this.notifyListeners();
   }
+  /**
+   * Marks the start of a fetch and returns its id.
+   * Pass the id to isCurrentFetch after awaiting to detect stale responses.
+   */
+  protected beginFetch(): number {
+    return ++this.fetchSeq;
+  }
+
+  /**
+   * Returns true if no newer fetch has started since `id` was issued.
+   * @param id The id returned by beginFetch.
+   */
+  protected isCurrentFetch(id: number): boolean {
+    return id === this.fetchSeq;
+  }
+
   /**
    * Subscribes a listener function to state changes.
    * @param listener The function to call when the state changes.

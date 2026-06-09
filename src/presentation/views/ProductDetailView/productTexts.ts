@@ -4,6 +4,11 @@ export const prTexts = {
         ar: "لم يتم العثور على المنتج",
         tr: "Ürün bulunamadı"
     },
+    loadError: {
+        en: "Failed to load product",
+        ar: "فشل تحميل المنتج",
+        tr: "Ürün yüklenemedi"
+    },
     title: {
         en: "Products",
         ar: "لج",

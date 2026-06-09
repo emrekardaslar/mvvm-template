@@ -1,0 +1,55 @@
+---
+import { LANGS, type Lang } from "@domain/models/language";
+
+interface Props {
+  currentLang: Lang;
+}
+
+const { currentLang } = Astro.props;
+// Links carry only the lang param: other params (filter, page) are
+// language-specific and re-derived on the fresh SSR load.
+const pathname = Astro.url.pathname;
+---
+
+<nav class="language-selector">
+  <h3>Language</h3>
+  <div class="language-selector-buttons">
+    {LANGS.map((lang) => (
+      <a
+        href={`${pathname}?lang=${lang}`}
+        class={`language-selector-link ${currentLang === lang ? "selected" : ""}`}
+      >
+        {lang.toUpperCase()}
+      </a>
+    ))}
+  </div>
+</nav>
+
+<style>
+  .language-selector {
+    padding: 10px 20px;
+  }
+
+  .language-selector h3 {
+    margin-top: 0;
+  }
+
+  .language-selector-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .language-selector-link {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .language-selector-link.selected {
+    background-color: #0078d4;
+    border-color: #0078d4;
+    color: #fff;
+  }
+</style>

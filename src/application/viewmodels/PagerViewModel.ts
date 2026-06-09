@@ -1,7 +1,6 @@
 
 import type { PagerData } from "@domain/models/pager";
 import { FilterEvents } from "@domain/events/filter";
-import { LanguageEvents } from "@domain/events/language";
 import { PagerEvents } from "@domain/events/pager";
 import eventBus from "../events/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
@@ -18,19 +17,13 @@ export class PagerViewModel extends BaseViewModel<PagerData> {
 
     public override onMount(): void {
         eventBus.on(FilterEvents.Changed, this.onFilterChanged)
-        eventBus.on(LanguageEvents.Changed, this.onLanguageChanged)
     }
 
     public override onUnmount() {
         eventBus.off(FilterEvents.Changed, this.onFilterChanged);
-        eventBus.off(LanguageEvents.Changed, this.onLanguageChanged);
     }
 
-    private onFilterChanged = (payload: { filter: string }) => {
-        this.setData({page: 1})
-    }
-
-    private onLanguageChanged = (payload: {lang: string}) => {
+    private onFilterChanged = () => {
         this.setData({page: 1})
     }
 

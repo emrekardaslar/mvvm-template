@@ -1,4 +1,5 @@
 import type { CounterViewModel } from "@application/viewmodels/CounterViewModel";
+import type { Lang } from "./language";
 
 
 export interface CounterViewProps {
@@ -9,5 +10,5 @@ export interface CounterViewProps {
 export interface CounterData {
   count: number;
   isLoading: boolean;
-  currentLang?: "en" | "tr" | "ar";
+  currentLang?: Lang;
 }

@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FilterViewModel } from '../FilterViewModel';
+import api from '../../../infrastructure/api/api';
 import eventBus from '../../events/eventBus';
 import { FilterEvents } from '@domain/events/filter';
-import { LanguageEvents } from '@domain/events/language';
 
 // Mock the api service
 vi.mock('../../../infrastructure/api/api', () => ({
@@ -45,25 +45,15 @@ describe('FilterViewModel', () => {
     expect(spy).toHaveBeenCalledWith(FilterEvents.Changed, { filter: 'Category B' });
   });
 
-  it('should update filters and selected filter on language change', async () => {
-    await viewModel.onMount(); // Initialize with English filters
-    expect(viewModel.getData().filters).toEqual(['All', 'Category A', 'Category B']);
-
-    eventBus.dispatch(LanguageEvents.Changed, { lang: 'tr' });
-    await vi.runAllTimersAsync(); // Wait for async operations in onLanguageChanged
-
-    expect(viewModel.getData().filters).toEqual(['Tümü', 'Kategori A', 'Kategori B']);
-    expect(viewModel.getData().selectedFilter).toBe('Tümü');
-  });
-
-  it('should dispatch filterChanged event after language change', async () => {
+  it('should set error and skip dispatch when fetching filters fails', async () => {
+    vi.mocked(api.fetchFilters).mockRejectedValueOnce(new Error('boom'));
     const spy = vi.spyOn(eventBus, 'dispatch');
-    await viewModel.onMount();
-    spy.mockClear(); // Clear initial dispatch from onMount
 
-    eventBus.dispatch(LanguageEvents.Changed, { lang: 'tr' });
+    viewModel.runAttachedFunction(FilterEvents.Select, { filter: 'Category A' });
     await vi.runAllTimersAsync();
 
-    expect(spy).toHaveBeenCalledWith(FilterEvents.Changed, { filter: 'Tümü' });
+    expect(viewModel.getData().error).toBe('boom');
+    expect(viewModel.getData().selectedFilter).toBe('All'); // unchanged
+    expect(spy).not.toHaveBeenCalledWith(FilterEvents.Changed, expect.anything());
   });
 });

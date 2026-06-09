@@ -1,53 +1,33 @@
 ---
-import LanguageSelectorViewSwitcher from "@presentation/views/LanguageSelectorView/LanguageSelectorViewSwitcher";
 import api from "@infrastructure/api/api";
-import CounterViewSwitcher from "@presentation/views/CounterView/CounterViewSwitcher";
 import ProductViewSwitcher from "@presentation/views/ProductView/ProductViewSwitcher";
 import FilterViewSwitcher from "@presentation/views/FilterView/FilterViewSwitcher";
-import Pager from "@presentation/views/PagerView/Pager";
-import { Banner } from "@presentation/views/BannerView/Banner";
-import type {LanguageData} from "@domain/models/language";
+import LanguageSelector from "@presentation/components/LanguageSelector.astro";
+import type { Lang } from "@domain/models/language";
 import { CoordinatorInit } from "@presentation/components/CoordinatorInit";
 
-/* import Hpl from "/Users/emrekardaslar/Desktop/Workspace/Self/component-library/dist/esm/components/Hpl/Hpl.js";
- */
+// Language comes from the URL; switching language is a full page load
+const currentLang = (Astro.url.searchParams.get("lang") || "en") as Lang;
+
 // SSR Response
 const ssrData = await api.fetchSSRData();
-// Language
-const defaultLang = "en";
-const initialLangData: LanguageData = {
-  availableLanguages: ["en", "tr", "ar"],
-  currentLang: "en",
-};
-// Counter
-const counterInitialData = {
-  count: 0,
-  isLoading: false,
-  currentLang: defaultLang,
-};
 
 // Products (SSR)
 const productInitialData = {
-  products: ssrData[defaultLang].products,
+  products: ssrData[currentLang].products,
   isLoading: false,
+  currentLang,
 };
 
 //Filters (SSR)
 const initialFilters = {
-  filters: ssrData[defaultLang].filters,
+  filters: ssrData[currentLang].filters,
   selectedFilter: null,
-  currentLang: defaultLang,
+  currentLang,
 };
-
-//Pager
-const pagerInitialData = { page: 1, totalPages: 32 };
-
-//Banner
-const bannerData = ssrData.banner;
-const banner2Data = ssrData.banner2;
 ---
 
-<html lang="en">
+<html lang={currentLang}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -59,21 +39,10 @@ const banner2Data = ssrData.banner2;
     <CoordinatorInit client:load />
     <h1>MVVM</h1>
     <hr />
-    <LanguageSelectorViewSwitcher client:load initialData={initialLangData} />
-    <hr />
-    <!-- <CounterViewSwitcher client:load initialData={counterInitialData} /> -->
+    <LanguageSelector currentLang={currentLang} />
     <hr />
     <FilterViewSwitcher client:load initialData={initialFilters} />
     <ProductViewSwitcher client:load initialData={productInitialData} />
-    <!-- <Banner {...bannerData} />
-    <br />
-    <Banner {...banner2Data} />
-    <br /> -->
-
-    <!-- <Pager client:load initialData={pagerInitialData} /> -->
-    <!-- <Hpl client:load />
-    <Hpl client:load />
-    <Hpl client:load /> -->
     <br />
     <br />
   </body>

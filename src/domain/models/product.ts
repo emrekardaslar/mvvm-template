@@ -1,4 +1,5 @@
 import type { ProductViewModel } from "@application/viewmodels/ProductViewModel";
+import type { Lang } from "./language";
 
 
 export interface ProductViewProps {
@@ -9,9 +10,10 @@ export interface ProductViewProps {
 export interface ProductData {
   products: Product[];
   isLoading: boolean;
-  currentLang: "en" | "tr" | "ar";
+  currentLang: Lang;
   currentFilter: string | null;
   currentPage: number;
+  error: string | null;
 }
 
 export interface Product {
