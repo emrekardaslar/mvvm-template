@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+﻿import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CounterViewModel } from '../CounterViewModel';
 import { CounterEvents } from '@domain/events/counter';
 
@@ -17,12 +17,12 @@ describe('CounterViewModel', () => {
   });
 
   it('should increment the count', () => {
-    viewModel.runAttachedFunction(CounterEvents.Increment);
+    viewModel.dispatchEvent(CounterEvents.Increment);
     expect(viewModel.getData().count).toBe(1);
   });
 
   it('should decrement the count', () => {
-    viewModel.runAttachedFunction(CounterEvents.Decrement);
+    viewModel.dispatchEvent(CounterEvents.Decrement);
     expect(viewModel.getData().count).toBe(-1);
   });
 });

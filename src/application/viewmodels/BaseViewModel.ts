@@ -65,11 +65,11 @@ export class BaseViewModel<TData> {
   }
 
   /**
-   * Executes all attached functions (event handlers) for a given event name.
-   * @param eventName The name of the event to run attached functions for.
-   * @param payload Optional data to pass to the attached functions.
+   * Dispatches an event to the ViewModel, executing all handlers registered for it.
+   * @param eventName The name of the event to dispatch.
+   * @param payload Optional data to pass to the handlers.
    */
-  public runAttachedFunction(eventName: string, payload?: any) {
+  public dispatchEvent(eventName: string, payload?: any) {
     const handlers = this.eventListener.get(eventName);
     if (handlers) {
       handlers.forEach((handler) => handler(payload));

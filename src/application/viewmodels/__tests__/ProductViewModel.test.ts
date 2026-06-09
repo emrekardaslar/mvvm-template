@@ -20,16 +20,22 @@ vi.mock('@infrastructure/api/api', () => ({
       }
       return [];
     }),
+    fetchFilters: vi.fn((lang) => {
+      if (lang === 'en') return ['All', 'Category A', 'Category B'];
+      if (lang === 'tr') return ['Tümü', 'Kategori A', 'Kategori B'];
+      return [];
+    }),
   },
 }));
 
 describe('ProductViewModel', () => {
   let viewModel: ProductViewModel;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.useFakeTimers();
     viewModel = new ProductViewModel();
     viewModel.onMount(); // Mount the view model to register event listeners
+    await vi.runAllTimersAsync(); // Let the mount-time filter fetch settle
     vi.clearAllMocks();
   });
 
@@ -37,15 +43,27 @@ describe('ProductViewModel', () => {
     viewModel.onUnmount(); // Unsubscribe so previous VMs don't react to later dispatches
   });
 
-  it('should initialize with empty products, isLoading false, currentFilter "All", and currentPage 1', () => {
-    const data = viewModel.getData();
+  it('should initialize with empty products, isLoading false, no filter, and currentPage 1', () => {
+    const freshViewModel = new ProductViewModel();
+    const data = freshViewModel.getData();
     expect(data.products).toEqual([]);
+    expect(data.filters).toEqual([]);
     expect(data.isLoading).toBe(false);
-    expect(data.currentFilter).toBe("All");
+    expect(data.currentFilter).toBe(null);
     expect(data.currentPage).toBe(1);
   });
 
-  it('should fetch products when filter changes', async () => {
+  it('should fetch filters on mount and default the selected filter to the first one', () => {
+    // beforeEach already mounted; the fetched filters are in place
+    expect(viewModel.getData().filters).toEqual(['All', 'Category A', 'Category B']);
+    expect(viewModel.getData().currentFilter).toBe('All');
+  });
+
+  it('should fetch products at page 1 when filter changes', async () => {
+    eventBus.dispatch(PagerEvents.Changed, { page: 3 });
+    await vi.runAllTimersAsync();
+    expect(viewModel.getData().currentPage).toBe(3);
+
     eventBus.dispatch(FilterEvents.Changed, { filter: 'Category A' });
     await vi.runAllTimersAsync();
 
@@ -53,7 +71,7 @@ describe('ProductViewModel', () => {
     const data = viewModel.getData();
     expect(data.products).toEqual([{ id: 1, name: 'Product 1', category: 'Category A' }]);
     expect(data.currentFilter).toBe('Category A');
-    expect(data.currentLang).toBe('en');
+    expect(data.currentPage).toBe(1);
   });
 
   it('should set isLoading to true while fetching products', async () => {
@@ -73,6 +91,28 @@ describe('ProductViewModel', () => {
     eventBus.dispatch(PagerEvents.Changed, { page: 2 });
     await vi.runAllTimersAsync();
 
+    expect(api.fetchProducts).toHaveBeenCalledWith('en', 'All', 2);
+    expect(viewModel.getData().currentPage).toBe(2);
+  });
+
+  it('should dispatch filterChanged and refetch when a filter is selected from the view', async () => {
+    const spy = vi.spyOn(eventBus, 'dispatch');
+
+    viewModel.dispatchEvent(FilterEvents.Select, { filter: 'Category A' });
+    await vi.runAllTimersAsync();
+
+    expect(spy).toHaveBeenCalledWith(FilterEvents.Changed, { filter: 'Category A' });
+    expect(api.fetchProducts).toHaveBeenCalledWith('en', 'Category A', 1);
+    expect(viewModel.getData().currentFilter).toBe('Category A');
+  });
+
+  it('should dispatch pageChanged and refetch when the page is changed from the view', async () => {
+    const spy = vi.spyOn(eventBus, 'dispatch');
+
+    viewModel.dispatchEvent(PagerEvents.Change, { page: 2 });
+    await vi.runAllTimersAsync();
+
+    expect(spy).toHaveBeenCalledWith(PagerEvents.Changed, { page: 2 });
     expect(api.fetchProducts).toHaveBeenCalledWith('en', 'All', 2);
     expect(viewModel.getData().currentPage).toBe(2);
   });
@@ -117,5 +157,17 @@ describe('ProductViewModel', () => {
 
     expect(viewModel.getData().products).toEqual(fresh);
     expect(viewModel.getData().isLoading).toBe(false);
+  });
+
+  it('should set error when fetching filters fails', async () => {
+    vi.mocked(api.fetchFilters).mockRejectedValueOnce(new Error('boom'));
+    const freshViewModel = new ProductViewModel();
+
+    freshViewModel.onMount();
+    await vi.runAllTimersAsync();
+
+    expect(freshViewModel.getData().error).toBe('boom');
+    expect(freshViewModel.getData().filters).toEqual([]);
+    freshViewModel.onUnmount();
   });
 });

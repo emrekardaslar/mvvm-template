@@ -1,14 +1,11 @@
 import React from "react";
 import { ProductViewModel } from "@application/viewmodels/ProductViewModel";
-import type { Product } from "@domain/models/product";
+import type { ProductData } from "@domain/models/product";
 import LangViewSwitcher from "@presentation/components/LangViewSwitcher";
 
 
 interface ProductViewSwitcherProps {
-  initialData: {
-    products: Product[];
-    isLoading: boolean;
-  };
+  initialData: Partial<ProductData>;
 }
 
 const ProductViewSwitcher: React.FC<ProductViewSwitcherProps> = ({

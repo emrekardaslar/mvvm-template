@@ -9,10 +9,12 @@ export interface ProductViewProps {
 
 export interface ProductData {
   products: Product[];
+  filters: string[];
   isLoading: boolean;
   currentLang: Lang;
   currentFilter: string | null;
   currentPage: number;
+  totalPages: number;
   error: string | null;
 }
 

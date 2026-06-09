@@ -1,7 +1,6 @@
 ---
 import api from "@infrastructure/api/api";
 import ProductViewSwitcher from "@presentation/views/ProductView/ProductViewSwitcher";
-import FilterViewSwitcher from "@presentation/views/FilterView/FilterViewSwitcher";
 import LanguageSelector from "@presentation/components/LanguageSelector.astro";
 import type { Lang } from "@domain/models/language";
 import { CoordinatorInit } from "@presentation/components/CoordinatorInit";
@@ -12,18 +11,14 @@ const currentLang = (Astro.url.searchParams.get("lang") || "en") as Lang;
 // SSR Response
 const ssrData = await api.fetchSSRData();
 
-// Products (SSR)
+// One ViewModel per page: ProductViewModel owns products, filters, and paging
 const productInitialData = {
   products: ssrData[currentLang].products,
+  filters: ssrData[currentLang].filters,
+  currentFilter: ssrData[currentLang].filters[0],
   isLoading: false,
   currentLang,
-};
-
-//Filters (SSR)
-const initialFilters = {
-  filters: ssrData[currentLang].filters,
-  selectedFilter: null,
-  currentLang,
+  totalPages: 5, // mock value; the fake api has a single page of data
 };
 ---
 
@@ -41,7 +36,6 @@ const initialFilters = {
     <hr />
     <LanguageSelector currentLang={currentLang} />
     <hr />
-    <FilterViewSwitcher client:load initialData={initialFilters} />
     <ProductViewSwitcher client:load initialData={productInitialData} />
     <br />
     <br />

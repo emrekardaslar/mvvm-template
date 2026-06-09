@@ -1,37 +1,30 @@
-import React, { useState } from 'react'
-
-import { PagerViewModel } from '@application/viewmodels/PagerViewModel';
+import React from 'react'
 
 import "./Pager.css";
-import type { PagerViewProps } from '@domain/models/pager';
+import type { ProductViewProps } from '@domain/models/product';
 import { PagerEvents } from '@domain/events/pager';
-import { useViewModel } from '@presentation/hooks/useViewModel';
 
-const Pager: React.FC<PagerViewProps> = ({
-    initialData
-}) =>
-     {
-    const [viewModel] = useState(() => new PagerViewModel(initialData));
-    const { page, totalPages } = useViewModel(viewModel);
-    
+const Pager: React.FC<ProductViewProps> = ({ data, viewModel }) => {
+    const { currentPage, totalPages } = data;
+
     return (
         <div className="pager-container">
             <button
                 className="pager-button"
-                onClick={() => viewModel.runAttachedFunction(PagerEvents.Change, {page: page-1}) }
-                disabled={page === 1}
+                onClick={() => viewModel.dispatchEvent(PagerEvents.Change, { page: currentPage - 1 })}
+                disabled={currentPage === 1}
             >
                 ◀
             </button>
 
             <span className="pager-info">
-                {page} / {totalPages}
+                {currentPage} / {totalPages}
             </span>
 
             <button
                 className="pager-button"
-                onClick={() => viewModel.runAttachedFunction(PagerEvents.Change, { page: page + 1 })}
-                disabled={page === totalPages}
+                onClick={() => viewModel.dispatchEvent(PagerEvents.Change, { page: currentPage + 1 })}
+                disabled={currentPage === totalPages}
             >
                 ▶
             </button>

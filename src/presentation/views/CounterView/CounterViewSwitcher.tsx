@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 import { CounterViewModel } from "@application/viewmodels/CounterViewModel";
 import LangViewSwitcher from "@presentation/components/LangViewSwitcher";

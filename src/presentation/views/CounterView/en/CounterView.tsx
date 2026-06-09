@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 import "../Counter.css";
 import type { CounterViewProps } from "@domain/models/counter";
@@ -15,12 +15,12 @@ const CounterView: React.FC<CounterViewProps> = ({ data, viewModel }) => {
       <div className="counter-buttons">
         <button
           className="counter-button increment"
-          onClick={() => viewModel.runAttachedFunction(CounterEvents.Increment)}>
+          onClick={() => viewModel.dispatchEvent(CounterEvents.Increment)}>
           Increment
         </button>
         <button
           className="counter-button decrement"
-          onClick={() => viewModel.runAttachedFunction(CounterEvents.Decrement)}>
+          onClick={() => viewModel.dispatchEvent(CounterEvents.Decrement)}>
           Decrement
         </button>
       </div>

@@ -33,6 +33,18 @@ src/
 Path aliases (`tsconfig.json` + `astro.config.mjs` + `vitest.config.ts`):
 `@domain/*`, `@application/*`, `@infrastructure/*`, `@presentation/*`.
 
+## One ViewModel per page
+
+Each page has exactly one ViewModel that owns all of the page's state: `ProductViewModel` for the product list page (products, filters, paging) and `ProductDetailViewModel` for the detail page. Sub-views (`FilterView`, `Pager`) are presentational components rendered inside the page view and receive the page's `data` + `viewModel` as props — they never create their own ViewModel.
+
+Views trigger behavior by dispatching named events to the ViewModel:
+
+```tsx
+<button onClick={() => viewModel.dispatchEvent(FilterEvents.Select, { filter })}>
+```
+
+The ViewModel registers handlers for these in its constructor via `registerEvent(name, handler)`.
+
 ## Query Pattern
 
 Shared primitives live in domain: `LANGS` and the `Lang` type (`src/domain/models/language.ts`) are the single source of truth for supported languages — never write the union inline.
@@ -114,7 +126,10 @@ try {
 
 ## Events
 
-Cross-VM messaging goes through `application/events/eventBus.ts`. Event names are constants in `src/domain/events/<feature>.ts` (e.g. `FilterEvents.Changed`) — never inline strings. The coordinator (`application/routing/coordinator.ts`) syncs events with the URL.
+Two event layers, both using name constants from `src/domain/events/<feature>.ts` (never inline strings):
+
+- **View → ViewModel**: `viewModel.dispatchEvent(FilterEvents.Select, ...)` runs handlers registered with `registerEvent`.
+- **ViewModel ↔ URL**: the ViewModel publishes `*.Changed` events on `application/events/eventBus.ts`; the coordinator (`application/routing/coordinator.ts`) writes them to the URL and dispatches them back on browser back/forward, so the ViewModel reacts to history navigation the same way as to user actions.
 
 ## i18n Views
 
