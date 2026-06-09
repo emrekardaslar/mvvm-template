@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import type { BaseViewModel } from '@application/viewmodels/BaseViewModel';
 
 
-export function useViewModel<TData>(viewModel: BaseViewModel<TData>) {
+export function useViewModel<TData>(viewModel: BaseViewModel<TData, any>) {
     const [data, setData] = useState(viewModel.getData());
 
     useEffect(() => {

@@ -24,7 +24,7 @@ src/
 │
 ├── presentation/                    # React views & hooks. No business logic.
 │   ├── views/<Feature>/{en,tr,ar}/  # Per-language view variants
-│   ├── components/                  # Switchers, LanguageSelector.astro, CoordinatorInit
+│   ├── components/                  # MvvmView (view↔VM connector), LanguageSelector.astro, CoordinatorInit
 │   └── hooks/useViewModel.ts
 │
 └── pages/                           # Astro routes (SSR entry points)
@@ -43,7 +43,20 @@ Views trigger behavior by dispatching named events to the ViewModel:
 <button onClick={() => viewModel.dispatchEvent(FilterEvents.Select, { filter })}>
 ```
 
-The ViewModel registers handlers for these in its constructor via `registerEvent(name, handler)`.
+The ViewModel registers handlers for these in its constructor via `registerEvent(name, handler)`. Event names and payloads are compile-checked: each ViewModel declares its event map as the second generic of `BaseViewModel`:
+
+```ts
+export type ProductViewModelEvents = {
+  [FilterEvents.Select]: { filter: string };
+  [PagerEvents.Change]: { page: number };
+};
+
+export class ProductViewModel extends BaseViewModel<ProductData, ProductViewModelEvents> { ... }
+```
+
+A ViewModel that declares no event map (e.g. `ProductDetailViewModel`) statically rejects every `dispatchEvent` call.
+
+Pages connect views to their ViewModel through `MvvmView` (`presentation/components/MvvmView.tsx`): each `<Feature>ViewSwitcher` island passes it the ViewModel class, the SSR initial data, and the view folder name; it constructs the VM, subscribes via `useViewModel`, and resolves the per-language view variant once.
 
 ## Query Pattern
 
@@ -128,14 +141,14 @@ try {
 
 Two event layers, both using name constants from `src/domain/events/<feature>.ts` (never inline strings):
 
-- **View → ViewModel**: `viewModel.dispatchEvent(FilterEvents.Select, ...)` runs handlers registered with `registerEvent`.
+- **View → ViewModel**: `viewModel.dispatchEvent(FilterEvents.Select, ...)` runs handlers registered with `registerEvent`; names and payloads are typed by the VM's event map.
 - **ViewModel ↔ URL**: the ViewModel publishes `*.Changed` events on `application/events/eventBus.ts`; the coordinator (`application/routing/coordinator.ts`) writes them to the URL and dispatches them back on browser back/forward, so the ViewModel reacts to history navigation the same way as to user actions.
 
 ## i18n Views
 
 The language is part of the URL (`?lang=en|tr|ar`) and only changes with a full page load: `LanguageSelector.astro` renders plain links, and each Astro page reads `Astro.url.searchParams` to SSR in the requested language. There is no client-side language switching — no language events, no language ViewModel.
 
-Views live under `presentation/views/<Feature>/{en,tr,ar}/`. The matching `<Feature>ViewSwitcher` selects the variant via `import.meta.glob` based on the `currentLang` passed in from SSR.
+Views live under `presentation/views/<Feature>/{en,tr,ar}/`. `MvvmView` selects the variant via `import.meta.glob` (`viewMap.ts`) based on the `currentLang` passed in from SSR — resolved once per page load. Views without language variants (e.g. `ProductDetailView`) resolve through the same mechanism's fallback path (`views/<Feature>/<Feature>.tsx`).
 
 ## Commands
 

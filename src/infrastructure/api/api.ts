@@ -36,18 +36,6 @@ const mockData: SSRResponse = {
     ],
     filters: ["الكل", "إلكترونيات", "ملابس", "مطبخ"],
   },
-  banner: {
-    title: "Static Banner",
-    subtitle: "Static component that wont rerender",
-    backgroundColor: "#0078D4",
-    textColor: "#FFFFFF",
-  },
-  banner2: {
-    title: "Another Banner",
-    subtitle: "Test if css is imported once",
-    backgroundColor: "#008000",
-    textColor: "#FFFFFF",
-  }
 };
 
 const api = {

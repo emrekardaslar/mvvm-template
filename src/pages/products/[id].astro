@@ -2,7 +2,7 @@
 import type { Lang } from "@domain/models/language";
 import { ProductDetailViewModel } from "@application/viewmodels/ProductDetailViewModel";
 import LanguageSelector from "@presentation/components/LanguageSelector.astro";
-import ProductDetailView from "@presentation/views/ProductDetailView/ProductDetailView";
+import ProductDetailViewSwitcher from "@presentation/views/ProductDetailView/ProductDetailViewSwitcher";
 import { CoordinatorInit } from "@presentation/components/CoordinatorInit";
 
 // Extract the product ID from the URL
@@ -32,7 +32,7 @@ const initialData = productDetailViewModel.getData();
     <CoordinatorInit client:load />
     <LanguageSelector currentLang={currentLang} />
     <hr />
-    <ProductDetailView
+    <ProductDetailViewSwitcher
       client:load
       initialData={initialData}
     />

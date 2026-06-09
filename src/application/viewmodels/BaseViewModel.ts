@@ -1,7 +1,14 @@
-export class BaseViewModel<TData> {
+/**
+ * Base class for all ViewModels.
+ * @typeParam TData The shape of the ViewModel's state.
+ * @typeParam TEvents A map of event name → payload type for events the views
+ * may dispatch. Defaults to no events, so `dispatchEvent` is statically
+ * unusable unless the subclass declares its event map.
+ */
+export class BaseViewModel<TData, TEvents extends Record<string, unknown> = Record<string, never>> {
   protected data: TData;
   private listeners: Set<() => void> = new Set();
-  private eventListener: Map<string, ((payload?: any) => void)[]> = new Map();
+  private eventListener: Map<keyof TEvents, ((payload: any) => void)[]> = new Map();
   private fetchSeq = 0;
 
   /**
@@ -28,6 +35,7 @@ export class BaseViewModel<TData> {
     this.data = { ...this.data, ...newData };
     this.notifyListeners();
   }
+
   /**
    * Marks the start of a fetch and returns its id.
    * Pass the id to isCurrentFetch after awaiting to detect stale responses.
@@ -66,10 +74,11 @@ export class BaseViewModel<TData> {
 
   /**
    * Dispatches an event to the ViewModel, executing all handlers registered for it.
+   * The event name and payload are checked against the ViewModel's event map.
    * @param eventName The name of the event to dispatch.
-   * @param payload Optional data to pass to the handlers.
+   * @param payload The payload declared for this event in the event map.
    */
-  public dispatchEvent(eventName: string, payload?: any) {
+  public dispatchEvent<K extends keyof TEvents>(eventName: K, payload: TEvents[K]) {
     const handlers = this.eventListener.get(eventName);
     if (handlers) {
       handlers.forEach((handler) => handler(payload));
@@ -81,12 +90,13 @@ export class BaseViewModel<TData> {
    * @param eventName The name of the event to listen for.
    * @param handler The function to execute when the event is dispatched.
    */
-  protected registerEvent(eventName: string, handler: (payload?: any) => void) {
+  protected registerEvent<K extends keyof TEvents>(eventName: K, handler: (payload: TEvents[K]) => void) {
     if (!this.eventListener.has(eventName)) {
       this.eventListener.set(eventName, []);
     }
     this.eventListener.get(eventName)?.push(handler);
   }
+
   /**
    * Lifecycle method called when the associated View component mounts.
    * To be overridden by subclasses for initialization logic.

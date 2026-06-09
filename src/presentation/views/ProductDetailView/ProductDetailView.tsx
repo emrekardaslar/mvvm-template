@@ -1,16 +1,8 @@
-import React, { useState } from "react";
-import { ProductDetailViewModel, type ProductDetailData } from "@application/viewmodels/ProductDetailViewModel";
+import React from "react";
+import type { ProductDetailViewProps } from "@domain/models/productDetail";
 import { prTexts } from "./productTexts";
-import { useViewModel } from "@presentation/hooks/useViewModel";
 
-interface ProductDetailViewProps {
-  initialData: ProductDetailData;
-}
-
-const ProductDetailView: React.FC<ProductDetailViewProps> = ({ initialData }) => { 
-  const [viewModel] = useState(() => new ProductDetailViewModel(initialData));
-  const data = useViewModel(viewModel);   
-
+const ProductDetailView: React.FC<ProductDetailViewProps> = ({ data }) => {
   if (data.error) {
     return <div dir={data.currentLang === 'ar' ? 'rtl' : 'ltr'}>{prTexts.loadError[data.currentLang]}: {data.error}</div>;
   }

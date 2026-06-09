@@ -1,16 +1,8 @@
 
-import type { Product } from "@domain/models/product";
-import type { Lang } from "@domain/models/language";
+import type { ProductDetailData } from "@domain/models/productDetail";
 import { GetProductDetailQuery, type GetProductDetailParams } from "@application/queries/GetProductDetailQuery";
 import { runQuery } from "@infrastructure/runQuery";
 import { BaseViewModel } from "./BaseViewModel";
-
-export interface ProductDetailData {
-  product: Product | undefined;
-  isLoading: boolean;
-  currentLang: Lang;
-  error: string | null;
-}
 
 export class ProductDetailViewModel extends BaseViewModel<ProductDetailData> {
   constructor(initialData?: Partial<ProductDetailData>) {

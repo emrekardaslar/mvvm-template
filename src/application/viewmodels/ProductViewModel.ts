@@ -8,10 +8,16 @@ import eventBus from "../events/eventBus";
 import { BaseViewModel } from "./BaseViewModel";
 
 
+/** Events the product page views may dispatch, with their payloads. */
+export type ProductViewModelEvents = {
+  [FilterEvents.Select]: { filter: string };
+  [PagerEvents.Change]: { page: number };
+};
+
 /**
  * Page ViewModel for the product list page: owns products, filters, and paging.
  */
-export class ProductViewModel extends BaseViewModel<ProductData> {
+export class ProductViewModel extends BaseViewModel<ProductData, ProductViewModelEvents> {
   constructor(initialData?: Partial<ProductData>) {
     super({
       products: initialData?.products || [],
