@@ -1,6 +1,8 @@
 ---
 import api from "@infrastructure/api/api";
-import ProductViewSwitcher from "@presentation/views/ProductView/ProductViewSwitcher";
+import ProductViewEn from "@presentation/views/ProductView/en/ProductView";
+import ProductViewTr from "@presentation/views/ProductView/tr/ProductView";
+import ProductViewAr from "@presentation/views/ProductView/ar/ProductView";
 import LanguageSelector from "@presentation/components/LanguageSelector.astro";
 import type { Lang } from "@domain/models/language";
 import { CoordinatorInit } from "@presentation/components/CoordinatorInit";
@@ -36,7 +38,9 @@ const productInitialData = {
     <hr />
     <LanguageSelector currentLang={currentLang} />
     <hr />
-    <ProductViewSwitcher client:load initialData={productInitialData} />
+    {currentLang === "en" && <ProductViewEn client:load initialData={productInitialData} />}
+    {currentLang === "tr" && <ProductViewTr client:load initialData={productInitialData} />}
+    {currentLang === "ar" && <ProductViewAr client:load initialData={productInitialData} />}
     <br />
     <br />
   </body>

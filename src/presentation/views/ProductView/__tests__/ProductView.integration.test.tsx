@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import React from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { act } from 'react';
-import ProductView from '../en/ProductView';
+import { ProductView } from '../en/ProductView';
 import { ProductViewModel } from '@application/viewmodels/ProductViewModel';
 
 // Opt into React's act() support for this DOM-rendering test.

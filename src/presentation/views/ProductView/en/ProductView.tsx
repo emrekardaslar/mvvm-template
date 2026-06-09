@@ -1,11 +1,13 @@
 import React from "react";
 
 import "../ProductList.css";
-import type { ProductViewProps } from "@domain/models/product";
+import { ProductViewModel } from "@application/viewmodels/ProductViewModel";
+import type { ProductData, ProductViewProps } from "@domain/models/product";
+import MvvmView from "@presentation/components/MvvmView";
 import FilterView from "../../FilterView/en/FilterView";
 import Pager from "../../PagerView/Pager";
 
-const ProductView: React.FC<ProductViewProps> = ({ data, viewModel }) => {
+export const ProductView: React.FC<ProductViewProps> = ({ data, viewModel }) => {
   return (
     <div>
       <FilterView data={data} viewModel={viewModel} />
@@ -27,4 +29,9 @@ const ProductView: React.FC<ProductViewProps> = ({ data, viewModel }) => {
   );
 };
 
-export default ProductView;
+// Island entry: constructs the ViewModel and renders this view.
+const ProductViewIsland: React.FC<{ initialData: Partial<ProductData> }> = ({ initialData }) => (
+  <MvvmView View={ProductView} ViewModelClass={ProductViewModel} initialData={initialData} />
+);
+
+export default ProductViewIsland;
