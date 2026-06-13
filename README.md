@@ -21,7 +21,7 @@ Path aliases: `@domain/*`, `@application/*`, `@infrastructure/*`, `@presentation
 
 ## One ViewModel per page
 
-Each page has exactly one ViewModel that owns all of its state. `MvvmView` constructs it once (client-side) and renders the view. `BaseViewModel<TData, TEvents>` provides the reactive core: `getData()`, `subscribe()`, a protected `setData()`, a typed event map, and a fetch race-guard (`beginFetch` / `isCurrentFetch`).
+Each page has exactly one ViewModel that owns all of its state. `MvvmView` constructs it once (client-side) and renders the view. `BaseViewModel<TData, TEvents>` provides the reactive core: `getData()`, `subscribe()`, a protected `setData()`, and a typed event map.
 
 As a VM grows, its behavior is split into **mixins** merged onto the prototype (patterns.dev object-mixin style) so the class stays readable. Mixins are registered in one place, which keeps the VM class itself untouched when behavior is added.
 
@@ -36,7 +36,7 @@ Views trigger behavior by dispatching named, type-checked events to the VM (`dis
 ViewModels don't touch repositories or the api directly. They construct a query and run it through a single dispatcher:
 
 - A **query** describes what's needed and builds its own params by reading the active ViewModel — so call sites don't hand-assemble params.
-- **`runQuery`** dispatches the query to its repository, and owns the cross-cutting concerns: it toggles the loading flag and writes any error against the active VM, so call sites never repeat `try/catch` or loading bookkeeping. The latest-wins race guard stays in the VM (it's a VM policy).
+- **`runQuery`** dispatches the query to its repository, and owns the cross-cutting concerns: it toggles the loading flag and writes any error against the active VM, so call sites never repeat `try/catch` or loading bookkeeping.
 - **`queryRegistry`** is the single table mapping each query key to the repository function that fulfils it. Repositories are thin: one function mapping params → api call.
 
 ### `getViewModel()` — a plain accessor, not a hook

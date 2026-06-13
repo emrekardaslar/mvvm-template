@@ -11,7 +11,6 @@ export class BaseViewModel<TData, TEvents extends Record<string, unknown> = Reco
   protected data: TData;
   private listeners: Set<() => void> = new Set();
   private eventListener: Map<keyof TEvents, ((payload: any) => void)[]> = new Map();
-  private fetchSeq = 0;
 
   /**
    * Creates an instance of BaseViewModel.
@@ -58,22 +57,6 @@ export class BaseViewModel<TData, TEvents extends Record<string, unknown> = Reco
    */
   public setLoading(loading: boolean, key: keyof TData = "isLoading" as keyof TData) {
     this.setData({ [key]: loading } as unknown as Partial<TData>);
-  }
-
-  /**
-   * Marks the start of a fetch and returns its id.
-   * Pass the id to isCurrentFetch after awaiting to detect stale responses.
-   */
-  protected beginFetch(): number {
-    return ++this.fetchSeq;
-  }
-
-  /**
-   * Returns true if no newer fetch has started since `id` was issued.
-   * @param id The id returned by beginFetch.
-   */
-  protected isCurrentFetch(id: number): boolean {
-    return id === this.fetchSeq;
   }
 
   /**

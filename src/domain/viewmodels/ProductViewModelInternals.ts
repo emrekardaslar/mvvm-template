@@ -15,8 +15,6 @@ export interface ProductViewModelInternals {
     eventName: K,
     handler: (payload: ProductViewModelEvents[K]) => void,
   ): void;
-  beginFetch(): number;
-  isCurrentFetch(id: number): boolean;
   // Product-list behavior owned by ProductViewModel; the Pager/Filters mixins
   // trigger a refetch through it.
   fetchProducts(override?: { filter?: string | null; page?: number }): void;

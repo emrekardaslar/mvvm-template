@@ -148,26 +148,6 @@ describe('ProductViewModel', () => {
     expect(viewModel.getData().error).toBe(null);
   });
 
-  it('should ignore a stale response when a newer fetch has started', async () => {
-    const stale = [{ id: 1, name: 'Stale', category: 'A' }];
-    const fresh = [{ id: 2, name: 'Fresh', category: 'B' }];
-    let resolveFirst!: (products: typeof stale) => void;
-    vi.mocked(api.fetchProducts)
-      .mockImplementationOnce(() => new Promise((resolve) => { resolveFirst = resolve; }) as any)
-      .mockImplementationOnce(() => Promise.resolve(fresh) as any);
-
-    eventBus.dispatch(FilterEvents.Changed, { filter: 'Category A' }); // slow request
-    eventBus.dispatch(FilterEvents.Changed, { filter: 'Category B' }); // fast request
-    await vi.runAllTimersAsync();
-    expect(viewModel.getData().products).toEqual(fresh);
-
-    resolveFirst(stale); // slow request finishes last
-    await vi.runAllTimersAsync();
-
-    expect(viewModel.getData().products).toEqual(fresh);
-    expect(viewModel.getData().isLoading).toBe(false);
-  });
-
   it('should set error when fetchFilters() fails', async () => {
     vi.mocked(api.fetchFilters).mockRejectedValueOnce(new Error('boom'));
     const freshViewModel = new ProductViewModel();

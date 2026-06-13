@@ -62,12 +62,8 @@ export class ProductViewModel extends BaseViewModel<ProductData, ProductViewMode
       currentFilter: override.filter ?? this.data.currentFilter,
       currentPage: override.page ?? this.data.currentPage,
     });
-    const fetchId = this.beginFetch();
     runQuery(new GetProductsQuery()).then((products) => {
-      // Latest-wins: ignore a stale response superseded by a newer fetch.
-      if (products && this.isCurrentFetch(fetchId)) {
-        this.setData({ products, error: null });
-      }
+      if (products) this.setData({ products, error: null });
     });
   }
 }
