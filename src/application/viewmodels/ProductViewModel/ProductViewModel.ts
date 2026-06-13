@@ -46,10 +46,7 @@ export class ProductViewModel extends BaseViewModel<ProductData, ProductViewMode
     this.initHpl();
   }
 
-  public override async onMount() {
-    if (this.data.filters.length === 0) {
-      await this.fetchFilters();
-    }
+  public override onMount() {
     if (this.data.hplProducts.length === 0) {
       this.fetchHpl();
     }

@@ -35,9 +35,14 @@ describe('ProductViewModel', () => {
 
   beforeEach(async () => {
     vi.useFakeTimers();
-    viewModel = new ProductViewModel(); // constructor wires events + bus listeners
-    viewModel.onMount(); // triggers the initial filter fetch
-    await vi.runAllTimersAsync(); // Let the mount-time filter fetch settle
+    // Filters come from SSR initialData (as on the real page), not a mount fetch.
+    viewModel = new ProductViewModel({
+      filters: ['All', 'Category A', 'Category B'],
+      currentFilter: 'All',
+      currentLang: 'en',
+    });
+    viewModel.onMount();
+    await vi.runAllTimersAsync(); // let the mount-time HPL fetch settle
     vi.clearAllMocks();
   });
 
@@ -56,8 +61,8 @@ describe('ProductViewModel', () => {
     freshViewModel.onUnmount(); // dispose: the constructor subscribed to the bus
   });
 
-  it('should fetch filters on mount and default the selected filter to the first one', () => {
-    // beforeEach already mounted; the fetched filters are in place
+  it('uses the SSR-provided filters with the first as the selected filter', () => {
+    // Filters are seeded from initialData (SSR), not fetched on mount.
     expect(viewModel.getData().filters).toEqual(['All', 'Category A', 'Category B']);
     expect(viewModel.getData().currentFilter).toBe('All');
   });
@@ -162,11 +167,12 @@ describe('ProductViewModel', () => {
     expect(viewModel.getData().isLoading).toBe(false);
   });
 
-  it('should set error when fetching filters fails', async () => {
+  it('should set error when fetchFilters() fails', async () => {
     vi.mocked(api.fetchFilters).mockRejectedValueOnce(new Error('boom'));
     const freshViewModel = new ProductViewModel();
 
-    freshViewModel.onMount();
+    // fetchFilters is no longer auto-called on mount; invoke it directly.
+    await freshViewModel.fetchFilters();
     await vi.runAllTimersAsync();
 
     expect(freshViewModel.getData().error).toBe('boom');
