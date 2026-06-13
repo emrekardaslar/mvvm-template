@@ -1,19 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging --
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging,
+   @typescript-eslint/no-empty-object-type --
    ProductViewModel composes behavior from object mixins merged onto the
    prototype via Object.assign; the same-named interface declares those merged
-   methods so callers see them. The class/interface merge is intentional here. */
+   methods (via ProductMixins) so callers see them. The empty interface body and
+   the class/interface merge are both intentional here. */
 import type { ProductData } from "@domain/models/product";
 import { GetProductsQuery } from "@application/queries/GetProductsQuery";
 import { runQuery } from "@infrastructure/runQuery";
 import { BaseViewModel } from "../BaseViewModel";
-import { PagerMixin } from "./mixins/Pager";
-import { FiltersMixin } from "./mixins/Filters";
-import { ComponentsMixin } from "./mixins/Components";
-import type {
-  PagerMixin as PagerMixinContract,
-  FiltersMixin as FiltersMixinContract,
-  ComponentsMixin as ComponentsMixinContract,
-} from "@domain/viewmodels/mixins";
+import { productMixins, type ProductMixins } from "./mixins";
 import type { ProductViewModelEvents } from "@domain/events/productViewModelEvents";
 
 export type { ProductViewModelEvents } from "@domain/events/productViewModelEvents";
@@ -76,9 +71,6 @@ export class ProductViewModel extends BaseViewModel<ProductData, ProductViewMode
 
 // Declaration-merge the mixin method signatures onto the class type, then merge
 // the implementations onto the prototype at runtime.
-export interface ProductViewModel
-  extends PagerMixinContract,
-    FiltersMixinContract,
-    ComponentsMixinContract {}
+export interface ProductViewModel extends ProductMixins {}
 
-Object.assign(ProductViewModel.prototype, PagerMixin, FiltersMixin, ComponentsMixin);
+Object.assign(ProductViewModel.prototype, ...productMixins);
