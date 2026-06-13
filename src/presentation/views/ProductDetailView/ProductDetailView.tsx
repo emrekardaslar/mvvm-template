@@ -1,8 +1,16 @@
 import React from "react";
-import type { ProductDetailViewProps } from "@domain/models/productDetail";
+import type { ProductDetailViewModel } from "@application/viewmodels/ProductDetailViewModel";
+import { useViewModelSelector } from "@presentation/hooks/useViewModelSelector";
 import { prTexts } from "./productTexts";
 
-const ProductDetailView: React.FC<ProductDetailViewProps> = ({ data }) => {
+interface ProductDetailViewProps {
+  viewModel: ProductDetailViewModel;
+}
+
+const ProductDetailView: React.FC<ProductDetailViewProps> = ({ viewModel }) => {
+  // The detail view reads the whole record; select it as a single slice.
+  const data = useViewModelSelector(viewModel, (vm) => vm.getData());
+
   if (data.error) {
     return <div dir={data.currentLang === 'ar' ? 'rtl' : 'ltr'}>{prTexts.loadError[data.currentLang]}: {data.error}</div>;
   }

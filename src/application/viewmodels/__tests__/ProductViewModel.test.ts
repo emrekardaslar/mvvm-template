@@ -33,8 +33,8 @@ describe('ProductViewModel', () => {
 
   beforeEach(async () => {
     vi.useFakeTimers();
-    viewModel = new ProductViewModel();
-    viewModel.onMount(); // Mount the view model to register event listeners
+    viewModel = new ProductViewModel(); // constructor wires events + bus listeners
+    viewModel.onMount(); // triggers the initial filter fetch
     await vi.runAllTimersAsync(); // Let the mount-time filter fetch settle
     vi.clearAllMocks();
   });
@@ -51,6 +51,7 @@ describe('ProductViewModel', () => {
     expect(data.isLoading).toBe(false);
     expect(data.currentFilter).toBe(null);
     expect(data.currentPage).toBe(1);
+    freshViewModel.onUnmount(); // dispose: the constructor subscribed to the bus
   });
 
   it('should fetch filters on mount and default the selected filter to the first one', () => {

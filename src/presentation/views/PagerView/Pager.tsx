@@ -1,11 +1,18 @@
 import React from 'react'
 
 import "./Pager.css";
-import type { ProductViewProps } from '@domain/models/product';
+import type { ProductViewModel } from '@application/viewmodels/ProductViewModel';
 import { PagerEvents } from '@domain/events/pager';
+import { useViewModelSelector } from '@presentation/hooks/useViewModelSelector';
 
-const Pager: React.FC<ProductViewProps> = ({ data, viewModel }) => {
-    const { currentPage, totalPages } = data;
+interface PagerProps {
+    viewModel: ProductViewModel;
+}
+
+// Pager selects only the paging slice, so its own subscription re-renders it
+// when currentPage/totalPages change rather than on every unrelated VM update.
+const Pager: React.FC<PagerProps> = ({ viewModel }) => {
+    const { currentPage, totalPages } = useViewModelSelector(viewModel, (vm) => vm.getPager());
 
     return (
         <div className="pager-container">
@@ -30,6 +37,6 @@ const Pager: React.FC<ProductViewProps> = ({ data, viewModel }) => {
             </button>
         </div>
     );
-}
+};
 
 export default Pager

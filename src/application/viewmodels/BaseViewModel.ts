@@ -1,3 +1,5 @@
+import { setViewModel } from "./viewModelRegistry";
+
 /**
  * Base class for all ViewModels.
  * @typeParam TData The shape of the ViewModel's state.
@@ -17,6 +19,9 @@ export class BaseViewModel<TData, TEvents extends Record<string, unknown> = Reco
    */
   constructor(initialData: TData) {
     this.data = initialData;
+    // Register as the active page ViewModel so queries can read it via
+    // getViewModel() to build their params. One VM is active per page.
+    setViewModel(this);
   }
 
   /**

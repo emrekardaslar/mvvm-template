@@ -1,23 +1,40 @@
 import React from "react";
 
 import "../Filter.css";
-import type { ProductViewProps } from "@domain/models/product";
+import type { ProductViewModel } from "@application/viewmodels/ProductViewModel";
 import { FilterEvents } from "@domain/events/filter";
+import { useViewModelSelector } from "@presentation/hooks/useViewModelSelector";
 
-const FilterView: React.FC<ProductViewProps> = ({ data, viewModel }) => {
+interface FilterViewProps {
+  viewModel: ProductViewModel;
+}
+
+// Selects only the filter slice, so "Load more filters" re-renders this panel
+// but not the product list (which selects a different slice).
+const FilterView: React.FC<FilterViewProps> = ({ viewModel }) => {
+  const { filters, currentFilter, moreFiltersLoading, moreFiltersLoaded } = useViewModelSelector(viewModel, (vm) => vm.getFilters());
+
   return (
     <div className="filter-container">
       <h3>Filters</h3>
       <div className="filter-buttons">
-        {data?.filters?.map((filter) => (
+        {filters.map((filter) => (
           <button
             key={filter}
             onClick={() => viewModel.dispatchEvent(FilterEvents.Select, { filter })}
-            className={`filter-button ${data.currentFilter === filter ? "selected" : ""}`}>
+            className={`filter-button ${currentFilter === filter ? "selected" : ""}`}>
             {filter}
           </button>
         ))}
       </div>
+      {!moreFiltersLoaded && (
+        <button
+          className="filter-load-more"
+          onClick={() => viewModel.dispatchEvent(FilterEvents.LoadMore, undefined)}
+          disabled={moreFiltersLoading}>
+          {moreFiltersLoading ? "Loading…" : "Load more filters"}
+        </button>
+      )}
     </div>
   );
 };

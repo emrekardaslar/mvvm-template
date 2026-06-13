@@ -10,6 +10,8 @@ export interface ProductViewProps {
 export interface ProductData {
   products: Product[];
   filters: string[];
+  moreFiltersLoading: boolean;
+  moreFiltersLoaded: boolean;
   isLoading: boolean;
   currentLang: Lang;
   currentFilter: string | null;
@@ -24,4 +26,24 @@ export interface Product {
   category: string;
   description: string;
   price: number;
+}
+
+/** View-facing slices: each is what one view component reads from the VM. */
+export interface ProductListSlice {
+  products: Product[];
+  isLoading: boolean;
+  error: string | null;
+  currentLang: Lang;
+}
+
+export interface FiltersSlice {
+  filters: string[];
+  currentFilter: string | null;
+  moreFiltersLoading: boolean;
+  moreFiltersLoaded: boolean;
+}
+
+export interface PagerSlice {
+  currentPage: number;
+  totalPages: number;
 }

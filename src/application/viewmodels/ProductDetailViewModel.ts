@@ -1,6 +1,6 @@
 
 import type { ProductDetailData } from "@domain/models/productDetail";
-import { GetProductDetailQuery, type GetProductDetailParams } from "@application/queries/GetProductDetailQuery";
+import { GetProductDetailQuery } from "@application/queries/GetProductDetailQuery";
 import { runQuery } from "@infrastructure/runQuery";
 import { BaseViewModel } from "./BaseViewModel";
 
@@ -14,21 +14,14 @@ export class ProductDetailViewModel extends BaseViewModel<ProductDetailData> {
     });
   }
 
-  public async fetchProduct(override: Partial<GetProductDetailParams> = {}) {
-    const params: GetProductDetailParams = {
-      id: this.data.product?.id as number,
-      lang: this.data.currentLang,
-      ...override,
-    };
+  // `id` comes from the route; the query reads `lang` from this VM.
+  public fetchProduct(id: number) {
     const fetchId = this.beginFetch();
-    this.setData({ isLoading: true, error: null, currentLang: params.lang });
-    try {
-      const product = await runQuery(new GetProductDetailQuery(params));
-      if (!this.isCurrentFetch(fetchId)) return;
-      this.setData({ product, isLoading: false });
-    } catch (e) {
-      if (!this.isCurrentFetch(fetchId)) return;
-      this.setData({ error: e instanceof Error ? e.message : String(e), isLoading: false });
-    }
+    return runQuery(new GetProductDetailQuery(id), {
+      onLoading: (isLoading) => this.setData({ isLoading }),
+      onError: (error) => this.setData({ error }),
+    }).then((product) => {
+      if (this.isCurrentFetch(fetchId)) this.setData({ product, error: null });
+    });
   }
 }

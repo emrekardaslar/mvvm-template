@@ -15,7 +15,7 @@ const productDetailViewModel = new ProductDetailViewModel(
 );
 
 // Fetch initial data for SSR
-await productDetailViewModel.fetchProduct({ id: productId, lang: currentLang });
+await productDetailViewModel.fetchProduct(productId);
 const initialData = productDetailViewModel.getData();
 
 ---

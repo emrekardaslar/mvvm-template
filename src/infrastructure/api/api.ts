@@ -2,7 +2,7 @@ import type { Product } from "@domain/models/product";
 import type { Lang } from "@domain/models/language";
 import type { SSRResponse } from "@domain/models/ssr";
 
-let timeoutForApis = 0;
+const timeoutForApis = 0;
 
 const mockData: SSRResponse = {
   en: {
@@ -65,6 +65,21 @@ const api = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(mockData[lang].filters);
+      }, timeoutForApis); // Simulate network delay
+    });
+  },
+
+  // A separate "source" for additional filters, distinct from fetchFilters.
+  fetchMoreFilters: (lang: Lang = "en"): Promise<string[]> => {
+    console.log(`Fetching more filters with lang: ${lang}`);
+    const extra: Record<Lang, string[]> = {
+      en: ["Books", "Toys", "Garden"],
+      tr: ["Kitaplar", "Oyuncaklar", "Bahçe"],
+      ar: ["كتب", "ألعاب", "حديقة"],
+    };
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(extra[lang]);
       }, timeoutForApis); // Simulate network delay
     });
   },
