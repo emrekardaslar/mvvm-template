@@ -1,30 +1,29 @@
 import React from "react";
 
-import "../ProductList.css";
 import { ProductViewModel } from "@application/viewmodels/ProductViewModel";
-import type { ProductData, ProductViewProps } from "@domain/models/product";
+import type { ProductData } from "@domain/models/product";
 import MvvmView from "@presentation/components/MvvmView";
 import FilterView from "../../FilterView/ar/FilterView";
-import Pager from "../../PagerView/Pager";
+import ProductList from "../ProductList";
+import HorizontalProductList from "../HorizontalProductList";
+import CategoryStats from "../CategoryStats";
 
-const ProductView: React.FC<ProductViewProps> = ({ data, viewModel }) => {
+const ProductView: React.FC<{ viewModel: ProductViewModel }> = ({ viewModel }) => {
   return (
-    <div dir="rtl">
-      <FilterView data={data} viewModel={viewModel} />
-      <div className={`product-list-container ${data.isLoading ? 'loading' : ''}`}>
-        <h3>المنتجات</h3>
-        {data.error && <p className="product-list-error">فشل تحميل المنتجات: {data.error}</p>}
-        <ul className="product-list">
-          {data.products.map((product) => (
-            <li key={product.id} className="product-item">
-              <a href={`/products/${product.id}?lang=${data.currentLang}`}>
-              {product.name} ({product.category})
-              </a>
-            </li>
-          ))}
-        </ul>
-        <Pager data={data} viewModel={viewModel} />
-      </div>
+    <div className="product-view" dir="rtl">
+      <FilterView viewModel={viewModel} />
+      <CategoryStats
+        viewModel={viewModel}
+        heading="نظرة عامة على الفئات"
+        labels={{ count: "العناصر", avg: "متوسط السعر", total: "القيمة الإجمالية" }}
+      />
+      <HorizontalProductList viewModel={viewModel} heading="عروض مميزة" />
+      <ProductList
+        viewModel={viewModel}
+        heading="المنتجات"
+        errorPrefix="فشل تحميل المنتجات"
+        renderCategory={(category) => <>({category})</>}
+      />
     </div>
   );
 };

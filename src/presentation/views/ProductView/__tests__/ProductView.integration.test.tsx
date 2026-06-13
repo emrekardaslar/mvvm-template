@@ -11,19 +11,24 @@ import { ProductViewModel } from '@application/viewmodels/ProductViewModel';
 vi.mock('@infrastructure/api/api', () => ({
   default: {
     fetchProducts: vi.fn(async (_lang, filter) => [{ id: 99, name: `for-${filter}`, category: 'X' }]),
-    fetchFilters: vi.fn(async () => ['All', 'Electronics', 'Apparel']),
+    fetchMoreFilters: vi.fn(async () => ['Books', 'Toys']),
+    fetchHpl: vi.fn(async (_lang, filter) => [
+      { id: 9001, name: `hpl-for-${filter}`, category: 'X', price: 10, discountPercent: 20, rating: 4.5 },
+    ]),
+    fetchCategoryStats: vi.fn(async () => [
+      { category: 'X', count: 1, averagePrice: 10, totalValue: 10 },
+    ]),
   },
 }));
 
-// Bridge component mirroring what MvvmView does: subscribe to the VM and re-render.
+// Bridge mirroring MvvmView: own the VM lifecycle. It does NOT subscribe or pass
+// data down — the view's leaf components subscribe to their own slices.
 function Harness({ vm }: { vm: ProductViewModel }) {
-  const [, force] = React.useReducer((x) => x + 1, 0);
   React.useEffect(() => {
-    const unsub = vm.subscribe(() => force());
     vm.onMount();
-    return () => { unsub(); vm.onUnmount(); };
+    return () => vm.onUnmount();
   }, [vm]);
-  return <ProductView data={vm.getData()} viewModel={vm} />;
+  return <ProductView viewModel={vm} />;
 }
 
 describe('ProductView interactivity', () => {
@@ -72,5 +77,29 @@ describe('ProductView interactivity', () => {
     await act(async () => { next.click(); });
 
     expect(vm.getData().currentPage).toBe(2);
+  });
+
+  it('appends filters on "load more" without changing the products reference', async () => {
+    await act(async () => { root.render(<Harness vm={vm} />); });
+
+    const productsBefore = vm.getData().products;
+
+    const loadMore = container.querySelector('.filter-load-more') as HTMLButtonElement;
+    expect(loadMore).toBeTruthy();
+
+    await act(async () => { loadMore.click(); });
+
+    // New filters appended...
+    expect(vm.getData().filters).toEqual(['All', 'Electronics', 'Apparel', 'Books', 'Toys']);
+    // ...and the products slice is the SAME reference, so a component selecting
+    // products would not re-render.
+    expect(vm.getData().products).toBe(productsBefore);
+
+    // The new filter is rendered in the DOM.
+    const rendered = Array.from(container.querySelectorAll('.filter-button')).map((b) => b.textContent);
+    expect(rendered).toContain('Books');
+
+    // ...and the load-more button is gone once the extra filters are loaded.
+    expect(container.querySelector('.filter-load-more')).toBeNull();
   });
 });

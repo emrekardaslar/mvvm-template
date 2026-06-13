@@ -1,3 +1,5 @@
+import { setViewModel } from "./viewModelRegistry";
+
 /**
  * Base class for all ViewModels.
  * @typeParam TData The shape of the ViewModel's state.
@@ -9,7 +11,6 @@ export class BaseViewModel<TData, TEvents extends Record<string, unknown> = Reco
   protected data: TData;
   private listeners: Set<() => void> = new Set();
   private eventListener: Map<keyof TEvents, ((payload: any) => void)[]> = new Map();
-  private fetchSeq = 0;
 
   /**
    * Creates an instance of BaseViewModel.
@@ -17,6 +18,9 @@ export class BaseViewModel<TData, TEvents extends Record<string, unknown> = Reco
    */
   constructor(initialData: TData) {
     this.data = initialData;
+    // Register as the active page ViewModel so queries can read it via
+    // getViewModel() to build their params. One VM is active per page.
+    setViewModel(this);
   }
 
   /**
@@ -37,19 +41,22 @@ export class BaseViewModel<TData, TEvents extends Record<string, unknown> = Reco
   }
 
   /**
-   * Marks the start of a fetch and returns its id.
-   * Pass the id to isCurrentFetch after awaiting to detect stale responses.
+   * Sets the ViewModel's error message. Public so the query runner can write a
+   * common error to the active ViewModel without each call site handling it.
+   * VMs whose data has no `error` field simply ignore the write at runtime.
    */
-  protected beginFetch(): number {
-    return ++this.fetchSeq;
+  public setError(message: string) {
+    this.setData({ error: message } as unknown as Partial<TData>);
   }
 
   /**
-   * Returns true if no newer fetch has started since `id` was issued.
-   * @param id The id returned by beginFetch.
+   * Toggles a loading flag. Public so the query runner can manage loading
+   * without each call site passing a callback. Defaults to `isLoading`; pass a
+   * different key for a flag that should not dim other consumers (e.g. a
+   * "load more" flag the product list does not read).
    */
-  protected isCurrentFetch(id: number): boolean {
-    return id === this.fetchSeq;
+  public setLoading(loading: boolean, key: keyof TData = "isLoading" as keyof TData) {
+    this.setData({ [key]: loading } as unknown as Partial<TData>);
   }
 
   /**

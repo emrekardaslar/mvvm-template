@@ -1,19 +1,44 @@
 import type { BaseQuery } from "@application/queries/BaseQuery";
-import { QueryKeys, type QueryKey } from "@domain/queries/keys";
-import productListRepository from "./repositories/productListRepository";
-import filterRepository from "./repositories/filterRepository";
-import productDetailRepository from "./repositories/productDetailRepository";
+import type { QueryKey } from "@domain/queries/keys";
+import { getViewModel } from "@application/viewmodels/viewModelRegistry";
+import { queryHandlers } from "./queryRegistry";
 
-const handlers: Record<QueryKey, (params: any) => Promise<any>> = {
-  [QueryKeys.GetProducts]: (params) => productListRepository.run(QueryKeys.GetProducts, params),
-  [QueryKeys.GetFilters]: (params) => filterRepository.run(QueryKeys.GetFilters, params),
-  [QueryKeys.GetProductDetail]: (params) => productDetailRepository.run(QueryKeys.GetProductDetail, params),
-};
+export interface RunQueryOptions {
+  /**
+   * Which loading flag on the active ViewModel to toggle around the fetch.
+   * Defaults to "isLoading". Pass another key for a flag that should not dim
+   * other consumers (e.g. "moreFiltersLoading").
+   */
+  loadingKey?: string;
+}
 
-export function runQuery<Q extends BaseQuery<any, any>>(query: Q): Promise<Q["__result"]> {
-  const handler = handlers[query.key as QueryKey];
+/**
+ * Runs a query through its registered handler, owning the cross-cutting
+ * concerns so call sites don't repeat them. Against the active ViewModel it:
+ *  - toggles the loading flag (true → fetch → false in a finally),
+ *  - on failure, writes the message to `error` and resolves to `undefined`.
+ *
+ * The caller's `.then` therefore only runs the success path and should guard
+ * for `undefined` (the failure result).
+ */
+export async function runQuery<Q extends BaseQuery<any, any>>(
+  query: Q,
+  options: RunQueryOptions = {},
+): Promise<Q["__result"] | undefined> {
+  const handler = queryHandlers[query.key as QueryKey];
   if (!handler) {
     throw new Error(`runQuery: no handler for "${query.key}"`);
   }
-  return handler(query.getParams());
+
+  const vm = getViewModel();
+  vm.setLoading(true, options.loadingKey as never);
+  try {
+    return (await handler(query.getParams())) as Q["__result"];
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    vm.setError(message);
+    return undefined;
+  } finally {
+    vm.setLoading(false, options.loadingKey as never);
+  }
 }

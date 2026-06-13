@@ -1,0 +1,1 @@
+export { ProductDetailViewModel } from "./ProductDetailViewModel";

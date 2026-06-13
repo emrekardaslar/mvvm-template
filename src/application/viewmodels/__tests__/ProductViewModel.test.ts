@@ -20,11 +20,9 @@ vi.mock('@infrastructure/api/api', () => ({
       }
       return [];
     }),
-    fetchFilters: vi.fn((lang) => {
-      if (lang === 'en') return ['All', 'Category A', 'Category B'];
-      if (lang === 'tr') return ['Tümü', 'Kategori A', 'Kategori B'];
-      return [];
-    }),
+    fetchMoreFilters: vi.fn(async () => []),
+    fetchHpl: vi.fn(async () => []),
+    fetchCategoryStats: vi.fn(async () => []),
   },
 }));
 
@@ -33,9 +31,14 @@ describe('ProductViewModel', () => {
 
   beforeEach(async () => {
     vi.useFakeTimers();
-    viewModel = new ProductViewModel();
-    viewModel.onMount(); // Mount the view model to register event listeners
-    await vi.runAllTimersAsync(); // Let the mount-time filter fetch settle
+    // Filters come from SSR initialData (as on the real page), not a mount fetch.
+    viewModel = new ProductViewModel({
+      filters: ['All', 'Category A', 'Category B'],
+      currentFilter: 'All',
+      currentLang: 'en',
+    });
+    viewModel.onMount();
+    await vi.runAllTimersAsync(); // let the mount-time HPL fetch settle
     vi.clearAllMocks();
   });
 
@@ -51,10 +54,11 @@ describe('ProductViewModel', () => {
     expect(data.isLoading).toBe(false);
     expect(data.currentFilter).toBe(null);
     expect(data.currentPage).toBe(1);
+    freshViewModel.onUnmount(); // dispose: the constructor subscribed to the bus
   });
 
-  it('should fetch filters on mount and default the selected filter to the first one', () => {
-    // beforeEach already mounted; the fetched filters are in place
+  it('uses the SSR-provided filters with the first as the selected filter', () => {
+    // Filters are seeded from initialData (SSR), not fetched on mount.
     expect(viewModel.getData().filters).toEqual(['All', 'Category A', 'Category B']);
     expect(viewModel.getData().currentFilter).toBe('All');
   });
@@ -137,37 +141,5 @@ describe('ProductViewModel', () => {
     eventBus.dispatch(FilterEvents.Changed, { filter: 'All' });
     await vi.runAllTimersAsync();
     expect(viewModel.getData().error).toBe(null);
-  });
-
-  it('should ignore a stale response when a newer fetch has started', async () => {
-    const stale = [{ id: 1, name: 'Stale', category: 'A' }];
-    const fresh = [{ id: 2, name: 'Fresh', category: 'B' }];
-    let resolveFirst!: (products: typeof stale) => void;
-    vi.mocked(api.fetchProducts)
-      .mockImplementationOnce(() => new Promise((resolve) => { resolveFirst = resolve; }) as any)
-      .mockImplementationOnce(() => Promise.resolve(fresh) as any);
-
-    eventBus.dispatch(FilterEvents.Changed, { filter: 'Category A' }); // slow request
-    eventBus.dispatch(FilterEvents.Changed, { filter: 'Category B' }); // fast request
-    await vi.runAllTimersAsync();
-    expect(viewModel.getData().products).toEqual(fresh);
-
-    resolveFirst(stale); // slow request finishes last
-    await vi.runAllTimersAsync();
-
-    expect(viewModel.getData().products).toEqual(fresh);
-    expect(viewModel.getData().isLoading).toBe(false);
-  });
-
-  it('should set error when fetching filters fails', async () => {
-    vi.mocked(api.fetchFilters).mockRejectedValueOnce(new Error('boom'));
-    const freshViewModel = new ProductViewModel();
-
-    freshViewModel.onMount();
-    await vi.runAllTimersAsync();
-
-    expect(freshViewModel.getData().error).toBe('boom');
-    expect(freshViewModel.getData().filters).toEqual([]);
-    freshViewModel.onUnmount();
   });
 });

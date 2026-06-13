@@ -1,0 +1,23 @@
+---
+import ProductViewEn from "./en/ProductView";
+import ProductViewTr from "./tr/ProductView";
+import ProductViewAr from "./ar/ProductView";
+import type { Lang } from "@domain/models/language";
+import type { ProductData } from "@domain/models/product";
+
+interface Props {
+  lang: Lang;
+  initialData: Partial<ProductData>;
+}
+
+const { lang, initialData } = Astro.props;
+
+// One static island per language so Astro emits a separate JS chunk for each
+// and ships only the matched one. Selection happens here at SSR time (lang is
+// known from the URL) — never via client-side lazy/dynamic import, which would
+// break island hydration.
+---
+
+{lang === "en" && <ProductViewEn client:load initialData={initialData} />}
+{lang === "tr" && <ProductViewTr client:load initialData={initialData} />}
+{lang === "ar" && <ProductViewAr client:load initialData={initialData} />}

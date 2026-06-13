@@ -1,30 +1,29 @@
 import React from "react";
 
-import "../ProductList.css";
 import { ProductViewModel } from "@application/viewmodels/ProductViewModel";
-import type { ProductData, ProductViewProps } from "@domain/models/product";
+import type { ProductData } from "@domain/models/product";
 import MvvmView from "@presentation/components/MvvmView";
 import FilterView from "../../FilterView/en/FilterView";
-import Pager from "../../PagerView/Pager";
+import ProductList from "../ProductList";
+import HorizontalProductList from "../HorizontalProductList";
+import CategoryStats from "../CategoryStats";
 
-export const ProductView: React.FC<ProductViewProps> = ({ data, viewModel }) => {
+export const ProductView: React.FC<{ viewModel: ProductViewModel }> = ({ viewModel }) => {
   return (
-    <div>
-      <FilterView data={data} viewModel={viewModel} />
-      <div className={`product-list-container ${data.isLoading ? 'loading' : ''}`}>
-        <h3>Products</h3>
-        {data.error && <p className="product-list-error">Failed to load products: {data.error}</p>}
-        <ul className="product-list">
-          {data.products.map((product) => (
-            <li key={product.id} className="product-item">
-              <a href={`/products/${product.id}?lang=${data.currentLang}`}>
-              {product.name} <span dir="ltr">({product.category})</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-        <Pager data={data} viewModel={viewModel} />
-      </div>
+    <div className="product-view">
+      <FilterView viewModel={viewModel} />
+      <CategoryStats
+        viewModel={viewModel}
+        heading="Category overview"
+        labels={{ count: "Items", avg: "Avg price", total: "Total value" }}
+      />
+      <HorizontalProductList viewModel={viewModel} heading="Featured deals" />
+      <ProductList
+        viewModel={viewModel}
+        heading="Products"
+        errorPrefix="Failed to load products"
+        renderCategory={(category) => <span dir="ltr">({category})</span>}
+      />
     </div>
   );
 };

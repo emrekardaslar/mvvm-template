@@ -4,6 +4,8 @@ import { ProductDetailViewModel } from "@application/viewmodels/ProductDetailVie
 import LanguageSelector from "@presentation/components/LanguageSelector.astro";
 import ProductDetailViewSwitcher from "@presentation/views/ProductDetailView/ProductDetailViewSwitcher";
 import { CoordinatorInit } from "@presentation/components/CoordinatorInit";
+import { prTexts } from "@presentation/views/ProductDetailView/productTexts";
+import "../../styles/global.css";
 
 // Extract the product ID from the URL
 const { id } = Astro.params;
@@ -15,12 +17,13 @@ const productDetailViewModel = new ProductDetailViewModel(
 );
 
 // Fetch initial data for SSR
-await productDetailViewModel.fetchProduct({ id: productId, lang: currentLang });
+await productDetailViewModel.fetchProduct(productId);
 const initialData = productDetailViewModel.getData();
 
+const dir = currentLang === "ar" ? "rtl" : "ltr";
 ---
 
-<html lang={currentLang}>
+<html lang={currentLang} dir={dir}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -30,11 +33,105 @@ const initialData = productDetailViewModel.getData();
   </head>
   <body>
     <CoordinatorInit client:load />
-    <LanguageSelector currentLang={currentLang} />
-    <hr />
-    <ProductDetailViewSwitcher
-      client:load
-      initialData={initialData}
-    />
+
+    <header class="site-header">
+      <div class="site-header-inner">
+        <a class="brand" href={`/?lang=${currentLang}`}>
+          <span class="brand-mark">M</span>
+          <div class="brand-text">
+            <span class="brand-title">MVVM</span>
+            <span class="brand-subtitle">Astro · React · TypeScript template</span>
+          </div>
+        </a>
+        <LanguageSelector currentLang={currentLang} />
+      </div>
+    </header>
+
+    <main class="page">
+      <a class="back-link" href={`/?lang=${currentLang}`}>
+        {dir === "rtl" ? "→" : "←"} {prTexts.title[currentLang]}
+      </a>
+      <ProductDetailViewSwitcher
+        client:load
+        initialData={initialData}
+      />
+    </main>
+
+    <style>
+      .site-header {
+        background-color: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .site-header-inner {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: var(--space-4) var(--space-5);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        background: linear-gradient(135deg, var(--color-primary), #4aa3e8);
+        color: #fff;
+        font-weight: 700;
+        font-size: var(--text-lg);
+      }
+
+      .brand-text {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand-title {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-subtitle {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+      }
+
+      .page {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: var(--space-6) var(--space-5);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+
+      .back-link {
+        align-self: flex-start;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        font-size: var(--text-sm);
+        font-weight: 500;
+        transition: color var(--transition);
+      }
+
+      .back-link:hover {
+        color: var(--color-primary);
+      }
+    </style>
   </body>
 </html>

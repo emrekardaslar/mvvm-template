@@ -1,0 +1,115 @@
+.product-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.hpl-container {
+  padding: var(--space-5);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: opacity var(--transition);
+}
+
+.hpl-container.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.hpl-heading {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.hpl-track {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  scroll-snap-type: x mandatory;
+}
+
+.hpl-card {
+  position: relative;
+  flex: 0 0 180px;
+  scroll-snap-align: start;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+}
+
+.hpl-badge {
+  position: absolute;
+  top: var(--space-3);
+  inset-inline-end: var(--space-3);
+  z-index: 1;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+  background-color: var(--color-primary);
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+}
+
+.hpl-card-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* Reserve a top strip so the absolutely-positioned badge never overlaps the
+   name, regardless of name length. */
+.hpl-card-body.has-badge {
+  padding-top: calc(var(--space-4) + var(--space-5));
+}
+
+.hpl-name {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+.hpl-category {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.hpl-rating {
+  font-size: var(--text-sm);
+  color: #b8860b;
+  font-weight: 600;
+}
+
+.hpl-pricing {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.hpl-price {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.hpl-original {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.hpl-discount {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: #1a8a4a;
+}

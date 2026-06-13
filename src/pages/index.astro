@@ -1,21 +1,22 @@
 ---
 import api from "@infrastructure/api/api";
-import ProductViewEn from "@presentation/views/ProductView/en/ProductView";
-import ProductViewTr from "@presentation/views/ProductView/tr/ProductView";
-import ProductViewAr from "@presentation/views/ProductView/ar/ProductView";
+import ProductView from "@presentation/views/ProductView/ProductView.astro";
 import LanguageSelector from "@presentation/components/LanguageSelector.astro";
 import type { Lang } from "@domain/models/language";
 import { CoordinatorInit } from "@presentation/components/CoordinatorInit";
+import "../styles/global.css";
 
 // Language comes from the URL; switching language is a full page load
 const currentLang = (Astro.url.searchParams.get("lang") || "en") as Lang;
 
-// SSR Response
+// SSR Response — products, filters, and the horizontal product list in one call
 const ssrData = await api.fetchSSRData();
 
 // One ViewModel per page: ProductViewModel owns products, filters, and paging
 const productInitialData = {
   products: ssrData[currentLang].products,
+  hplProducts: ssrData[currentLang].hpl,
+  categoryStats: ssrData[currentLang].categoryStats,
   filters: ssrData[currentLang].filters,
   currentFilter: ssrData[currentLang].filters[0],
   isLoading: false,
@@ -34,14 +35,97 @@ const productInitialData = {
   </head>
   <body>
     <CoordinatorInit client:load />
-    <h1>MVVM</h1>
-    <hr />
-    <LanguageSelector currentLang={currentLang} />
-    <hr />
-    {currentLang === "en" && <ProductViewEn client:load initialData={productInitialData} />}
-    {currentLang === "tr" && <ProductViewTr client:load initialData={productInitialData} />}
-    {currentLang === "ar" && <ProductViewAr client:load initialData={productInitialData} />}
-    <br />
-    <br />
+
+    <header class="site-header">
+      <div class="site-header-inner">
+        <div class="brand">
+          <span class="brand-mark">M</span>
+          <div class="brand-text">
+            <span class="brand-title">MVVM</span>
+            <span class="brand-subtitle">Astro · React · TypeScript template</span>
+          </div>
+        </div>
+        <LanguageSelector currentLang={currentLang} />
+      </div>
+    </header>
+
+    <main class="page">
+      <ProductView lang={currentLang} initialData={productInitialData} />
+    </main>
+
+    <footer class="site-footer">
+      <span>Built with the MVVM template</span>
+    </footer>
+
+    <style>
+      .site-header {
+        background-color: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .site-header-inner {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: var(--space-4) var(--space-5);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        background: linear-gradient(135deg, var(--color-primary), #4aa3e8);
+        color: #fff;
+        font-weight: 700;
+        font-size: var(--text-lg);
+      }
+
+      .brand-text {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand-title {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-subtitle {
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+      }
+
+      .page {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: var(--space-6) var(--space-5);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-5);
+      }
+
+      .site-footer {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: var(--space-5);
+        color: var(--color-text-muted);
+        font-size: var(--text-sm);
+        text-align: center;
+      }
+    </style>
   </body>
 </html>
