@@ -1,8 +1,6 @@
 ---
 import api from "@infrastructure/api/api";
-import ProductViewEn from "@presentation/views/ProductView/en/ProductView";
-import ProductViewTr from "@presentation/views/ProductView/tr/ProductView";
-import ProductViewAr from "@presentation/views/ProductView/ar/ProductView";
+import ProductView from "@presentation/views/ProductView/ProductView.astro";
 import LanguageSelector from "@presentation/components/LanguageSelector.astro";
 import type { Lang } from "@domain/models/language";
 import { CoordinatorInit } from "@presentation/components/CoordinatorInit";
@@ -50,9 +48,7 @@ const productInitialData = {
     </header>
 
     <main class="page">
-      {currentLang === "en" && <ProductViewEn client:load initialData={productInitialData} />}
-      {currentLang === "tr" && <ProductViewTr client:load initialData={productInitialData} />}
-      {currentLang === "ar" && <ProductViewAr client:load initialData={productInitialData} />}
+      <ProductView lang={currentLang} initialData={productInitialData} />
     </main>
 
     <footer class="site-footer">
