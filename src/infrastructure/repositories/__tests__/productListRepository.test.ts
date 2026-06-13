@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import productListRepository from '../productListRepository';
+import { getProducts } from '../productListRepository';
 import api from '../../api/api';
-import { QueryKeys } from '@domain/queries/keys';
 import type { Product } from '@domain/models/product';
 import type { Mock } from 'vitest';
 
@@ -17,7 +16,7 @@ describe('productListRepository', () => {
     const filter = 'Electronics';
     const page = 1;
 
-    await productListRepository.run(QueryKeys.GetProducts,{ lang, filter, page });
+    await getProducts({ lang, filter, page });
     expect(api.fetchProducts).toHaveBeenCalledWith(lang, filter, page);
   });
 
@@ -28,7 +27,7 @@ describe('productListRepository', () => {
     ];
     (api.fetchProducts as Mock).mockResolvedValue(products);
 
-    const result = await productListRepository.run(QueryKeys.GetProducts,{ lang: 'en', filter: 'Electronics', page: 1 });
+    const result = await getProducts({ lang: 'en', filter: 'Electronics', page: 1 });
     expect(result).toEqual(products);
   });
 });

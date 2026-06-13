@@ -1,21 +1,7 @@
 import api from '../api/api';
 import type { HplProduct } from '@domain/models/product';
-import { QueryKeys } from '@domain/queries/keys';
 import type { GetHplParams } from '@application/queries/GetHplQuery';
 
-const handlers = {
-  [QueryKeys.GetHpl]: (params: GetHplParams): Promise<HplProduct[]> =>
-    api.fetchHpl(params.lang, params.filter),
-};
-
-type Key = keyof typeof handlers;
-type ParamsOf<K extends Key> = Parameters<typeof handlers[K]>[0];
-type ResultOf<K extends Key> = ReturnType<typeof handlers[K]>;
-
-const hplRepository = {
-  run<K extends Key>(key: K, params: ParamsOf<K>): ResultOf<K> {
-    return handlers[key](params as any) as ResultOf<K>;
-  },
-};
-
-export default hplRepository;
+// Maps the GetHpl query params to the data source.
+export const getHpl = (params: GetHplParams): Promise<HplProduct[]> =>
+  api.fetchHpl(params.lang, params.filter);
