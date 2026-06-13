@@ -20,9 +20,7 @@ export const FiltersMixin: FiltersMixinContract & ThisType<ProductViewModelInter
   },
 
   fetchFilters() {
-    return runQuery(new GetFiltersQuery(), {
-      onError: (error) => this.setData({ error }),
-    }).then((filters) => {
+    return runQuery(new GetFiltersQuery()).then((filters) => {
       if (filters) this.setData({ filters, currentFilter: this.data.currentFilter ?? filters[0] });
     });
   },
@@ -33,10 +31,7 @@ export const FiltersMixin: FiltersMixinContract & ThisType<ProductViewModelInter
 
   loadMoreFilters() {
     if (this.data.moreFiltersLoading) return Promise.resolve();
-    return runQuery(new GetMoreFiltersQuery(), {
-      onLoading: (moreFiltersLoading) => this.setData({ moreFiltersLoading }),
-      onError: (error) => this.setData({ error }),
-    }).then((more) => {
+    return runQuery(new GetMoreFiltersQuery(), { loadingKey: "moreFiltersLoading" }).then((more) => {
       if (!more) return;
       // Append only new filters. Updates the filters slice (and the loaded
       // flag) but never products/isLoading/error, so a component selecting the

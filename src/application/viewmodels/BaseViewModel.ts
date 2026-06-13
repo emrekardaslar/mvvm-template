@@ -42,6 +42,25 @@ export class BaseViewModel<TData, TEvents extends Record<string, unknown> = Reco
   }
 
   /**
+   * Sets the ViewModel's error message. Public so the query runner can write a
+   * common error to the active ViewModel without each call site handling it.
+   * VMs whose data has no `error` field simply ignore the write at runtime.
+   */
+  public setError(message: string) {
+    this.setData({ error: message } as unknown as Partial<TData>);
+  }
+
+  /**
+   * Toggles a loading flag. Public so the query runner can manage loading
+   * without each call site passing a callback. Defaults to `isLoading`; pass a
+   * different key for a flag that should not dim other consumers (e.g. a
+   * "load more" flag the product list does not read).
+   */
+  public setLoading(loading: boolean, key: keyof TData = "isLoading" as keyof TData) {
+    this.setData({ [key]: loading } as unknown as Partial<TData>);
+  }
+
+  /**
    * Marks the start of a fetch and returns its id.
    * Pass the id to isCurrentFetch after awaiting to detect stale responses.
    */

@@ -17,10 +17,7 @@ export class ProductDetailViewModel extends BaseViewModel<ProductDetailData> {
   // `id` comes from the route; the query reads `lang` from this VM.
   public fetchProduct(id: number) {
     const fetchId = this.beginFetch();
-    return runQuery(new GetProductDetailQuery(id), {
-      onLoading: (isLoading) => this.setData({ isLoading }),
-      onError: (error) => this.setData({ error }),
-    }).then((product) => {
+    return runQuery(new GetProductDetailQuery(id)).then((product) => {
       if (this.isCurrentFetch(fetchId)) this.setData({ product, error: null });
     });
   }
