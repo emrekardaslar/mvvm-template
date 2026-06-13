@@ -40,13 +40,4 @@ export const FiltersMixin: FiltersMixinContract & ThisType<ProductViewModelInter
       this.setData({ filters: merged, moreFiltersLoaded: true });
     });
   },
-
-  getFilters() {
-    return {
-      filters: this.data.filters,
-      currentFilter: this.data.currentFilter,
-      moreFiltersLoading: this.data.moreFiltersLoading,
-      moreFiltersLoaded: this.data.moreFiltersLoaded,
-    };
-  },
 };
