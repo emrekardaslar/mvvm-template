@@ -54,7 +54,7 @@ const api = {
         } else {
           resolve(data.products.filter((p) => p.category === filter));
         }
-      }, 500); // Simulate network delay
+      }, 5); // Simulate network delay
     });
   },
 
@@ -63,7 +63,7 @@ const api = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(mockData[lang].filters);
-      }, 300); // Simulate network delay
+      }, 5); // Simulate network delay
     });
   },
 
@@ -73,7 +73,7 @@ const api = {
       setTimeout(() => {
         const product = mockData[lang].products.find(p => p.id === id);
         resolve(product);
-      }, 300); // Simulate network delay
+      }, 5); // Simulate network delay
     });
   },
 
@@ -81,7 +81,7 @@ const api = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(mockData);
-      }, 300); // Simulate network delay
+      }, 5); // Simulate network delay
     })
   }
 };
