@@ -25,6 +25,8 @@ vi.mock('@infrastructure/api/api', () => ({
       if (lang === 'tr') return ['Tümü', 'Kategori A', 'Kategori B'];
       return [];
     }),
+    fetchMoreFilters: vi.fn(async () => []),
+    fetchHpl: vi.fn(async () => []),
   },
 }));
 

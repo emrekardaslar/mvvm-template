@@ -1,12 +1,13 @@
-import type { Product } from "./product";
+import type { Product, HplProduct } from "./product";
 
 /**
- * Interface representing the localized data (products and filters)
- * for a specific language code (e.g., 'en', 'tr', 'ar').
+ * Interface representing the localized data (products, filters, and the
+ * horizontal product list) for a specific language code (e.g., 'en', 'tr', 'ar').
  */
 interface LocalizedData {
     products: Product[];
     filters: string[];
+    hpl: HplProduct[];
 }
 
 /**

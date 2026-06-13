@@ -5,11 +5,13 @@ import type { ProductData } from "@domain/models/product";
 import MvvmView from "@presentation/components/MvvmView";
 import FilterView from "../../FilterView/en/FilterView";
 import ProductList from "../ProductList";
+import HorizontalProductList from "../HorizontalProductList";
 
 export const ProductView: React.FC<{ viewModel: ProductViewModel }> = ({ viewModel }) => {
   return (
-    <div>
+    <div className="product-view">
       <FilterView viewModel={viewModel} />
+      <HorizontalProductList viewModel={viewModel} heading="Featured deals" />
       <ProductList
         viewModel={viewModel}
         heading="Products"

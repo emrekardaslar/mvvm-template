@@ -1,8 +1,32 @@
-import type { Product } from "@domain/models/product";
+import type { Product, HplProduct } from "@domain/models/product";
 import type { Lang } from "@domain/models/language";
 import type { SSRResponse } from "@domain/models/ssr";
 
 const timeoutForApis = 0;
+
+// Horizontal product list mock — promo items per filter category. Keyed by the
+// English category; other languages reuse the same set with localized names.
+const hplByCategory: Record<string, HplProduct[]> = {
+  All: [
+    { id: 101, name: "Wireless Earbuds", category: "Electronics", price: 59, discountPercent: 20, rating: 4.6, badge: "Hot" },
+    { id: 102, name: "Hoodie", category: "Apparel", price: 45, discountPercent: 10, rating: 4.2 },
+    { id: 103, name: "Chef Knife", category: "Kitchen", price: 80, discountPercent: 15, rating: 4.8, badge: "Top rated" },
+    { id: 104, name: "Smart Watch", category: "Electronics", price: 199, discountPercent: 25, rating: 4.4, badge: "Deal" },
+  ],
+  Electronics: [
+    { id: 111, name: "Mechanical Keyboard", category: "Electronics", price: 120, discountPercent: 30, rating: 4.7, badge: "Deal" },
+    { id: 112, name: "USB-C Hub", category: "Electronics", price: 35, discountPercent: 10, rating: 4.1 },
+    { id: 113, name: "Noise-Cancel Headphones", category: "Electronics", price: 220, discountPercent: 18, rating: 4.9, badge: "Top rated" },
+  ],
+  Apparel: [
+    { id: 121, name: "Running Shoes", category: "Apparel", price: 90, discountPercent: 20, rating: 4.5, badge: "Hot" },
+    { id: 122, name: "Denim Jacket", category: "Apparel", price: 110, discountPercent: 15, rating: 4.3 },
+  ],
+  Kitchen: [
+    { id: 131, name: "Espresso Machine", category: "Kitchen", price: 350, discountPercent: 12, rating: 4.6, badge: "Deal" },
+    { id: 132, name: "Cast Iron Pan", category: "Kitchen", price: 55, discountPercent: 8, rating: 4.8, badge: "Top rated" },
+  ],
+};
 
 const mockData: SSRResponse = {
   en: {
@@ -15,6 +39,7 @@ const mockData: SSRResponse = {
       { id: 6, name: "Blender", category: "Kitchen", description: "High-speed blender for smoothies and shakes.", price: 90 },
     ],
     filters: ["All", "Electronics", "Apparel", "Kitchen"],
+    hpl: hplByCategory.All,
   },
   tr: {
     products: [
@@ -26,6 +51,7 @@ const mockData: SSRResponse = {
       { id: 6, name: "Blender", category: "Mutfak", description: "Smoothie ve shake'ler için yüksek hızlı blender.", price: 90 },
     ],
     filters: ["Tümü", "Elektronik", "Giyim", "Mutfak"],
+    hpl: hplByCategory.All,
   },
   ar: {
     products: [
@@ -37,6 +63,7 @@ const mockData: SSRResponse = {
       { id: 6, name: "خلاط", category: "مطبخ", description: "خلاط عالي السرعة للعصائر والمشروبات المخفوقة.", price: 90 },
     ],
     filters: ["الكل", "إلكترونيات", "ملابس", "مطبخ"],
+    hpl: hplByCategory.All,
   },
 };
 
@@ -80,6 +107,22 @@ const api = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(extra[lang]);
+      }, timeoutForApis); // Simulate network delay
+    });
+  },
+
+  // Horizontal product list, varying by the selected filter. The filter arrives
+  // in the current language, so map it back to the English category key via the
+  // language's filter list (filters[0] is the "All" entry).
+  fetchHpl: (lang: Lang = "en", filter: string | null = null): Promise<HplProduct[]> => {
+    console.log(`Fetching HPL with lang: ${lang} and filter: ${filter}`);
+    const localizedFilters = mockData[lang].filters;
+    const englishFilters = mockData.en.filters;
+    const idx = filter ? localizedFilters.indexOf(filter) : 0;
+    const key = idx > 0 ? englishFilters[idx] : "All";
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(hplByCategory[key] ?? hplByCategory.All);
       }, timeoutForApis); // Simulate network delay
     });
   },

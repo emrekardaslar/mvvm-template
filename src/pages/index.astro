@@ -9,12 +9,13 @@ import "../styles/global.css";
 // Language comes from the URL; switching language is a full page load
 const currentLang = (Astro.url.searchParams.get("lang") || "en") as Lang;
 
-// SSR Response
+// SSR Response — products, filters, and the horizontal product list in one call
 const ssrData = await api.fetchSSRData();
 
 // One ViewModel per page: ProductViewModel owns products, filters, and paging
 const productInitialData = {
   products: ssrData[currentLang].products,
+  hplProducts: ssrData[currentLang].hpl,
   filters: ssrData[currentLang].filters,
   currentFilter: ssrData[currentLang].filters[0],
   isLoading: false,

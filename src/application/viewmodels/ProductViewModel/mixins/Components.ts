@@ -30,4 +30,12 @@ export const ComponentsMixin: ComponentsMixinContract & ThisType<ProductViewMode
       totalPages: this.data.totalPages,
     };
   },
+
+  getHpl() {
+    return {
+      hplProducts: this.data.hplProducts,
+      hplLoading: this.data.hplLoading,
+      currentLang: this.data.currentLang,
+    };
+  },
 };

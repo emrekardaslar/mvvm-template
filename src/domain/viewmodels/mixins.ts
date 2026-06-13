@@ -1,4 +1,4 @@
-import type { ProductListSlice, FiltersSlice, PagerSlice } from "@domain/models/product";
+import type { ProductListSlice, FiltersSlice, PagerSlice, HplSlice } from "@domain/models/product";
 
 /** Methods the Pager mixin adds to ProductViewModel (behavior only). */
 export interface PagerMixin {
@@ -24,9 +24,21 @@ export interface FiltersMixin {
   _onFilterChanged?: (payload: { filter: string }) => void;
 }
 
+/** Methods the Hpl (horizontal product list) mixin adds (behavior only). */
+export interface HplMixin {
+  /** Register the filter-change bus listener. Called from the VM constructor. */
+  initHpl(): void;
+  /** Remove the bus listener. Called from the VM's onUnmount. */
+  disposeHpl(): void;
+  fetchHpl(): Promise<void>;
+  /** Bound bus handler, set up by initHpl. */
+  _onHplFilterChanged?: (payload: { filter: string }) => void;
+}
+
 /** All view-facing slice getters live in the Components mixin. */
 export interface ComponentsMixin {
   getProductList(): ProductListSlice;
   getFilters(): FiltersSlice;
   getPager(): PagerSlice;
+  getHpl(): HplSlice;
 }

@@ -38,6 +38,16 @@
   background-color: var(--color-surface-muted);
 }
 
+/* No frame on click/selection; keep a ring only for keyboard focus (a11y). */
+.filter-button:focus {
+  outline: none;
+}
+
+.filter-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 .filter-button.selected {
   background-color: var(--color-primary);
   color: #fff;

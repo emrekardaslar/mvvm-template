@@ -16,9 +16,10 @@ export type { ProductViewModelEvents } from "@domain/events/productViewModelEven
 /**
  * Page ViewModel for the product list page. Behavior is split into mixins that
  * are merged onto the prototype (patterns.dev object-mixin style):
- * - PagerMixin       — page-change events/handlers + getPager()
- * - FiltersMixin      — filter select, "load more", initial fetch + getFilters()
- * - ComponentsMixin  — remaining view getters (getProductList)
+ * - PagerMixin       — page-change events/handlers
+ * - FiltersMixin      — filter select, "load more", initial fetch
+ * - HplMixin          — horizontal product list, refetched on filter change
+ * - ComponentsMixin  — all view getters (getProductList/getFilters/getPager/getHpl)
  *
  * This class owns the product-list fetch and the lifecycle: the constructor
  * calls each mixin's init() (events + bus listener), onUnmount calls dispose().
@@ -27,6 +28,8 @@ export class ProductViewModel extends BaseViewModel<ProductData, ProductViewMode
   constructor(initialData?: Partial<ProductData>) {
     super({
       products: initialData?.products || [],
+      hplProducts: initialData?.hplProducts || [],
+      hplLoading: false,
       filters: initialData?.filters || [],
       moreFiltersLoading: false,
       moreFiltersLoaded: false,
@@ -40,17 +43,22 @@ export class ProductViewModel extends BaseViewModel<ProductData, ProductViewMode
     // Each mixin wires its own events + bus listener.
     this.initPager();
     this.initFilters();
+    this.initHpl();
   }
 
   public override async onMount() {
     if (this.data.filters.length === 0) {
       await this.fetchFilters();
     }
+    if (this.data.hplProducts.length === 0) {
+      this.fetchHpl();
+    }
   }
 
   public override onUnmount() {
     this.disposePager();
     this.disposeFilters();
+    this.disposeHpl();
   }
 
   fetchProducts(override: { filter?: string | null; page?: number } = {}) {
