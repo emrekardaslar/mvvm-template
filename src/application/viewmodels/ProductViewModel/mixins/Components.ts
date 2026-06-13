@@ -38,4 +38,10 @@ export const ComponentsMixin: ComponentsMixinContract & ThisType<ProductViewMode
       currentLang: this.data.currentLang,
     };
   },
+
+  getStats() {
+    return {
+      categoryStats: this.data.categoryStats,
+    };
+  },
 };

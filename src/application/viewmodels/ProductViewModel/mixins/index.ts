@@ -1,11 +1,13 @@
 import { PagerMixin } from "./Pager";
 import { FiltersMixin } from "./Filters";
 import { HplMixin } from "./Hpl";
+import { StatsMixin } from "./Stats";
 import { ComponentsMixin } from "./Components";
 import type {
   PagerMixin as PagerMixinContract,
   FiltersMixin as FiltersMixinContract,
   HplMixin as HplMixinContract,
+  StatsMixin as StatsMixinContract,
   ComponentsMixin as ComponentsMixinContract,
 } from "@domain/viewmodels/mixins";
 
@@ -17,9 +19,10 @@ import type {
  * methods are typed on the ViewModel). TypeScript can't derive the type from
  * the array, so both lines are required.
  */
-export const productMixins = [PagerMixin, FiltersMixin, HplMixin, ComponentsMixin];
+export const productMixins = [PagerMixin, FiltersMixin, HplMixin, StatsMixin, ComponentsMixin];
 
 export type ProductMixins = PagerMixinContract &
   FiltersMixinContract &
   HplMixinContract &
+  StatsMixinContract &
   ComponentsMixinContract;

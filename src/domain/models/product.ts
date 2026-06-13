@@ -11,6 +11,7 @@ export interface ProductData {
   products: Product[];
   hplProducts: HplProduct[];
   hplLoading: boolean;
+  categoryStats: CategoryStat[];
   filters: string[];
   moreFiltersLoading: boolean;
   moreFiltersLoaded: boolean;
@@ -68,4 +69,16 @@ export interface HplSlice {
   hplProducts: HplProduct[];
   hplLoading: boolean;
   currentLang: Lang;
+}
+
+/** Aggregate stats for one product category (a summary, not a list). */
+export interface CategoryStat {
+  category: string;
+  count: number;
+  averagePrice: number;
+  totalValue: number;
+}
+
+export interface StatsSlice {
+  categoryStats: CategoryStat[];
 }

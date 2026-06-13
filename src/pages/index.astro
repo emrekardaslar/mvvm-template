@@ -16,6 +16,7 @@ const ssrData = await api.fetchSSRData();
 const productInitialData = {
   products: ssrData[currentLang].products,
   hplProducts: ssrData[currentLang].hpl,
+  categoryStats: ssrData[currentLang].categoryStats,
   filters: ssrData[currentLang].filters,
   currentFilter: ssrData[currentLang].filters[0],
   isLoading: false,

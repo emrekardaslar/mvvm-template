@@ -27,6 +27,7 @@ vi.mock('@infrastructure/api/api', () => ({
     }),
     fetchMoreFilters: vi.fn(async () => []),
     fetchHpl: vi.fn(async () => []),
+    fetchCategoryStats: vi.fn(async () => []),
   },
 }));
 

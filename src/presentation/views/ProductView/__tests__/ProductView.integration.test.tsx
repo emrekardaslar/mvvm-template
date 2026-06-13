@@ -16,6 +16,9 @@ vi.mock('@infrastructure/api/api', () => ({
     fetchHpl: vi.fn(async (_lang, filter) => [
       { id: 9001, name: `hpl-for-${filter}`, category: 'X', price: 10, discountPercent: 20, rating: 4.5 },
     ]),
+    fetchCategoryStats: vi.fn(async () => [
+      { category: 'X', count: 1, averagePrice: 10, totalValue: 10 },
+    ]),
   },
 }));
 

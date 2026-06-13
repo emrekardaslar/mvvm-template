@@ -1,4 +1,4 @@
-import type { Product, HplProduct } from "@domain/models/product";
+import type { Product, HplProduct, CategoryStat } from "@domain/models/product";
 import type { Lang } from "@domain/models/language";
 import type { SSRResponse } from "@domain/models/ssr";
 
@@ -28,7 +28,26 @@ const hplByCategory: Record<string, HplProduct[]> = {
   ],
 };
 
-const mockData: SSRResponse = {
+// Derive per-category aggregates from a product list.
+function computeCategoryStats(products: Product[]): CategoryStat[] {
+  const byCategory = new Map<string, Product[]>();
+  for (const p of products) {
+    const list = byCategory.get(p.category) ?? [];
+    list.push(p);
+    byCategory.set(p.category, list);
+  }
+  return [...byCategory.entries()].map(([category, items]) => {
+    const totalValue = items.reduce((sum, p) => sum + p.price, 0);
+    return {
+      category,
+      count: items.length,
+      averagePrice: Math.round(totalValue / items.length),
+      totalValue,
+    };
+  });
+}
+
+const rawMockData: Record<Lang, { products: Product[]; filters: string[]; hpl: HplProduct[] }> = {
   en: {
     products: [
       { id: 1, name: "Laptop", category: "Electronics", description: "Powerful laptop for all your computing needs.", price: 1200 },
@@ -67,6 +86,13 @@ const mockData: SSRResponse = {
   },
 };
 
+// Assemble the SSR payload, deriving category stats from each language's products.
+const mockData: SSRResponse = {
+  en: { ...rawMockData.en, categoryStats: computeCategoryStats(rawMockData.en.products) },
+  tr: { ...rawMockData.tr, categoryStats: computeCategoryStats(rawMockData.tr.products) },
+  ar: { ...rawMockData.ar, categoryStats: computeCategoryStats(rawMockData.ar.products) },
+};
+
 const api = {
   fetchProducts: (
     lang: Lang = "en",
@@ -92,6 +118,16 @@ const api = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(mockData[lang].filters);
+      }, timeoutForApis); // Simulate network delay
+    });
+  },
+
+  // Aggregate stats per category, derived from the product mock for the language.
+  fetchCategoryStats: (lang: Lang = "en"): Promise<CategoryStat[]> => {
+    console.log(`Fetching category stats with lang: ${lang}`);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(computeCategoryStats(mockData[lang].products));
       }, timeoutForApis); // Simulate network delay
     });
   },

@@ -6,11 +6,17 @@ import MvvmView from "@presentation/components/MvvmView";
 import FilterView from "../../FilterView/tr/FilterView";
 import ProductList from "../ProductList";
 import HorizontalProductList from "../HorizontalProductList";
+import CategoryStats from "../CategoryStats";
 
 const ProductView: React.FC<{ viewModel: ProductViewModel }> = ({ viewModel }) => {
   return (
     <div className="product-view">
       <FilterView viewModel={viewModel} />
+      <CategoryStats
+        viewModel={viewModel}
+        heading="Kategori özeti"
+        labels={{ count: "Ürün", avg: "Ort. fiyat", total: "Toplam değer" }}
+      />
       <HorizontalProductList viewModel={viewModel} heading="Öne çıkan fırsatlar" />
       <ProductList
         viewModel={viewModel}

@@ -1,4 +1,4 @@
-import type { ProductListSlice, FiltersSlice, PagerSlice, HplSlice } from "@domain/models/product";
+import type { ProductListSlice, FiltersSlice, PagerSlice, HplSlice, StatsSlice } from "@domain/models/product";
 
 /** Methods the Pager mixin adds to ProductViewModel (behavior only). */
 export interface PagerMixin {
@@ -35,10 +35,16 @@ export interface HplMixin {
   _onHplFilterChanged?: (payload: { filter: string }) => void;
 }
 
+/** Methods the Stats mixin adds (category-stats fetch; no filter dependency). */
+export interface StatsMixin {
+  fetchStats(): Promise<void>;
+}
+
 /** All view-facing slice getters live in the Components mixin. */
 export interface ComponentsMixin {
   getProductList(): ProductListSlice;
   getFilters(): FiltersSlice;
   getPager(): PagerSlice;
   getHpl(): HplSlice;
+  getStats(): StatsSlice;
 }

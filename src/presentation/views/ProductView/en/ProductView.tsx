@@ -6,11 +6,17 @@ import MvvmView from "@presentation/components/MvvmView";
 import FilterView from "../../FilterView/en/FilterView";
 import ProductList from "../ProductList";
 import HorizontalProductList from "../HorizontalProductList";
+import CategoryStats from "../CategoryStats";
 
 export const ProductView: React.FC<{ viewModel: ProductViewModel }> = ({ viewModel }) => {
   return (
     <div className="product-view">
       <FilterView viewModel={viewModel} />
+      <CategoryStats
+        viewModel={viewModel}
+        heading="Category overview"
+        labels={{ count: "Items", avg: "Avg price", total: "Total value" }}
+      />
       <HorizontalProductList viewModel={viewModel} heading="Featured deals" />
       <ProductList
         viewModel={viewModel}

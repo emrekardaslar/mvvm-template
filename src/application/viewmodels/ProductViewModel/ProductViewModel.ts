@@ -19,7 +19,8 @@ export type { ProductViewModelEvents } from "@domain/events/productViewModelEven
  * - PagerMixin       — page-change events/handlers
  * - FiltersMixin      — filter select, "load more", initial fetch
  * - HplMixin          — horizontal product list, refetched on filter change
- * - ComponentsMixin  — all view getters (getProductList/getFilters/getPager/getHpl)
+ * - StatsMixin        — category stats (whole-catalog aggregates, no filter dep)
+ * - ComponentsMixin  — all view getters (getProductList/getFilters/getPager/getHpl/getStats)
  *
  * This class owns the product-list fetch and the lifecycle: the constructor
  * calls each mixin's init() (events + bus listener), onUnmount calls dispose().
@@ -30,6 +31,7 @@ export class ProductViewModel extends BaseViewModel<ProductData, ProductViewMode
       products: initialData?.products || [],
       hplProducts: initialData?.hplProducts || [],
       hplLoading: false,
+      categoryStats: initialData?.categoryStats || [],
       filters: initialData?.filters || [],
       moreFiltersLoading: false,
       moreFiltersLoaded: false,
@@ -46,11 +48,7 @@ export class ProductViewModel extends BaseViewModel<ProductData, ProductViewMode
     this.initHpl();
   }
 
-  public override onMount() {
-    if (this.data.hplProducts.length === 0) {
-      this.fetchHpl();
-    }
-  }
+  // Products, filters, HPL, and category stats all come from SSR initialData.
 
   public override onUnmount() {
     this.disposePager();

@@ -3,6 +3,7 @@ export const QueryKeys = {
   GetFilters: 'GetFilters',
   GetMoreFilters: 'GetMoreFilters',
   GetHpl: 'GetHpl',
+  GetCategoryStats: 'GetCategoryStats',
   GetProductDetail: 'GetProductDetail',
 } as const;
 
