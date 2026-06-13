@@ -2,6 +2,8 @@ import type { Product } from "@domain/models/product";
 import type { Lang } from "@domain/models/language";
 import type { SSRResponse } from "@domain/models/ssr";
 
+let timeoutForApis = 0;
+
 const mockData: SSRResponse = {
   en: {
     products: [
@@ -54,7 +56,7 @@ const api = {
         } else {
           resolve(data.products.filter((p) => p.category === filter));
         }
-      }, 5); // Simulate network delay
+      }, timeoutForApis); // Simulate network delay
     });
   },
 
@@ -63,7 +65,7 @@ const api = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(mockData[lang].filters);
-      }, 5); // Simulate network delay
+      }, timeoutForApis); // Simulate network delay
     });
   },
 
@@ -73,7 +75,7 @@ const api = {
       setTimeout(() => {
         const product = mockData[lang].products.find(p => p.id === id);
         resolve(product);
-      }, 5); // Simulate network delay
+      }, timeoutForApis); // Simulate network delay
     });
   },
 
@@ -81,7 +83,7 @@ const api = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(mockData);
-      }, 5); // Simulate network delay
+      }, timeoutForApis); // Simulate network delay
     })
   }
 };
