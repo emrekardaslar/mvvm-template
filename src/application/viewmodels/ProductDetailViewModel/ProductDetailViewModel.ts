@@ -1,8 +1,7 @@
-
 import type { ProductDetailData } from "@domain/models/productDetail";
 import { GetProductDetailQuery } from "@application/queries/GetProductDetailQuery";
 import { runQuery } from "@infrastructure/runQuery";
-import { BaseViewModel } from "./BaseViewModel";
+import { BaseViewModel } from "../BaseViewModel";
 
 export class ProductDetailViewModel extends BaseViewModel<ProductDetailData> {
   constructor(initialData?: Partial<ProductDetailData>) {
