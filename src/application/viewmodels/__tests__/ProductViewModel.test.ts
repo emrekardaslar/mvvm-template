@@ -20,11 +20,6 @@ vi.mock('@infrastructure/api/api', () => ({
       }
       return [];
     }),
-    fetchFilters: vi.fn((lang) => {
-      if (lang === 'en') return ['All', 'Category A', 'Category B'];
-      if (lang === 'tr') return ['Tümü', 'Kategori A', 'Kategori B'];
-      return [];
-    }),
     fetchMoreFilters: vi.fn(async () => []),
     fetchHpl: vi.fn(async () => []),
     fetchCategoryStats: vi.fn(async () => []),
@@ -146,18 +141,5 @@ describe('ProductViewModel', () => {
     eventBus.dispatch(FilterEvents.Changed, { filter: 'All' });
     await vi.runAllTimersAsync();
     expect(viewModel.getData().error).toBe(null);
-  });
-
-  it('should set error when fetchFilters() fails', async () => {
-    vi.mocked(api.fetchFilters).mockRejectedValueOnce(new Error('boom'));
-    const freshViewModel = new ProductViewModel();
-
-    // fetchFilters is no longer auto-called on mount; invoke it directly.
-    await freshViewModel.fetchFilters();
-    await vi.runAllTimersAsync();
-
-    expect(freshViewModel.getData().error).toBe('boom');
-    expect(freshViewModel.getData().filters).toEqual([]);
-    freshViewModel.onUnmount();
   });
 });

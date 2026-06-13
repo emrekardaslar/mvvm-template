@@ -1,12 +1,11 @@
 import { FilterEvents } from "@domain/events/filter";
-import { GetFiltersQuery } from "@application/queries/GetFiltersQuery";
 import { GetMoreFiltersQuery } from "@application/queries/GetMoreFiltersQuery";
 import { runQuery } from "@infrastructure/runQuery";
 import eventBus from "../../../events/eventBus";
 import type { ProductViewModelInternals } from "@domain/viewmodels/ProductViewModelInternals";
 import type { FiltersMixin as FiltersMixinContract } from "@domain/viewmodels/mixins";
 
-// Filter behavior (select, load-more, initial fetch) + the filters slice getter.
+// Filter behavior: select a filter, and load more filters from a second source.
 export const FiltersMixin: FiltersMixinContract & ThisType<ProductViewModelInternals & FiltersMixinContract> = {
   initFilters() {
     this.registerEvent(FilterEvents.Select, (p) => this.selectFilter(p));
@@ -19,25 +18,18 @@ export const FiltersMixin: FiltersMixinContract & ThisType<ProductViewModelInter
     if (this._onFilterChanged) eventBus.off(FilterEvents.Changed, this._onFilterChanged);
   },
 
-  fetchFilters() {
-    return runQuery(new GetFiltersQuery()).then((filters) => {
-      if (filters) this.setData({ filters, currentFilter: this.data.currentFilter ?? filters[0] });
-    });
-  },
-
   selectFilter(payload) {
     eventBus.dispatch(FilterEvents.Changed, { filter: payload.filter });
   },
 
-  loadMoreFilters() {
-    if (this.data.moreFiltersLoading) return Promise.resolve();
-    return runQuery(new GetMoreFiltersQuery(), { loadingKey: "moreFiltersLoading" }).then((more) => {
-      if (!more) return;
-      // Append only new filters. Updates the filters slice (and the loaded
-      // flag) but never products/isLoading/error, so a component selecting the
-      // product slice does not re-render.
-      const merged = [...this.data.filters, ...more.filter((f) => !this.data.filters.includes(f))];
-      this.setData({ filters: merged, moreFiltersLoaded: true });
-    });
+  async loadMoreFilters() {
+    if (this.data.moreFiltersLoading) return;
+    const more = await runQuery(new GetMoreFiltersQuery(), { loadingKey: "moreFiltersLoading" });
+    if (!more) return;
+    // Append only new filters. Updates the filters slice (and the loaded flag)
+    // but never products/isLoading/error, so a component selecting the product
+    // slice does not re-render.
+    const merged = [...this.data.filters, ...more.filter((f) => !this.data.filters.includes(f))];
+    this.setData({ filters: merged, moreFiltersLoaded: true });
   },
 };

@@ -113,15 +113,6 @@ const api = {
     });
   },
 
-  fetchFilters: (lang: Lang = "en"): Promise<string[]> => {
-    console.log(`Fetching filters with lang: ${lang}`);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(mockData[lang].filters);
-      }, timeoutForApis); // Simulate network delay
-    });
-  },
-
   // Aggregate stats per category, derived from the product mock for the language.
   fetchCategoryStats: (lang: Lang = "en"): Promise<CategoryStat[]> => {
     console.log(`Fetching category stats with lang: ${lang}`);
@@ -132,7 +123,7 @@ const api = {
     });
   },
 
-  // A separate "source" for additional filters, distinct from fetchFilters.
+  // A separate "source" for additional filters, distinct from the SSR filters.
   fetchMoreFilters: (lang: Lang = "en"): Promise<string[]> => {
     console.log(`Fetching more filters with lang: ${lang}`);
     const extra: Record<Lang, string[]> = {

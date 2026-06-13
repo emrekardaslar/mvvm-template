@@ -17,7 +17,6 @@ export interface FiltersMixin {
   initFilters(): void;
   /** Remove the bus listener. Called from the VM's onUnmount. */
   disposeFilters(): void;
-  fetchFilters(): Promise<void>;
   selectFilter(payload: { filter: string }): void;
   loadMoreFilters(): Promise<void>;
   /** Bound bus handler, set up by initFilters. */

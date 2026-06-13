@@ -11,7 +11,6 @@ import { ProductViewModel } from '@application/viewmodels/ProductViewModel';
 vi.mock('@infrastructure/api/api', () => ({
   default: {
     fetchProducts: vi.fn(async (_lang, filter) => [{ id: 99, name: `for-${filter}`, category: 'X' }]),
-    fetchFilters: vi.fn(async () => ['All', 'Electronics', 'Apparel']),
     fetchMoreFilters: vi.fn(async () => ['Books', 'Toys']),
     fetchHpl: vi.fn(async (_lang, filter) => [
       { id: 9001, name: `hpl-for-${filter}`, category: 'X', price: 10, discountPercent: 20, rating: 4.5 },
